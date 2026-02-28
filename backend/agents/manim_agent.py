@@ -1,21 +1,24 @@
 """
-ManimAgent — generates ManimGL animation code for two reel types.
+ManimAgent — generates ManimGL animation code from voice-over narration.
 
-  Concept reel  — uses ``reviewed_transcript`` as the narrative script.
-                  Animates exactly what the transcript describes, nothing more.
+The narration is the **source of truth**. The Manim agent reads [BEAT]-delimited
+narration text and produces a ManimGL scene that animates exactly what the
+narrator describes — colors, objects, transformations, and order.
 
-  Example reel  — uses ``examples[0]`` to animate a concrete step-by-step
-                  worked example with real numbers and matrices.
+Each [BEAT] in the narration becomes a group of ``self.play()`` calls followed
+by a ``self.wait()``, creating a 1:1 mapping between narration beats and
+animation beats for timing synchronisation.
 
 Usage::
 
     agent = ManimAgent()
 
-    concept_result = await agent.run_concept_reel(data)
-    example_result = await agent.run_example_reel(data)
-
-    print(concept_result.output)  # ManimGL Python script
-    print(example_result.output)  # ManimGL Python script
+    result = await agent.run_from_narration(
+        narration="Here's a two-by-two grid.\\n[BEAT]\\nA green arrow appears...",
+        subject="Eigenvalues and eigenvectors",
+        lecture_number="21",
+    )
+    print(result.output)  # ManimGL Python script
 """
 
 import json
@@ -33,50 +36,57 @@ def _load_prompt() -> str:
         return f.read()
 
 
-def _build_concept_prompt(data: dict) -> str:
-    """Prompt that uses reviewed_transcript as the single narrative source."""
-    subject = data.get("subject", "Unknown Topic")
-    lecture_number = data.get("lecture_number", "?")
-    transcript = data.get("reviewed_transcript", "").strip()
+def _build_narration_prompt(
+    narration: str,
+    subject: str = "Unknown Topic",
+    lecture_number: str = "?",
+    reel_type: str = "concept",
+) -> str:
+    """Build a prompt from the voice-over narration.
 
-    if not transcript:
-        raise ValueError(
-            "processed.json has no 'reviewed_transcript'. "
-            "Cannot build a concept reel prompt without it."
-        )
-
-    return (
-        f"Lecture {lecture_number}: {subject}\n\n"
-        f"NARRATION SCRIPT (this is the voice-over that will play alongside your animation):\n"
-        f"\"{transcript}\"\n\n"
-        "Animate exactly what the narration describes — one concept, one clean scene. "
-        "The animation must mirror the narrative arc of the transcript sentence by sentence. "
-        "Keep the total duration tight (30–90 seconds) to match the spoken length."
-    )
-
-
-def _build_example_prompt(data: dict) -> str:
-    """Prompt that animates the first concrete worked example."""
-    subject = data.get("subject", "Unknown Topic")
-    lecture_number = data.get("lecture_number", "?")
-    examples = data.get("examples", [])
-    example_text = examples[0] if examples else "(no example available)"
+    The narration is the SOLE source. The Manim agent must animate exactly
+    what the narrator describes — every color, every object, every action.
+    """
+    reel_label = "Concept Reel" if reel_type == "concept" else "Worked Example Reel"
 
     return (
-        f"Lecture {lecture_number}: {subject} — Worked Example\n\n"
-        f"EXAMPLE TO ANIMATE:\n{example_text}\n\n"
-        "Animate this example step by step with the exact numbers given. "
-        "Show each matrix, each row operation, each intermediate result as a distinct animation step. "
-        "Do NOT summarise — animate every calculation shown in the example. "
-        "Keep the scene focused: one example, one clean visual progression."
+        f"Lecture {lecture_number}: {subject} — {reel_label}\n\n"
+        "─── VOICE-OVER NARRATION (this is your ONLY source) ───\n"
+        "The narrator has already recorded the voice-over below. Each section "
+        "separated by [BEAT] is one narration beat.\n\n"
+        "Your job: create a ManimGL scene that animates EXACTLY what the "
+        "narrator describes, beat by beat.\n\n"
+        f"{narration}\n\n"
+        "─── END NARRATION ───\n\n"
+        "CANVAS: 9:16 PORTRAIT (1080×1920). The FIRST line of construct() "
+        "MUST be `self.frame.set_shape(8.0, 14.222222)` to switch the canvas "
+        "from landscape to portrait. Design all layouts vertically — "
+        "stack elements top-to-bottom, not side-by-side. Use large font sizes "
+        "(≥40). Keep content within x = ±3.5 to avoid clipping.\n\n"
+        "CRITICAL RULES:\n"
+        "1. Each [BEAT] boundary → one self.wait() in your code. "
+        "This creates the pause where the animation waits for the narrator.\n"
+        "2. The animations between self.wait() calls must match the narration "
+        "beat they correspond to — same objects, same actions.\n"
+        "3. The narrator does NOT specify colors — YOU choose them. "
+        "Use the 3Blue1Brown palette: GREEN for i-hat, RED for j-hat, "
+        "YELLOW for highlights, BLUE for grids, PURPLE for special vectors, "
+        "WHITE for text. Be consistent within the reel.\n"
+        "4. If the narrator says 'the grid warps', apply a matrix transformation. "
+        "If they say 'a highlight surrounds the pivot', use SurroundingRectangle.\n"
+        "5. If the narrator mentions specific numbers (e.g., 'matrix two, one, zero, one'), "
+        "use those exact numbers.\n"
+        "6. Every visual detail the narrator mentions MUST appear in the animation. "
+        "Nothing the narrator skips should appear on screen.\n"
+        "7. Keep it tight: one Scene class, one construct() method.\n"
     )
 
 
 class ManimAgent(BaseAgent):
-    """Generates ManimGL animation code for concept and example reels.
+    """Generates ManimGL animation code from voice-over narration.
 
-    Concept reel  — narrative driven by ``reviewed_transcript``.
-    Example reel  — driven by the first entry in ``examples``.
+    The narration drives the animation — every beat in the narration becomes
+    a group of self.play() calls followed by self.wait() in the code.
     """
 
     def __init__(self, **kwargs):
@@ -86,31 +96,27 @@ class ManimAgent(BaseAgent):
             **kwargs,
         )
 
-    async def run_concept_reel(self, data: dict):
-        """Generate a ManimGL script for the concept reel.
-
-        Uses ``reviewed_transcript`` as the narrative guide so the animation
-        stays in sync with the voice-over.
+    async def run_from_narration(
+        self,
+        narration: str,
+        subject: str = "Unknown Topic",
+        lecture_number: str = "?",
+        reel_type: str = "concept",
+    ):
+        """Generate a ManimGL script that animates the given narration.
 
         Args:
-            data: Processed JSON dict; must contain ``reviewed_transcript``.
+            narration: [BEAT]-delimited voice-over text.
+            subject: Lecture subject for context.
+            lecture_number: Lecture number for context.
+            reel_type: 'concept' or 'example'.
 
         Returns:
             RunResult — access ``.output`` for the Python script.
         """
-        prompt = _build_concept_prompt(data)
-        return await self.run(prompt)
-
-    async def run_example_reel(self, data: dict):
-        """Generate a ManimGL script that animates ``examples[0]`` step by step.
-
-        Args:
-            data: Processed JSON dict; uses ``examples[0]``.
-
-        Returns:
-            RunResult — access ``.output`` for the Python script.
-        """
-        prompt = _build_example_prompt(data)
+        prompt = _build_narration_prompt(
+            narration, subject, lecture_number, reel_type
+        )
         return await self.run(prompt)
 
     # ------------------------------------------------------------------
@@ -118,11 +124,19 @@ class ManimAgent(BaseAgent):
     # ------------------------------------------------------------------
 
     async def run_from_json(self, json_path: str):
-        """Load a processed JSON file and run the concept reel."""
+        """Load a processed JSON file and run a concept reel from its transcript."""
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
-        return await self.run_concept_reel(data)
+        return await self.run_from_dict(data)
 
     async def run_from_dict(self, data: dict):
-        """Run the concept reel from a pre-loaded dict."""
-        return await self.run_concept_reel(data)
+        """Run a concept reel from a pre-loaded dict (legacy)."""
+        transcript = data.get("reviewed_transcript", "").strip()
+        subject = data.get("subject", "Unknown Topic")
+        lecture_number = str(data.get("lecture_number", "?"))
+        return await self.run_from_narration(
+            narration=transcript,
+            subject=subject,
+            lecture_number=lecture_number,
+            reel_type="concept",
+        )
