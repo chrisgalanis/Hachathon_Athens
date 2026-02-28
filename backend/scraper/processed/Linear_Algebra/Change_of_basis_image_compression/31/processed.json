@@ -1,0 +1,29 @@
+{
+  "lecture_number": 31,
+  "subject": "Change of basis; image compression",
+  "concepts": [
+    "Change of basis: Converting a vector or linear transformation from one coordinate system (basis) to another, expressed mathematically as x = Wc, where W contains the new basis vectors as columns and c are the new coefficients. This is fundamental to understanding how the same geometric object can be represented differently depending on choice of basis.",
+    "Image compression: A practical application of change-of-basis that reduces data size by representing images in a basis where most information is concentrated in a small number of coefficients, allowing the rest to be discarded with minimal perceived loss. An image is viewed as a vector in high-dimensional space (e.g., R^262144 for a 512×512 pixel image), and compression involves transforming to a basis where coefficients can be thresholded.",
+    "Fourier basis: A basis used in JPEG compression that includes constant vectors, sinusoidal vectors, and higher-frequency oscillating vectors. Images are broken into 8×8 blocks and each block is transformed into Fourier coefficients, which concentrate image information in low-frequency terms.",
+    "Wavelet basis: An alternative basis for compression that uses vectors with ones, minus ones, and zeros in different patterns (e.g., all ones, alternating ones and minus ones, etc.). Wavelets offer similar compression to Fourier but with a simpler mathematical structure.",
+    "Orthogonal and orthonormal bases: Bases where vectors are perpendicular to each other (orthogonal) or both perpendicular and unit length (orthonormal). For orthonormal bases, the inverse of the transformation matrix equals its transpose (W^{-1} = W^T), enabling fast computation.",
+    "Thresholding: A lossy compression technique where small coefficients in the transformed basis are set to zero because they contribute little to the visual perception of the image, reducing the amount of data needed to store or transmit.",
+    "Linear transformation and matrix representation: A linear transformation T is completely determined by specifying what it does to each basis vector. The matrix A representing T in a given basis has columns formed by expressing T(vi) in terms of the basis vectors.",
+    "Similar matrices: Two matrices A and B represent the same linear transformation T in different bases if and only if they are related by B = M^{-1}AM, where M is the change-of-basis matrix. This means the transformation is basis-independent while its matrix representation is basis-dependent.",
+    "Eigenvector basis: The optimal basis for representing a linear transformation, where the transformation matrix becomes diagonal. Each basis vector is an eigenvector with corresponding eigenvalue on the diagonal, making the transformation's action transparent."
+  ],
+  "examples": [
+    "Image representation as a vector: A 512×512 grayscale image is represented as a vector in R^262144, where each coordinate represents the intensity (0–255) of one pixel.",
+    "JPEG compression workflow: An 8×8 block of 64 pixel values is transformed into 64 Fourier coefficients using a change of basis. Coefficients smaller than a threshold are set to zero. The remaining ~3 coefficients are retained and multiplied by their basis vectors to reconstruct the image, achieving approximately 21:1 compression.",
+    "Wavelet basis example: For 8 dimensions, the basis includes vectors such as (1,1,1,1,1,1,1,1), (1,1,1,1,−1,−1,−1,−1), (1,1,−1,−1,0,0,0,0), etc., creating an orthogonal basis.",
+    "Representing a high-frequency Fourier vector as a wavelet combination: The alternating vector (1,−1,1,−1,1,−1,1,−1) in Fourier basis is represented as the sum of four wavelet basis vectors that isolate single-bit alternations.",
+    "FBI fingerprint compression: Originally, 30 million fingerprints could not be searched in reasonable time due to excessive data. After digitization and compression using a chosen basis (likely wavelets), fingerprint matching became feasible within minutes instead of weeks.",
+    "Matrix representation of a transformation with respect to an eigenvector basis: If v₁, v₂, ..., v₈ are eigenvectors with eigenvalues λ₁, λ₂, ..., λ₈, then the matrix A is diagonal with A = diag(λ₁, λ₂, ..., λ₈).",
+    "Change of basis computation: Given a vector x = [x₁, x₂, ..., x₈]ᵀ in standard basis and a change-of-basis matrix W with eight wavelet vectors as columns, the coefficients in the wavelet basis are c = W^{−1}x."
+  ],
+  "analogy": [
+    "Basis vectors as coordinate system labels: Just as describing a location using latitude/longitude differs from using x/y Cartesian coordinates but describes the same point, representing a vector in different bases uses different numbers but describes the same underlying object.",
+    "Pixel redundancy and compression analogous to repeating information: A blank blackboard represented pixel-by-pixel (all same value) is like repeating the same sentence over and over—highly redundant. A better basis identifies and removes this redundancy, just as summarizing the sentence once saves space.",
+    "Fast multiplication by basis matrix compared to postal delivery: Having a fast multiplication algorithm (like FFT for Fourier or the simple structure of wavelets) is like having an efficient postal system; it determines whether the entire compression scheme is practical."
+  ]
+}

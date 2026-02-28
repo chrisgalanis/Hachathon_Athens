@@ -1,0 +1,30 @@
+{
+  "lecture_number": 6,
+  "subject": "Column space and nullspace",
+  "concepts": [
+    "Vector space: A set of vectors where any two vectors can be added together and the result remains in the set, and any vector can be multiplied by a scalar with the result staying in the set. Equivalently, all linear combinations of vectors in the space remain in the space.",
+    "Subspace: A subset of a vector space that is itself a vector space under the same operations. All subspaces must contain the zero vector, and if two vectors are in a subspace, their sum and any scalar multiple of them must also be in the subspace.",
+    "Column space of a matrix A (denoted C(A)): The set of all linear combinations of the columns of A. It is a subspace of R^m (where m is the number of rows). It represents all possible vectors that can be expressed as Ax for some choice of x.",
+    "Null space of a matrix A (denoted N(A)): The set of all vectors x that satisfy Ax = 0. It is a subspace of R^n (where n is the number of columns). Solutions to homogeneous systems always form a subspace because the zero vector is always a solution.",
+    "Connection between column space and solvability: The system Ax = b has a solution if and only if b is in the column space of A. This is because column space contains all possible outputs Ax, so b must be expressible as a linear combination of A's columns.",
+    "Linear independence and pivot columns: A set of columns is linearly dependent if one column can be expressed as a linear combination of others. Pivot columns are those that are linearly independent and form a basis for the column space; non-pivot columns are dependent and don't contribute new dimensions.",
+    "Union of subspaces is not necessarily a subspace: If S and T are subspaces, their union S ∪ T is generally not a subspace because adding a vector from S to a vector from T may produce a vector outside the union.",
+    "Intersection of subspaces is always a subspace: If S and T are subspaces, then S ∩ T is always a subspace because any vector satisfying the requirements of both S and T also satisfies closure under addition and scalar multiplication."
+  ],
+  "examples": [
+    "Plane through the origin in R³ as a subspace: A plane through (0,0,0) is a subspace because adding two vectors on the plane yields another vector on the plane, and scaling any vector on the plane keeps it on the plane.",
+    "Line through the origin in R³ as a subspace: A line passing through the origin is a subspace; any multiple of a vector on the line stays on the line, and adding two vectors on the line stays on the line.",
+    "Union of a plane and a line is not a subspace: If P is a plane and L is a line (both through origin) and they intersect only at the origin, then P ∪ L is not a subspace because a vector from P plus a vector from L generally lands outside both sets.",
+    "Intersection of plane and line as a subspace: If plane P and line L intersect only at the origin, then P ∩ L = {0}, which is a subspace (the trivial subspace containing only the zero vector).",
+    "Column space of a 4×3 matrix with columns [1,2,3,4]ᵀ, [1,1,1,1]ᵀ, [2,3,4,5]ᵀ: The column space is a 2-dimensional subspace of R⁴ because the third column equals the sum of the first two (it is linearly dependent), so only two of the three columns are pivot columns.",
+    "Solvability example: For the system Ax = b where A is 4×3, the equation has a solution if and only if b is in the column space of A. For instance, b = [1,2,3,4]ᵀ (the first column itself) gives solution x = [1,0,0]ᵀ.",
+    "Null space as a line in R³: For the 4×3 matrix example, the null space N(A) consists of all vectors of the form c[1,1,-1]ᵀ for any scalar c. This is a 1-dimensional line through the origin.",
+    "Solutions to non-homogeneous system don't form a subspace: For Ax = [1,2,3,4]ᵀ with solution x₀ = [1,0,0]ᵀ, adding another solution x₁ = [0,-1,1]ᵀ gives x₀ + x₁ = [1,-1,1]ᵀ. The zero vector is not a solution, so solutions form a line that does not pass through the origin, which is not a subspace."
+  ],
+  "analogy": [
+    "Subspace as a constrained subset: A subspace is like a perfectly balanced system where every operation (adding or scaling) respects the structure—similar to how a spinning ice skater's rotation continues to work within the constraints of their motion.",
+    "Column space as 'what we can reach': The column space represents all the targets (vectors b) we can hit using the matrix A, like all the points reachable by moving along the column directions.",
+    "Null space as 'invisible directions': The null space represents directions in which we can move without changing the output (staying at zero), like invisible or 'deaf' directions that the matrix cannot distinguish.",
+    "Union vs. intersection analogy: Taking the union of two subspaces is like combining two languages—you get words from both but not necessarily valid sentences using mixed words. Intersection is like finding words common to both languages, which naturally preserves all language rules."
+  ]
+}

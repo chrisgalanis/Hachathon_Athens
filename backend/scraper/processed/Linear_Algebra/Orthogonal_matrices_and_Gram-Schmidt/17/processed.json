@@ -1,0 +1,27 @@
+{
+  "lecture_number": 17,
+  "subject": "Orthogonal matrices and Gram-Schmidt",
+  "concepts": [
+    "Orthonormal vectors and matrices: A set of vectors q₁, q₂, ..., q_n is orthonormal if q_i^T q_j = 0 for i ≠ j (orthogonal) and q_i^T q_i = 1 for all i (unit length). When these are arranged as columns of a matrix Q, we have Q^T Q = I.",
+    "Orthogonal matrices (square case): When Q is square with orthonormal columns, Q^T Q = I implies Q^T = Q⁻¹. For rectangular Q (m×n with n < m), Q^T Q = I but QQ^T ≠ I. Note: convention uses 'orthogonal' only for square matrices with orthonormal columns.",
+    "Projection with orthonormal basis: If Q has orthonormal columns, the projection matrix onto C(Q) is P = QQ^T (or P = I if Q is square). The projection formula simplifies from the general P = A(A^T A)⁻¹A^T because Q^T Q = I, eliminating the inverse.",
+    "Normal equations with orthonormal basis: The least squares solution x̂ to Ax = b becomes trivial when A = Q is orthonormal: Q^T Qx̂ = Q^T b simplifies to x̂ = Q^T b, so the i-th component is simply q_i^T b (a dot product, no matrix inversion).",
+    "Gram-Schmidt orthogonalization: Given independent vectors a, b, c, ..., the algorithm produces orthogonal vectors by: (1) A = a (keep first), (2) B = b - (A^T b)/(A^T A) A (remove projection onto A), (3) C = c - (A^T c)/(A^T A) A - (B^T c)/(B^T B) B (remove projections). Then normalize by dividing by length to get orthonormal vectors q₁, q₂, q₃.",
+    "QR factorization: For any matrix A with independent columns, Gram-Schmidt yields A = QR, where Q has orthonormal columns and R is upper triangular. R contains the coefficients from Gram-Schmidt: R_ij = q_i^T a_j, and the upper triangular structure arises because later q vectors are orthogonal to earlier a vectors.",
+    "Orthogonal matrix examples: (1) Permutation matrices (e.g., P swapping rows) are orthogonal. (2) Rotation matrices like [[cos θ, -sin θ], [sin θ, cos θ]]. (3) Hadamard matrices (orthogonal matrices with ±1 entries), used in signal processing. (4) Fourier matrices (complex orthogonal matrices).",
+    "Why orthonormal bases are important: Orthonormal bases prevent numerical overflow/underflow, simplify all calculations (projections, least squares, solving linear systems), and are the foundation of modern numerical linear algebra."
+  ],
+  "examples": [
+    "2×2 orthogonal rotation matrix: Q = [[cos θ, -sin θ], [sin θ, cos θ]]. For θ = π/4, Q = (1/√2)[[1, -1], [1, 1]], which has Q^T Q = I.",
+    "2×2 normalized matrix from ones and minus ones: Starting with [[1, 1], [1, -1]], normalize each column by dividing by √2 to get Q = (1/√2)[[1, 1], [1, -1]]. This is orthogonal.",
+    "Gram-Schmidt example: Given a = [1, 1, 1]^T and b = [1, 0, 2]^T. Compute: A = a. Then B = b - (A^T b)/(A^T A) A = [1, 0, 2]^T - (3/3)[1, 1, 1]^T = [0, -1, 1]^T. Check: A^T B = 0 + (-1) + 1 = 0 ✓. Normalize: q₁ = (1/√3)[1, 1, 1]^T, q₂ = (1/√2)[0, -1, 1]^T.",
+    "QR factorization for the above example: A = [[1, 1], [1, 0], [1, 2]] = Q R, where Q = [[1/√3, 0], [1/√3, -1/√2], [1/√3, 1/√2]] and R = [[√3, (1/√3 + 2/√3)], [0, √2]] = [[√3, √3], [0, √2]] (up to scaling/normalization details).",
+    "Hadamard matrix (4×4): H₄ = (1/2)[[1, 1, 1, 1], [1, -1, 1, -1], [1, 1, -1, -1], [1, -1, -1, 1]]. Each row and column is orthogonal to others, and rows/columns have length 1 after dividing by 2.",
+    "Projection example: Given Q with orthonormal columns, P = QQ^T projects any vector b onto C(Q). The projected vector is P b = Q(Q^T b), where Q^T b are the coordinates in the orthonormal basis."
+  ],
+  "analogy": [
+    "Orthonormal basis as 'ideal coordinates': An orthonormal basis is like using perfectly aligned axes (all at 90°) to describe space, making all calculations transparent. Standard basis coordinates are aligned, but general bases are skewed, requiring matrix inversions.",
+    "Gram-Schmidt as 'refinement': Gram-Schmidt refines a basis by eliminating 'crosstalk'—removing each vector's component in previous directions, leaving only the independent part. It's like separating mixed signals into pure tones.",
+    "QR factorization as 'organized elimination': Just as A = LU organizes Gaussian elimination, A = QR organizes Gram-Schmidt, with Q holding the cleaned-up orthonormal vectors and R tracking the original vectors' coordinates in the new basis."
+  ]
+}

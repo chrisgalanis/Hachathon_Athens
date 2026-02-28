@@ -1,0 +1,32 @@
+{
+  "lecture_number": 34,
+  "subject": "Final course review",
+  "concepts": [
+    "Rank and solvability: A system Ax = b has no solution if and only if b is not in the column space of A, which occurs when rank(A) < m (where m is the number of rows). A unique solution exists when rank(A) = n (full column rank, meaning columns are linearly independent).",
+    "Determinant properties: For non-square matrices A (m×n with m ≠ n), det(AᵀA) and det(AAᵀ) are not equal in general, unlike the square matrix case where det(BA) = det(AB). This is because AᵀA is n×n while AAᵀ is m×m, and one or both may not be invertible.",
+    "Invertibility of AᵀA: The matrix AᵀA is invertible if and only if A has full column rank (rank(A) = n). When this holds, AᵀA is symmetric, positive definite, and invertible.",
+    "Matrix-vector multiplication interpretation: For Ax where A has columns v₁, v₂, ..., vₙ, the product equals x₁v₁ + x₂v₂ + ... + xₙvₙ. This is the fundamental principle underlying projection matrices and least squares.",
+    "Dependence and null space: If columns v₁, v₂, v₃ satisfy v₁ - v₂ + v₃ = 0, then the vector [1, -1, 1]ᵀ lies in the null space of A, meaning non-unique solutions exist for any right-hand side.",
+    "Orthonormal projections: If v₁, v₂, v₃ are orthonormal, the projection of v₃ onto the plane spanned by v₁ and v₂ is the zero vector (no component of v₃ lies in that plane).",
+    "Markov matrices: A matrix M where each column sums to 1. Key properties: (1) λ = 1 is always an eigenvalue with eigenvector the all-ones vector; (2) other eigenvalues satisfy |λ| < 1, so powers M^k converge to a rank-1 matrix whose columns are the steady-state distribution; (3) the steady state is found by solving (M - I)x = 0.",
+    "Steady-state behavior: For a Markov process starting from u(0), the long-term behavior u(∞) = c₂ x₂ depends only on the eigenvector x₂ corresponding to λ = 1. The coefficient c₂ is determined by the initial condition, often constrained by conservation laws (e.g., total population).",
+    "Projection matrix formula: The projection matrix P onto the column space of A is P = A(AᵀA)⁻¹Aᵀ. For a 1D projection onto vector a, P = aaᵀ/(aᵀa).",
+    "Diagonalization formula: A = SΛS⁻¹, where S is the matrix of eigenvectors and Λ is the diagonal matrix of eigenvalues. This formula allows reconstructing a matrix from its eigenvalues and eigenvectors.",
+    "Least squares and projection: The least squares solution x̂ = (AᵀA)⁻¹Aᵀb minimizes ||Ax - b||. The vector Ax̂ is the orthogonal projection of b onto the column space of A.",
+    "Orthogonality in least squares: The residual (b - Ax̂) is orthogonal to the column space of A, i.e., Aᵀ(b - Ax̂) = 0. This characterizes the least squares solution.",
+    "Symmetric positive definite matrices: BᵀB is always symmetric and positive semi-definite. It is positive definite if and only if B has full column rank. Non-symmetric matrices cannot be expressed as BᵀB for any real B.",
+    "Orthogonal eigenvectors beyond symmetric matrices: Symmetric matrices always have orthogonal eigenvectors (with real eigenvalues). Skew-symmetric matrices (Aᵀ = -A) and orthogonal matrices (QᵀQ = I) also have orthogonal eigenvectors (though eigenvalues may be complex)."
+  ],
+  "examples": [
+    "3×n matrix with rank 2: A = [[0, 1], [1, 0], [0, 1]] (3×2 after removing the third row, or with appropriate choice). Ax = [0, 1, 0]ᵀ has a unique solution, but Ax = [1, 0, 0]ᵀ has no solution, showing r < m and r = n.",
+    "Markov matrix example: A = [[0.2, 0.4, 0.4], [0.4, 0.4, 0.2], [0.4, 0.3, 0.4]] with eigenvalues 1, 0, -0.2. Starting from u(0) = [0, 10, 0]ᵀ, the steady state is u(∞) = [3, 3, 4]ᵀ, found by solving (A - I)x = 0 and scaling by total population 10.",
+    "Projection matrix formula: For A = [[4], [-3]] (1D case), P = (1/25)[[16, -12], [-12, 9]].",
+    "Least squares example: A = [[1, 0], [1, 1], [1, 2]], b = [3, 4, 1]. Solution: AᵀA = [[3, 3], [3, 5]], (AᵀA)⁻¹Aᵀb = [11/3, -1]ᵀ. Projection: Ax̂ = [11/3, 8/3, 5/3]ᵀ.",
+    "Orthogonal vector to columns: A = [[1, 0], [1, 1], [1, 2]] has b = [1, -2, 1]ᵀ orthogonal to both columns, so Aᵀb = 0 and the least squares solution is [0, 0]ᵀ.",
+    "Non-symmetric matrix with orthogonal eigenvectors: Q = [[cos θ, -sin θ], [sin θ, cos θ]] (rotation) is orthogonal with complex orthogonal eigenvectors."
+  ],
+  "analogy": [
+    "Markov steady state as equilibrium: The eigenvector for λ = 1 in a Markov matrix represents the population distribution at equilibrium, where no further change occurs despite individual movement between states.",
+    "Least squares as geometric projection: Finding the least squares solution is equivalent to dropping a perpendicular from b to the column space of A, just as projecting a point onto a plane in 3D space."
+  ]
+}

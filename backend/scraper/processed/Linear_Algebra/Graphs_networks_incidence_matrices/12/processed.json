@@ -1,0 +1,31 @@
+{
+  "lecture_number": 12,
+  "subject": "Graphs, networks, incidence matrices",
+  "concepts": [
+    "Incidence matrix of a graph: An m×n matrix A where m is the number of edges and n is the number of nodes. Each row corresponds to an edge with entries -1 (starting node), +1 (ending node), and 0 (non-incident nodes). The incidence matrix encodes the graph's connectivity structure and is inherently sparse (exactly two non-zeros per row).",
+    "Null space of incidence matrix A: Contains vectors representing constant potentials at nodes. The null space has dimension 1 with basis vector [1, 1, ..., 1]ᵀ, representing that potential is only determined up to an arbitrary constant. Physically, only potential differences matter (they drive currents), not absolute potentials.",
+    "Rank of incidence matrix: For a graph with n nodes and m edges, rank(A) = n - 1 when the graph is connected. This is because one node must be grounded (its potential fixed) to eliminate the arbitrary constant in the null space.",
+    "Null space of Aᵀ (Kirchhoff's Current Law): Contains solutions to Aᵀy = 0, representing current distributions that satisfy conservation of charge (current in equals current out at each node). The null space has dimension m - r = m - (n-1) = m - n + 1, equal to the number of independent loops in the graph.",
+    "Kirchhoff's Current Law (KCL): The equation Aᵀy = 0 expressing that the net current at each node is zero. Each equation corresponds to a node; for node i, it sums currents on edges incident to that node with appropriate signs based on direction.",
+    "Loops and linear dependence: Independent loops in a graph correspond to linearly independent vectors in the null space of Aᵀ. Each loop represents a closed circuit around which current can flow without violating Kirchhoff's law. Dependencies among columns of A correspond to loops formed by the associated edges.",
+    "Tree (acyclic graph): A connected graph with no loops, having exactly n - 1 edges for n nodes. The columns of A corresponding to edges in a spanning tree are linearly independent (pivot columns), while non-tree edges correspond to dependent columns.",
+    "Euler's formula for graphs: nodes - edges + loops = 1, or equivalently, n - m + (m - n + 1) = 1. This topological formula relates three fundamental quantities of any connected graph and is proved using the rank-nullity theorem applied to the incidence matrix.",
+    "Ohm's Law in network form: y = CE, where E = Ax are potential differences, y are currents, and C is the conductance matrix (diagonal, with conductance of each edge on the diagonal). This relates potential differences to current flow.",
+    "Basic applied mathematics framework: Three coupled equations: (1) E = Ax (potential differences from node potentials), (2) y = CE (currents from potential differences via Ohm's Law), (3) Aᵀy = F - f (Kirchhoff's law with source terms F). These represent a complete model for electrical networks in equilibrium.",
+    "Symmetric positive definite matrices: AᵀCA is always symmetric and positive semi-definite. For a connected graph with non-zero conductances, it is positive definite, making it invertible. This matrix appears in the steady-state equations for network problems.",
+    "Graph structure and sparsity: Real matrices from applications (like incidence matrices) have sparse, structured form exploitable for efficient computation. Each edge contributes only two non-zeros to the incidence matrix, making it highly sparse compared to dense random matrices."
+  ],
+  "examples": [
+    "Incidence matrix for 4-node, 5-edge graph: A = [[-1, 1, 0, 0], [0, -1, 1, 0], [-1, 0, 1, 0], [-1, 0, 0, 1], [0, 0, -1, 1]] (5×4 matrix). Edges are: 1→2, 2→3, 1→3, 1→4, 3→4.",
+    "Null space of A: basis vector [1, 1, 1, 1]ᵀ represents constant potential everywhere, showing potentials are determined only up to a constant.",
+    "Kirchhoff's Current Law for same graph: Aᵀy = 0 yields 5 equations (one per edge): -y₁-y₃-y₄ = 0 (node 1), y₁-y₂ = 0 (node 2), y₂+y₃-y₅ = 0 (node 3), y₄+y₅ = 0 (node 4). Basis for null space: y¹ = [1, 1, -1, 0, 0]ᵀ (loop 1-2-3-1) and y² = [0, 0, 0, -1, 1]ᵀ (loop 1-4-3-1).",
+    "Spanning tree: Three pivot columns (e.g., edges 1, 2, 4) form a tree on the graph with no loops. The 5-edge, 4-node graph has m - n + 1 = 5 - 4 + 1 = 2 independent loops.",
+    "Euler's formula verification: For the 4-node, 5-edge, 2-loop graph: 4 - 5 + 2 = 1 ✓."
+  ],
+  "analogy": [
+    "Incidence matrix as derivative operator: Just as the derivative measures the rate of change along a domain, the incidence matrix A measures the 'difference' (change in potential) across each edge, mapping node potentials to edge potential differences.",
+    "Kirchhoff's law as conservation: Like mass conservation in fluid dynamics or charge conservation in physics, Kirchhoff's current law enforces that currents balance at each node—what goes in must come out.",
+    "Trees as rigid structures: A spanning tree is to a graph what a basis is to a vector space—a minimal spanning set. Just as any vector can be expressed uniquely using a basis, any cycle in a graph can be expressed as a combination of fundamental cycles using tree edges.",
+    "Networks and electrical circuits: The framework (node potentials → edge potentials → edge currents → current balance) mirrors the physics: voltage drives current, and current conservation maintains equilibrium."
+  ]
+}

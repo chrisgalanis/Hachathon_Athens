@@ -1,0 +1,30 @@
+{
+  "lecture_number": 24,
+  "subject": "Markov matrices; fourier series",
+  "concepts": [
+    "Markov matrix: A matrix A where (1) all entries are non-negative (a_ij ≥ 0), and (2) all columns sum to 1 (∑_i a_ij = 1). These matrices model systems where probability flows among states are conserved (e.g., population movements, random walks).",
+    "Eigenvalue one in Markov matrices: Every Markov matrix has λ = 1 as an eigenvalue. This follows because if columns sum to 1, then columns of A - I sum to 0, making the matrix singular. The vector of all ones is in the left null space of A - I.",
+    "All other eigenvalues smaller than one: For a Markov matrix, all eigenvalues except λ = 1 satisfy |λ| < 1. As powers A^k are applied, terms with these smaller eigenvalues decay exponentially to zero.",
+    "Steady state of Markov chains: The long-term behavior u(∞) is determined by the eigenvector x₁ corresponding to λ = 1, scaled by the initial condition. All components of this eigenvector are non-negative, ensuring the steady state is physically meaningful (non-negative populations).",
+    "Powers of Markov matrices: For u(k+1) = Au(k), the solution is u(k) = c₁··u^ℝk x₁ + c₂·(λ₂)^k x₂ + ... where (c_i) are determined by u(0). Since |λ_i| < 1 for i > 1, u(k) → c₁ x₁ exponentially fast.",
+    "Eigenvalues of A and A^T are identical: det(A - λI) = det((A - λI)^T) = det(A^T - λI), so A and A^T share the same eigenvalues. However, eigenvectors differ (left vs. right eigenvectors).",
+    "Fourier series as function expansion: A periodic function f(x) with period 2π can be expanded as f(x) = a₀ + a₁cos(x) + b₁sin(x) + a₂cos(2x) + b₂sin(2x) + ... in an infinite-dimensional function space.",
+    "Orthogonality of sine and cosine functions: The functions {1, cos(x), sin(x), cos(2x), sin(2x), ...} form an orthogonal set with respect to the inner product <f,g> = ∫_0^{2π} f(x)g(x)dx. For example, ∫_0^{2π} sin(x)cos(x)dx = 0 and ∫_0^{2π} cos(nx)cos(mx)dx = 0 for n ≠ m.",
+    "Inner product for functions: For functions f and g, the inner product is <f,g> = ∫_0^{2π} f(x)g(x)dx (for 2π-periodic functions). This generalizes the vector dot product ∑ v_i w_i to a continuous setting.",
+    "Fourier coefficients: The coefficient a_n of cos(nx) in a Fourier series is a_n = (1/π) ∫_0^{2π} f(x)cos(nx)dx. This is obtained by taking the inner product of f(x) with cos(nx), using the orthogonality of the basis functions to isolate each term.",
+    "Projection onto orthonormal basis in function space: If {q₁, q₂, ...} is an orthonormal basis (here, normalized sine and cosine functions), then f(x) = ∑_n (f,q_n)q_n(x), where (f,q_n) is the inner product giving the coefficient of q_n."
+  ],
+  "examples": [
+    "2×2 Markov matrix for population movement: A = [[0.9, 0.2], [0.1, 0.8]]. Eigenvalues are λ = 1 (trace 1.7 minus λ₁) and λ = 0.7. Eigenvectors are [2, 1]^T for λ = 1 and [1, -1]^T for λ = 0.7. If u(0) = [0, 1000]^T (all in Massachusetts), then u(∞) = (1000/3, 2000/3) after scaling.",
+    "3×3 Markov matrix example: A = [[0.1, 0.01, 0.3], [0.2, 0.99, 0.3], [0.7, 0, 0.4]] has eigenvalue 1 by the column-sum property. To show singularity of A - I: columns sum to 0, rows are dependent (sum to zero row), so matrix is singular.",
+    "Fourier series of constant function: f(x) = 1 has Fourier expansion 1 = 1 + 0·cos(x) + 0·sin(x) + ... The coefficient a₀ = (1/π)∫_0^{2π} 1·cos(0)dx = (1/π)· 2π = 2 (properly normalized, a₀/2 = 1 for standard conventions).",
+    "Orthogonality check: ∫_0^{2π} sin(x)cos(x)dx = (1/2)∫_0^{2π} sin(2x)dx = 0 (by substitution u = 2x, result cycles over one period). Similarly, ∫_0^{2π} cos²(x)dx = π (squared cosine).",
+    "Markov chain convergence: Starting from u(0) = [0, 1000]^T in the 2×2 example, after k steps: u(k) = (1000/3)[2,1]^T + (2000/3)(0.7)^k[1,-1]^T. As k → ∞, the (0.7)^k term vanishes, leaving steady state (2000/3, 1000/3).",
+    "Fourier coefficient computation: For f(x) = x (on [0, 2π]), a₁ = (1/π)∫_0^{2π} x cos(x)dx. Using integration by parts, this yields a specific non-zero value, showing the presence of cos(x) in the expansion of f(x) = x."
+  ],
+  "analogy": [
+    "Markov matrices as conservation laws: Just as total population is conserved in a column-stochastic matrix (columns sum to 1), total probability is conserved in random walks. The steady state is the long-term balance when all transient behavior decays.",
+    "Fourier series as infinite-dimensional projection: Just as a vector is expressed as c¹v¹ + c²v² + ... in a finite orthonormal basis, a function is expressed as a₀ + a₁cos(x) + b₁sin(x) + ... in an infinite orthonormal basis of functions.",
+    "Eigenvalue λ = 1 as the 'immortal' component: In Markov chains, the eigenvector for λ = 1 never decays (1^k = 1 for all k), while components with |λ| < 1 decay. The steady state is what remains when everything transient is gone."
+  ]
+}

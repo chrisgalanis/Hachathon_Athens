@@ -1,0 +1,32 @@
+{
+  "lecture_number": 27,
+  "subject": "Positive definite matrices and minima",
+  "concepts": [
+    "A symmetric matrix A is positive definite if and only if x^T Ax > 0 for all non-zero vectors x; this is the fundamental definition and can be verified through multiple equivalent tests.",
+    "A symmetric matrix is positive definite if and only if all its eigenvalues are positive; this provides an eigenvalue test for positive definiteness.",
+    "A symmetric matrix is positive definite if and only if all leading principal minors (determinants of upper-left k×k submatrices) are positive; this is the determinant test.",
+    "A symmetric matrix is positive definite if and only if all its pivots (from Gaussian elimination without row swaps) are positive; this is the pivot test.",
+    "Completing the square expresses a quadratic form x^T Ax as a sum of squares with positive pivot coefficients: A = LL^T where L contains the multipliers and pivots from elimination; positive pivots guarantee a positive sum of squares.",
+    "The quadratic form x^T Ax can be written as a sum of squares if and only if the matrix is positive definite; for example, 2x₁² + 2x₂² + 2x₃² − 2x₁x₂ − 2x₂x₃ equals 2(x₁ − x₂/2)² + (3/2)(x₂ − 2x₃/3)² + (4/3)x₃² when completed.",
+    "A function f(x) has a minimum at a critical point if and only if its Hessian matrix (matrix of second partial derivatives) is positive definite; this generalizes the single-variable calculus condition that the second derivative must be positive.",
+    "The graph of a positive definite quadratic form is a paraboloid (bowl shape) that opens upward with a minimum at the origin; level sets at height c form ellipsoids (or ellipses in 2D).",
+    "The ellipsoid defined by x^T Ax = 1 has principal axes in the directions of the eigenvectors of A, with lengths inversely proportional to the square roots of the corresponding eigenvalues.",
+    "For a symmetric matrix A, the spectral decomposition A = Qλ Q^T shows that A is positive definite if and only if all diagonal entries of λ (the eigenvalues) are positive.",
+    "A symmetric matrix is positive semidefinite if x^T Ax ≥ 0 for all x, with equality only at x = 0 if the matrix has rank deficiency; this occurs when at least one eigenvalue equals zero and the rest are positive.",
+    "Completing the square reveals the connection between elimination (pivot operations) and the sum-of-squares representation: the pivots appear as coefficients of the squared terms, and the multipliers from elimination appear within the squares."
+  ],
+  "examples": [
+    "The 2×2 matrix [[2,6],[6,18]] with the critical threshold: at c=18 it is positive definite (determinant = 4 > 0, pivots are 2 and 18/2 = 9 > 0), but at c=7 it is not positive definite (determinant = −22 < 0), and for c=18 the quadratic form 2x₁² + 12x₁x₂ + 18x₂² completes to 2(x₁ + 3x₂)² + 0·y² showing the borderline case.",
+    "The quadratic form 2x₁² + 2x₂² + 2x₃² − 2x₁x₂ − 2x₂x₃ completes to 2(x₁ − x₂/2)² + (3/2)(x₂ − 2x₃/3)² + (4/3)x₃², showing all positive pivots (2, 3/2, 4/3) multiply the squared terms.",
+    "For the matrix A = [[2,−1,0],[−1,2,−1],[0,−1,2]], the determinants of leading principal minors are 2, 3, and 4, all positive, confirming positive definiteness; the eigenvalues are 2−√2 ≈ 0.586, 2, and 2+√2 ≈ 3.414 (all positive).",
+    "The ellipse defined by 2x₁² + 12x₁x₂ + 20x₂² = 1 (positive definite case) is a closed oval with principal axes aligned with eigenvectors and semi-axes lengths determined by 1/√λ₁ and 1/√λ₂.",
+    "The saddle surface from the non-positive-definite form 2x₁² + 12x₁x₂ + 7x₂² (determinant = −22 < 0) produces a hyperbola when sectioned at height 1, confirming the indefinite nature.",
+    "The function f(x,y) = 2x² + 12xy + 20y² has its Hessian matrix equal to [[4,12],[12,40]], which is positive definite (eigenvalues > 0), guaranteeing a minimum at (0,0) with bowl-shaped graph.",
+    "A 3×3 fingerprint-compression or signal-processing problem might use the matrix [[2,−1,0],[−1,2,−1],[0,−1,2]] (tridiagonal, symmetric, positive definite) whose eigenvalues 2−√2, 2, 2+√2 determine the principal axis lengths of the corresponding 3D ellipsoid."
+  ],
+  "analogy": [
+    "A positive definite matrix is like a rubber bowl: no matter which direction you move away from the bottom (the origin), the surface rises; this geometric interpretation extends the single-variable calculus notion of a function with a positive second derivative.",
+    "Completing the square for a quadratic form is analogous to Gaussian elimination: the pivots from elimination become the coefficients outside the squared terms, and the multipliers from elimination appear inside the squares.",
+    "The ellipsoid surface x^T Ax = 1 from a positive definite matrix is analogous to a stretched or squeezed sphere: an eigenvector basis reveals the principal axes (directions of stretching), and the eigenvalues determine the degree of stretch along each axis."
+  ]
+}

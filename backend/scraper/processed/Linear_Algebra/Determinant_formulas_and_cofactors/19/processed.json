@@ -1,0 +1,28 @@
+{
+  "lecture_number": 19,
+  "subject": "Determinant formulas and cofactors",
+  "concepts": [
+    "Big formula for determinant: The determinant of an n×n matrix A is the sum of n! terms, each being a product of exactly one entry from each row and each column. Each term is ±a₁α·a₂β·a₃γ·...·aₙω, where (α,β,γ,...,ω) is a permutation of (1,2,3,...,n), and the sign is + if the permutation is even (requires an even number of row swaps to reach the identity) and − if odd.",
+    "Permutation and sign convention: A permutation is even if it requires an even number of transpositions to reach the identity permutation, giving a + sign in the determinant formula. A permutation is odd if it requires an odd number of transpositions, giving a − sign. For example, permutation (4,3,2,1) is even (two swaps); (3,2,1,4) is odd (one swap).",
+    "Cofactor of entry aᵢⱼ: The cofactor Cᵢⱼ is (−1)^(i+j) times the determinant of the (n−1)×(n−1) submatrix obtained by deleting row i and column j. The sign rule (−1)^(i+j) creates a checkerboard pattern of + and − signs: + when i+j is even, − when i+j is odd.",
+    "Cofactor formula (cofactor expansion): The determinant of A can be computed by expanding along any row i (or column j) using det(A) = Σⱼ aᵢⱼ·Cᵢⱼ (row expansion) or det(A) = Σᵢ aᵢⱼ·Cᵢⱼ (column expansion). This reduces an n×n determinant to n cofactor determinants of size (n−1)×(n−1).",
+    "Minor vs. cofactor: A minor Mᵢⱼ is simply the determinant of the submatrix obtained by deleting row i and column j. A cofactor Cᵢⱼ is the minor with a sign attached: Cᵢⱼ = (−1)^(i+j)·Mᵢⱼ.",
+    "Derivation of 2×2 determinant formula: Using linearity (property 3) and row exchange (property 2), the 2×2 determinant decomposes as: det([a b; c d]) = ad − bc. This is obtained by splitting rows to isolate the diagonal and anti-diagonal terms.",
+    "Verification of identity matrix determinant: For the identity matrix, the big formula yields det(I) = 1 because only the permutation (1,2,...,n) contributes a non-zero term (the product of diagonal ones), and this permutation is even, giving + 1.",
+    "Relationship between n×n, (n−1)×(n−1), and (n−2)×(n−2) determinants: For certain structured matrices, cofactor expansion reveals recursive relationships. For example, a tridiagonal matrix of ones satisfies det(Aₙ) = det(Aₙ₋₁) − det(Aₙ₋₂), creating a sequence of determinants that may be periodic.",
+    "Zero determinant from singular matrices: If a matrix has a column or row of zeros, or if two rows are identical, the determinant is zero because every term in the big formula requires one factor from each row and column, making it impossible to form non-zero products when these conditions hold."
+  ],
+  "examples": [
+    "2×2 determinant: det([a b; c d]) = ad − bc. This arises from permutation (1,2) giving ad with a + sign, and permutation (2,1) giving −bc with a − sign.",
+    "3×3 determinant expansion: det(A) involves 6 = 3! terms with factors like a₁₁a₂₂a₃₃ (permutation 1-2-3, even, +), a₁₂a₂₁a₃₃ (permutation 2-1-3, odd, −), a₁₂a₂₃a₃₁ (permutation 2-3-1, even, +), etc., grouped into three pairs based on which column element is chosen from row 1.",
+    "Cofactor expansion of 2×2: det([a b; c d]) = a·C₁₁ + b·C₁₂, where C₁₁ = d (the cofactor of a), and C₁₂ = −c (the cofactor of b, with − sign because 1+2 = 3 is odd). This gives ad − bc.",
+    "Cofactor expansion of 3×3 along row 1: det(A) = a₁₁·C₁₁ + a₁₂·C₁₂ + a₁₃·C₁₃, where C₁₁ = det([a₂₂ a₂₃; a₃₂ a₃₃]) (+ sign), C₁₂ = −det([a₂₁ a₂₃; a₃₁ a₃₃]) (− sign), and C₁₃ = det([a₂₁ a₂₂; a₃₁ a₃₂]) (+ sign).",
+    "Tridiagonal matrix Aₙ with ones on main diagonal and ones on adjacent diagonals: A₁ = [1], det(A₁) = 1; A₂ = [1 1; 1 1], det(A₂) = 0; A₃ = [1 1 0; 1 1 1; 0 1 1], det(A₃) = −1; A₄ gives det(A₄) = −1. The sequence of determinants is 1, 0, −1, −1, 0, 1, 1, 0, −1, ... with period 6.",
+    "Singular 4×4 matrix example: A matrix with ones and zeros placed strategically yields determinant 0 because all 24 terms in the big formula equal zero, except for two terms (one +1 and one −1) that cancel. This is verified by showing rows satisfy a linear dependence: row 1 − row 2 + row 3 − row 4 = 0."
+  ],
+  "analogy": [
+    "Big formula as exhaustive enumeration: The n! terms in the big determinant formula are like listing all possible ways to select one person from each row and different chairs (columns) at a banquet—the sign (handedness) depends on how the seating is permuted from the natural order.",
+    "Cofactor expansion as recursive reduction: The cofactor formula reduces an n×n determinant problem to n smaller (n−1)×(n−1) problems, similar to how a recursive algorithm breaks a large problem into smaller instances until reaching base cases (1×1 or 2×2).",
+    "Checkerboard sign pattern: The signs in the cofactor matrix (+ − + − ... along rows, − + − + ... along adjacent rows) form a checkerboard pattern, like alternating colors on a chessboard, making it easy to remember which cofactors get + and which get − signs."
+  ]
+}

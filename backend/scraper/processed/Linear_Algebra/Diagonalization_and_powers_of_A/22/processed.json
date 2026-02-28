@@ -1,0 +1,29 @@
+{
+  "lecture_number": 22,
+  "subject": "Diagonalization and powers of A",
+  "concepts": [
+    "Diagonalization of a matrix: If a matrix A has n linearly independent eigenvectors, they can be arranged as columns of a matrix S (the eigenvector matrix) such that A = SΛS⁻¹, where Λ is the diagonal matrix of eigenvalues. This factorization reveals the structure of A and enables efficient computation of powers.",
+    "Eigenvector matrix S and diagonal eigenvalue matrix Λ: When multiplying A by S (whose columns are eigenvectors), the result is AS = SΛ because each column A x_i equals λ_i x_i. Rearranging gives the fundamental equation A = SΛS⁻¹.",
+    "Powers of a diagonalizable matrix: For a diagonalizable matrix, A^k = SΛ^k S⁻¹. The eigenvalues are raised to the k-th power while eigenvectors and their arrangement remain unchanged. This makes computing high powers of A computationally simple.",
+    "Eigenvalues and eigenvectors of A^k: If λ is an eigenvalue of A with eigenvector x, then λ^k is an eigenvalue of A^k with the same eigenvector x. This follows directly from applying A k times: A^k x = λ^k x.",
+    "Stability condition for matrix powers: A^k → 0 as k → ∞ if and only if all eigenvalues satisfy |λ_i| < 1. The matrix powers shrink to zero when every eigenvalue is smaller than 1 in absolute value.",
+    "Algebraic vs. geometric multiplicity: The algebraic multiplicity of an eigenvalue is the number of times it appears as a root of the characteristic polynomial. The geometric multiplicity is the dimension of the eigenspace (null space of A - λI), i.e., the number of linearly independent eigenvectors for that eigenvalue.",
+    "Conditions for diagonalizability: A matrix is diagonalizable if and only if it has n linearly independent eigenvectors. A sufficient condition is having all distinct eigenvalues. When eigenvalues are repeated, diagonalizability depends on whether the geometric multiplicity equals the algebraic multiplicity.",
+    "First-order difference equation (discrete dynamical system): The system u_{k+1} = A u_k describes a sequence of vectors evolving via repeated multiplication by A. The solution is u_k = A^k u_0, which can be solved by expressing u_0 as a linear combination of eigenvectors: u_0 = c_1 x_1 + ... + c_n x_n, then u_k = c_1 λ_1^k x_1 + ... + c_n λ_n^k x_n.",
+    "Long-term behavior of difference equations: For the system u_{k+1} = A u_k, the term corresponding to the eigenvalue with the largest absolute value dominates for large k. If |λ_max| > 1, the solution grows exponentially; if |λ_max| < 1, it decays to zero; if |λ_max| = 1, it remains bounded."
+  ],
+  "examples": [
+    "2×2 matrix with repeated eigenvalue: A = [2, 1; 0, 2] has characteristic polynomial (2-λ)² = 0, so λ = 2 (algebraic multiplicity 2). However, A - 2I = [0, 1; 0, 0] has null space spanned by [1, 0], giving only one eigenvector. Thus geometric multiplicity = 1 < 2 = algebraic multiplicity, so A is not diagonalizable.",
+    "Identity matrix: I_n has all eigenvalues equal to 1 (each repeated n times), but every vector is an eigenvector. The geometric multiplicity equals the algebraic multiplicity for each eigenvalue, so I_n is diagonalizable with S = any invertible matrix and Λ = I.",
+    "Fibonacci recurrence as a difference equation: F(k+2) = F(k+1) + F_k becomes the system u_{k+1} = A u_k where u_k = [F(k+1), F_k]^T and A = [1, 1; 1, 0]. The eigenvalues are λ₁ = (1+√5)/2 ≈ 1.618 (the golden ratio) and λ₂ = (1-√5)/2 ≈ -0.618.",
+    "Fibonacci growth rate: Since λ₁ ≈ 1.618 > 1 and |λ₂| ≈ 0.618 < 1, the sequence F_k ≈ c₁(1.618)^k for large k. This shows Fibonacci numbers grow exponentially at rate approximately 1.618 per step.",
+    "Matrix power example: If A = [2, 0; 0, 0.5] (already diagonal) with eigenvalues 2 and 0.5, then A^100 = [2^100, 0; 0, 0.5^100]. The first term grows exponentially while the second shrinks to zero.",
+    "Diagonalization solving u_k = A^k u_0: Given u_0 = [1, 0]^T and A = [1, 1; 1, 0], express u_0 = c₁ x₁ + c₂ x₂ where x₁, x₂ are eigenvectors. Then u_k = c₁ λ₁^k x₁ + c₂ λ₂^k x₂ automatically follows from the eigenvalue property."
+  ],
+  "analogy": [
+    "Diagonalization as 'changing coordinates': Using S and S⁻¹ is like changing to a coordinate system where the matrix A becomes diagonal Λ, simplifying computations just as polar coordinates simplify circular motion.",
+    "Eigenvalues in difference equations as 'growth rates': Each eigenvalue λ_i represents the growth (or decay) rate of the corresponding eigenvector component over one time step, just as interest rates determine how money compounds in bank accounts.",
+    "Dominant eigenvalue in long-term behavior as 'leading term': For large k, the term c₁ λ₁^k x₁ (for the largest |λ₁|) overwhelms other terms, similar to how the leading term of a polynomial dominates for large arguments.",
+    "Diagonalization vs. LU factorization: While LU (from elimination) is useful for solving Ax = b (static problems), diagonalization A = SΛS⁻¹ reveals the dynamic structure of powers A^k, revealing the 'personality' of the matrix."
+  ]
+}

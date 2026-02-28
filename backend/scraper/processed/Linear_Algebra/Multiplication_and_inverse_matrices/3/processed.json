@@ -1,0 +1,29 @@
+{
+  "lecture_number": 3,
+  "subject": "Multiplication and inverse matrices",
+  "concepts": [
+    "Matrix multiplication entry formula: The (i,j) entry of C = AB is given by c_ij = ∑_k a_ik b_kj. This is the dot product of row i of A with column j of B. Dimensions: if A is m×n and B is n×p, then C is m×p (the middle dimensions must match).",
+    "Matrix multiplication by columns: The j-th column of C = AB is A times the j-th column of B. This shows that columns of C are linear combinations of columns of A, determined by the entries in each column of B.",
+    "Matrix multiplication by rows: The i-th row of C = AB is the i-th row of A times B. This shows that rows of C are linear combinations of rows of B, determined by the entries in each row of A.",
+    "Matrix multiplication by columns times rows: A can be computed as a sum of rank-1 matrices: AB = (col 1 of A) × (row 1 of B) + (col 2 of A) × (row 2 of B) + ... Each column of A times the corresponding row of B produces a rank-1 matrix.",
+    "Block multiplication: Matrices can be partitioned into blocks and multiplied block-by-block, following the same rules as scalar multiplication. The blocks must be compatible in size (inner dimensions match).",
+    "Singular (non-invertible) matrices: A square matrix A is singular if there exists a non-zero vector x such that Ax = 0. This means some linear combination of columns gives the zero column, so the matrix cannot have an inverse. Determinant of a singular matrix is zero.",
+    "Invertible (non-singular) matrices: A square matrix A is invertible if it has an inverse A⁻¹ satisfying A A⁻¹ = A⁻¹ A = I. For square matrices, a left inverse is also a right inverse.",
+    "Column interpretation of matrix inverse: Finding A⁻¹ is equivalent to solving n systems of equations: A (column j of A⁻¹) = column j of I. Each column of I provides a right-hand side.",
+    "Gauss-Jordan elimination: To find A⁻¹, form the augmented matrix [A | I], perform row elimination to transform A to I. After elimination, the right side becomes A⁻¹. The elimination process: compute the product E of all elimination matrices such that EA = I, implying E = A⁻¹.",
+    "Why singular matrices have no inverse: If Ax = 0 for some non-zero x, then multiplying by A⁻¹ (if it existed) would give x = A⁻¹ · 0 = 0, contradicting that x ≠ 0. Therefore, A⁻¹ cannot exist."
+  ],
+  "examples": [
+    "Entry calculation: For C = AB with A = [[1,2],[3,4]] and B = [[5,6],[7,8]], the entry c_34 (if it existed) would be row 3 of A times column 4 of B. For a 2×2 example, c_11 = 1·5 + 2·7 = 19.",
+    "Multiplication by columns: If A = [[1,2],[3,4]] and B = [[5,6],[7,8]], then the first column of C is A × [[5],[7]] = [[5+14],[15+28]] = [[19],[43]].",
+    "Column times row: [2,3,4]ᵀ × [1,6] = [[2,12],[3,18],[4,24]]. This is a 3×2 matrix. All rows are multiples of [1,6], and all columns are multiples of [2,3,4]ᵀ.",
+    "Singular matrix example: A = [[1,3],[2,6]] is singular because the second row is 2 times the first row. The vector x = [3,-1]ᵀ satisfies Ax = 0 (the columns are dependent: 3 times column 1 minus column 2 equals zero). Determinant is 0.",
+    "Invertible matrix example: A = [[1,3],[2,7]] is invertible because its columns are independent (not multiples of each other). Determinant is 7 - 6 = 1 ≠ 0.",
+    "Gauss-Jordan inversion for [[1,3],[2,7]]: Start with [[1,3|1,0],[2,7|0,1]]. Subtract 2 times row 1 from row 2: [[1,3|1,0],[0,1|-2,1]]. Subtract 3 times row 2 from row 1: [[1,0|7,-3],[0,1|-2,1]]. Therefore A⁻¹ = [[7,-3],[-2,1]]. Verify: [[1,3],[ 2,7]] × [[7,-3],[-2,1]] = [[7-6,-3+3],[14-14,-6+7]] = [[1,0],[0,1]]."
+  ],
+  "analogy": [
+    "Matrix multiplication as a function: Multiplying A by different column vectors is like evaluating a function at different points. The matrix encodes a linear transformation, and the result tells you where each input goes.",
+    "Singular matrix as a 'collapsed' matrix: A singular matrix is like a function that maps multiple inputs to zero or the same output—it loses information, so it cannot be inverted. The columns/rows all lie on a lower-dimensional subspace.",
+    "Gauss-Jordan as solving multiple systems simultaneously: Instead of solving Ax = b₁, Ax = b₂, ..., Ax = b_n separately, Gauss-Jordan combines them into one process by augmenting with all right-hand sides at once, saving computation."
+  ]
+}
