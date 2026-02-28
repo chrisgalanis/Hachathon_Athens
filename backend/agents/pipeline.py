@@ -41,15 +41,17 @@ Usage::
 import asyncio
 import json
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 from typing import List
 
 from .manim_agent import ManimAgent
+from .manim_fixer_agent import ManimFixerAgent
 from .voice_agent import VoiceAgent, _split_beats
 
-_MANIMGL = str(Path(sys.executable).parent / "manimgl")
+_MANIMGL = shutil.which("manimgl") or str(Path(sys.executable).parent / "manimgl")
 
 
 # ---------------------------------------------------------------------------
@@ -143,9 +145,28 @@ def _render_manim(script_path: str, scene_class: str, video_dir: str) -> str:
 
 
 def _write_script(code: str, path: str) -> None:
-    """Strip markdown fences if present, then write the Python script."""
+    """Strip markdown fences if present, syntax-check, then write the Python script."""
     if code.startswith("```"):
         code = re.sub(r"^```[^\n]*\n", "", code).rstrip("`").strip()
+    # Remove leading zeros from decimal integer literals (e.g. 098 → 98) that
+    # the LLM sometimes emits inside pixel/data arrays.
+    code = re.sub(r"\b0+([1-9]\d*)\b", r"\1", code)
+    # Fix numpy uniform(low, high, ...) calls where low > high (swap them).
+    def _fix_uniform(m: re.Match) -> str:
+        lo, hi, rest = m.group(1), m.group(2), m.group(3)
+        try:
+            if float(lo) > float(hi):
+                lo, hi = hi, lo
+        except ValueError:
+            pass
+        return f".uniform({lo}, {hi},{rest}"
+    code = re.sub(r"\.uniform\((-?[\d.]+),\s*(-?[\d.]+),(.*?)\)", _fix_uniform, code)
+    try:
+        compile(code, path, "exec")
+    except SyntaxError as exc:
+        raise RuntimeError(
+            f"Generated Manim script has a syntax error (likely truncated): {exc}"
+        ) from exc
     with open(path, "w", encoding="utf-8") as f:
         f.write(code)
 
@@ -335,6 +356,62 @@ def _adjust_wait_times(code: str, beat_audio_durations: List[float]) -> str:
 # Pipeline
 # ---------------------------------------------------------------------------
 
+async def _render_manim_with_retry(
+    code: str,
+    script_path: str,
+    scene_class: str,
+    video_dir: str,
+    fixer: "ManimFixerAgent",
+    max_retries: int = 3,
+) -> tuple[str, str]:
+    """Attempt to render a ManimGL script, fixing AI-generated bugs on failure.
+
+    On each render failure the ManimFixerAgent receives the broken code and
+    the full error traceback, returns corrected code, which is written back to
+    disk and re-rendered. Up to ``max_retries`` fix-and-retry cycles are run
+    before giving up and re-raising the last error.
+
+    Returns:
+        (mp4_path, final_code) — path to the rendered MP4 and the (possibly
+        fixed) code that produced it.
+    """
+    current_code = code
+    last_error: Exception | None = None
+
+    for attempt in range(max_retries + 1):
+        try:
+            mp4 = _render_manim(script_path, scene_class, video_dir)
+            return mp4, current_code
+        except RuntimeError as exc:
+            last_error = exc
+            if attempt >= max_retries:
+                break
+
+            print(
+                f"\n  [ManimFixer] Render failed (attempt {attempt + 1}/{max_retries}). "
+                "Asking AI to fix the script …"
+            )
+            print(f"  Error: {str(exc)[:300]}")
+
+            fixed_code = await fixer.fix(current_code, str(exc))
+
+            # Syntax-check and overwrite the script on disk
+            _write_script(fixed_code, script_path)
+            current_code = fixed_code
+
+            # The scene class name may have changed after a fix (unlikely but safe)
+            try:
+                scene_class = _extract_scene_class(current_code)
+            except ValueError:
+                pass  # keep the old name
+
+            print(f"  [ManimFixer] Script fixed. Retrying render …")
+
+    raise RuntimeError(
+        f"manimgl render failed after {max_retries} fix attempts.\n{last_error}"
+    )
+
+
 class VideoGenerationPipeline:
     """Voice-first pipeline: VoiceAgent → ManimAgent → ffmpeg → voiced MP4 reels.
 
@@ -354,6 +431,7 @@ class VideoGenerationPipeline:
         self._scratch_dir.mkdir(parents=True, exist_ok=True)
         self._voice_agent = VoiceAgent()
         self._manim_agent = ManimAgent()
+        self._manim_fixer = ManimFixerAgent()
 
     async def run_from_json(self, json_path: str) -> tuple[str, str]:
         """Run the full pipeline for a processed JSON file.
@@ -449,12 +527,20 @@ class VideoGenerationPipeline:
         _write_script(example_code, example_script)
 
         print("  Rendering concept reel …")
-        concept_silent = _render_manim(
-            concept_script, _extract_scene_class(concept_code), concept_video_dir
+        concept_silent, concept_code = await _render_manim_with_retry(
+            concept_code,
+            concept_script,
+            _extract_scene_class(concept_code),
+            concept_video_dir,
+            self._manim_fixer,
         )
         print("  Rendering example reel …")
-        example_silent = _render_manim(
-            example_script, _extract_scene_class(example_code), example_video_dir
+        example_silent, example_code = await _render_manim_with_retry(
+            example_code,
+            example_script,
+            _extract_scene_class(example_code),
+            example_video_dir,
+            self._manim_fixer,
         )
 
         print("  Merging concept reel …")

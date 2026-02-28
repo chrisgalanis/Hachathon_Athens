@@ -96,6 +96,12 @@ class ManimAgent(BaseAgent):
             **kwargs,
         )
 
+    async def run(self, prompt: str, **kwargs):
+        """Run with a high token limit to avoid truncated scripts."""
+        kwargs.setdefault("model_settings", {})
+        kwargs["model_settings"].setdefault("max_tokens", 16000)
+        return await super().run(prompt, **kwargs)
+
     async def run_from_narration(
         self,
         narration: str,

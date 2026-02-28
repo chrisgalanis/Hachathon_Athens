@@ -109,6 +109,7 @@ class BaseAgent:
         *,
         message_history: List[ModelMessage] | None = None,
         deps=None,
+        model_settings: dict | None = None,
     ):
         """Run the agent and return the full pydantic-ai RunResult.
 
@@ -124,7 +125,12 @@ class BaseAgent:
 
         with capture_run_messages() as messages:
             try:
-                result = await self.agent.run(prompt, message_history=history, deps=deps)
+                run_kwargs: dict = {"message_history": history}
+                if deps is not None:
+                    run_kwargs["deps"] = deps
+                if model_settings is not None:
+                    run_kwargs["model_settings"] = model_settings
+                result = await self.agent.run(prompt, **run_kwargs)
                 self.message_history = result.all_messages()
                 return result
             except Exception as e:

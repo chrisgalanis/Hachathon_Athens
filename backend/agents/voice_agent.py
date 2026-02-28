@@ -43,9 +43,8 @@ _PROMPT_PATH = os.path.join(
     os.path.dirname(__file__), "agent_prompts", "voice_agent_system_prompt.md"
 )
 
-DEFAULT_VOICE_ID = "9BWtsMINqrJLrRacOk9x"   # Aria — warm, expressive
-DEFAULT_MODEL_ID = "eleven_multilingual_v2"
-DEFAULT_OUTPUT_FORMAT = "mp3_44100_128"
+FISH_AUDIO_TTS_URL = "https://api.fish.audio/v1/tts"
+FISH_AUDIO_MODEL = "s1"
 
 
 def _load_prompt() -> str:
@@ -54,7 +53,7 @@ def _load_prompt() -> str:
 
 
 def _optimize_for_tts(text: str) -> str:
-    """Fix mathematical notation so ElevenLabs reads it naturally aloud."""
+    """Fix mathematical notation so the TTS engine reads it naturally aloud."""
     fixes = [
         (r"([A-Za-z])₀", r"\1-zero"),
         (r"([A-Za-z])₁", r"\1-one"),
@@ -159,33 +158,36 @@ def _get_audio_duration(path: str) -> float:
 
 
 def _text_to_speech(text: str, output_path: str) -> None:
-    """Synthesise *text* with ElevenLabs and write MP3 to *output_path*."""
+    """Synthesise *text* with Fish Audio and write MP3 to *output_path*."""
     try:
-        from elevenlabs.client import ElevenLabs
+        import httpx
     except ImportError as e:
         raise ImportError(
-            "elevenlabs package is required: pip install elevenlabs"
+            "httpx package is required: pip install httpx"
         ) from e
 
-    api_key = os.environ.get("ELEVENLABS_API_KEY")
+    api_key = os.environ.get("FISH_AUDIO_API_KEY")
     if not api_key:
-        raise EnvironmentError("ELEVENLABS_API_KEY environment variable is not set.")
+        raise EnvironmentError("FISH_AUDIO_API_KEY environment variable is not set.")
 
-    voice_id = os.environ.get("ELEVENLABS_VOICE_ID", "").strip() or DEFAULT_VOICE_ID
-    model_id = os.environ.get("ELEVENLABS_MODEL_ID", "").strip() or DEFAULT_MODEL_ID
+    model = os.environ.get("FISH_AUDIO_MODEL", "").strip() or FISH_AUDIO_MODEL
+    reference_id = os.environ.get("FISH_AUDIO_REFERENCE_ID", "").strip() or None
 
-    client = ElevenLabs(api_key=api_key)
-    audio_chunks = client.text_to_speech.convert(
-        text=text,
-        voice_id=voice_id,
-        model_id=model_id,
-        output_format=DEFAULT_OUTPUT_FORMAT,
-    )
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "model": model,
+    }
+    payload: dict = {"text": text}
+    if reference_id:
+        payload["reference_id"] = reference_id
+
+    response = httpx.post(FISH_AUDIO_TTS_URL, headers=headers, json=payload, timeout=60)
+    response.raise_for_status()
 
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
     with open(output_path, "wb") as f:
-        for chunk in audio_chunks:
-            f.write(chunk)
+        f.write(response.content)
 
 
 def _synthesise_beats(

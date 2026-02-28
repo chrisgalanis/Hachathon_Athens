@@ -22,10 +22,53 @@
   - `TexText(...)` — use `Text(...)` instead
   - `IntegerMatrix(...)` — use the `make_matrix()` helper defined below
   - `TexMatrix(...)` — use the `make_matrix()` helper defined below
+  - `Brace(...)` — uses LaTeX internally (`\underbrace`); use the `make_brace()` helper defined below instead
   - Any other LaTeX-rendering class
 
   Use `Text(...)` for **all** on-screen labels, equations, and annotations.
   Use plain Unicode for math symbols: `λ`, `î`, `ĵ`, `·`, `→`, `←`, `⟹`, `∈`, `∅`.
+
+  **`make_brace()` helper** — draws a bracket from `Line` objects, no LaTeX required:
+  ```python
+  def make_brace(mobject, direction=LEFT, buff=0.12, color=WHITE):
+      """LaTeX-free brace using Line segments."""
+      h = mobject.get_height()
+      tip = 0.15  # size of the corner ticks
+      if direction in (LEFT, RIGHT):
+          sign = -1 if direction == LEFT else 1
+          x = mobject.get_left()[0] - buff if direction == LEFT else mobject.get_right()[0] + buff
+          cy = mobject.get_center()[1]
+          top = cy + h / 2
+          bot = cy - h / 2
+          mid = cy
+          brace = VGroup(
+              Line([x - sign * tip, top, 0], [x, top, 0]),
+              Line([x, top, 0], [x, mid + 0.01, 0]),
+              Line([x, mid - 0.01, 0], [x, bot, 0]),
+              Line([x, bot, 0], [x - sign * tip, bot, 0]),
+          ).set_color(color)
+      else:
+          # UP / DOWN brace
+          sign = -1 if direction == UP else 1
+          y = mobject.get_top()[1] + buff if direction == UP else mobject.get_bottom()[1] - buff
+          cx = mobject.get_center()[0]
+          left = mobject.get_left()[0]
+          right = mobject.get_right()[0]
+          mid = cx
+          brace = VGroup(
+              Line([left, y + sign * tip, 0], [left, y, 0]),
+              Line([left, y, 0], [mid - 0.01, y, 0]),
+              Line([mid + 0.01, y, 0], [right, y, 0]),
+              Line([right, y, 0], [right, y + sign * tip, 0]),
+          ).set_color(color)
+      return brace
+  ```
+
+- **CRITICAL — NO COLOR MULTIPLICATION**: In ManimGL v1.7.2, color constants like `WHITE`, `BLACK`, `BLUE` etc. are **strings** (e.g. `"#FFFFFF"`). You **MUST NEVER** multiply a float/numpy scalar by a color constant:
+  - **WRONG**: `gray * WHITE`, `frac * WHITE`, `0.5 * BLUE`
+  - **CORRECT for grayscale**: `interpolate_color(BLACK, WHITE, gray_float)` — interpolates between black and white
+  - **CORRECT for tinted**: `interpolate_color(BLACK, BLUE, frac)` — interpolates toward any color
+  - `interpolate_color` is always available from `from manimlib import *`. Use it whenever you need a scalar-blended color.
 
 ---
 
@@ -1030,6 +1073,15 @@ class GaussianElimination(Scene):
 3. **Always** call `.fix_in_frame()` on all text, labels, equations.
 4. Use `self.frame.add_updater(lambda m, dt: m.increment_theta(0.05 * dt))` for ambient rotation.
 5. Use `ThreeDAxes` with `add_axis_labels()`.
+6. **CRITICAL — Use `ParametricSurface`, NOT `Surface`, for lambda-based planes**: `Surface.__init__` has `color` as its **first positional argument**. Passing a lambda as the first arg (e.g. `Surface(lambda u, v: ..., color=BLUE)`) causes `TypeError: multiple values for argument 'color'`. Always use `ParametricSurface` when you have a function:
+   ```python
+   # WRONG — crashes with "multiple values for argument 'color'"
+   plane = Surface(lambda u, v: axes.c2p(...), color=BLUE)
+
+   # CORRECT
+   plane = ParametricSurface(lambda u, v: axes.c2p(...), u_range=[-2, 2], v_range=[-2, 2], color=BLUE)
+   ```
+   `ParametricSurface(uv_func, u_range, v_range, **kwargs)` is the right class for any function-defined surface. `Surface` is only for direct subclassing.
 
 ---
 
@@ -1064,7 +1116,7 @@ for step in [step1, step2, step3]:
 Before outputting any code, verify every item:
 
 - [ ] **Import**: `from manimlib import *` (NOT `from manim import *`)
-- [ ] **NO LATEX**: Never use `Tex`, `TexText`, `IntegerMatrix`, or `TexMatrix` — use `Text` and `make_matrix()` only
+- [ ] **NO LATEX**: Never use `Tex`, `TexText`, `IntegerMatrix`, `TexMatrix`, or `Brace` — use `Text`, `make_matrix()`, and `make_brace()` only
 - [ ] **make_matrix defined**: Every file that shows a matrix includes the `make_matrix()` helper
 - [ ] **VGroup indexing**: `matrix[1][r][c]` for cell at row r, col c — never `matrix[1][r][0][c]`
 - [ ] **Column vector indexing**: `col_vec[1][r][0]` — only one element per row, not `col_vec[1][r][0][1]`
@@ -1074,12 +1126,14 @@ Before outputting any code, verify every item:
 - [ ] **Backstroke**: All text over grids has `.set_backstroke(width=5)`
 - [ ] **3D text**: All text in 3D scenes has `.fix_in_frame()`
 - [ ] **Color consistency**: Matrix columns match basis vector colors — col0=`GREEN`, col1=`RED`
+- [ ] **No color multiplication**: Never use `scalar * COLOR_CONSTANT` — use `interpolate_color(BLACK, WHITE, scalar)` for grayscale
 - [ ] **Wait calls**: `self.wait()` after every major visual step
 - [ ] **Final wait**: `self.wait(2)` at end of construct
 - [ ] **No deprecated API**: `ShowCreation` not `Create`, `self.frame` not `self.camera`
 - [ ] **Vector construction**: `plane.get_vector()` for vectors on a NumberPlane
 - [ ] **Grid before objects**: NumberPlane added before vectors and shapes
 - [ ] **run_time on transforms**: `run_time=3` on transformation animations
+- [ ] **ParametricSurface not Surface**: Any function-based surface uses `ParametricSurface(lambda u, v: ..., u_range=..., v_range=..., color=...)` — never `Surface(lambda ...)` which misroutes the lambda into the `color` parameter
 - [ ] **Numpy import**: `import numpy as np` if using numpy
 
 ---

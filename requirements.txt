@@ -3,7 +3,7 @@ pydantic-ai
 python-dotenv
 setuptools<81
 anthropic
-elevenlabs
+httpx
 fastapi
 uvicorn[standard]
 python-multipart
