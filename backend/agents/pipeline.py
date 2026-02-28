@@ -2,30 +2,36 @@
 VideoGenerationPipeline
 =======================
 
-Full pipeline: processed JSON → ManimGL animation + ElevenLabs narration → MP4.
+Full pipeline: processed JSON → two voiced MP4 reels.
 
-Steps
------
-1. ManimAgent   — generates the ManimGL Python script from the JSON.
-2. Render       — runs `manimgl` CLI to produce a silent MP4.
-3. VoiceAgent   — generates narration text (Claude) and synthesises it (ElevenLabs).
-4. Merge        — ffmpeg combines video + audio; if narration is longer the last
-                  frame is frozen so speech is never cut off.
+  Reel 1 — Concept
+      ManimAgent animates the ``reviewed_transcript`` narrative.
+      VoiceAgent sends ``reviewed_transcript`` straight to ElevenLabs (no LLM).
+
+  Reel 2 — Example
+      ManimAgent animates ``examples[0]`` step by step with concrete numbers.
+      VoiceAgent asks the LLM to narrate ``examples[0]``, then synthesises it.
+
+Steps per reel
+--------------
+1. Generate ManimGL script (LLM).
+2. Render with ``manimgl`` CLI → silent MP4.
+3. Generate / obtain narration audio → MP3.
+4. Merge audio + video with ffmpeg (freeze last frame if audio is longer).
 
 Usage::
 
     from backend.agents.pipeline import VideoGenerationPipeline
 
     pipeline = VideoGenerationPipeline(output_dir="output")
-    mp4_path = await pipeline.run_from_json(
+    concept_mp4, example_mp4 = await pipeline.run_from_json(
         "backend/scraper/processed/Linear_Algebra/Elimination_with_matrices/2/processed.json"
     )
-    print(mp4_path)
+    print(concept_mp4, example_mp4)
 """
 
 import asyncio
 import json
-import os
 import re
 import subprocess
 import sys
@@ -34,7 +40,6 @@ from pathlib import Path
 from .manim_agent import ManimAgent
 from .voice_agent import VoiceAgent
 
-# Resolve manimgl from the same Python environment running this script
 _MANIMGL = str(Path(sys.executable).parent / "manimgl")
 
 
@@ -60,33 +65,35 @@ def _get_duration(path: str) -> float:
 
 
 def _merge_audio_video(video_path: str, audio_path: str, output_path: str) -> None:
-    """
-    Combine *video_path* and *audio_path* into *output_path*.
+    """Combine video + audio into output_path.
 
-    If narration is longer than the video the last frame is frozen for the
-    extra duration so the full narration plays out.
+    If the animation is shorter than the narration the video is looped
+    seamlessly to fill the audio duration — no freeze, no slowdown.
+    Looping is deterministic (pure ffmpeg), appropriate for short-form
+    Gen-Z/Gen-Alpha content where repeated viewing is the norm.
     """
     video_dur = _get_duration(video_path)
     audio_dur = _get_duration(audio_path)
-    extra = audio_dur - video_dur
 
-    print(f"  Video: {video_dur:.2f}s  |  Audio: {audio_dur:.2f}s  |  "
-          f"Freeze extension: {max(extra, 0):.2f}s")
+    print(f"  Video: {video_dur:.2f}s  |  Audio: {audio_dur:.2f}s", end="")
 
-    if extra > 0:
-        print(f"  Extending video by {extra:.2f}s (freeze last frame) …")
+    if audio_dur > video_dur:
+        loops = int(audio_dur / video_dur) + 1
+        print(f"  |  Looping video x{loops}")
         cmd = [
             "ffmpeg", "-y",
+            "-stream_loop", "-1",   # loop video input indefinitely
             "-i", video_path,
             "-i", audio_path,
-            "-filter_complex", f"[0:v]tpad=stop_mode=clone:stop_duration={extra:.3f}[v]",
-            "-map", "[v]",
+            "-map", "0:v",
             "-map", "1:a",
             "-c:v", "libx264", "-preset", "fast", "-crf", "18",
             "-c:a", "aac", "-b:a", "128k",
+            "-shortest",            # stop exactly when audio ends
             output_path,
         ]
     else:
+        print()
         cmd = [
             "ffmpeg", "-y",
             "-i", video_path,
@@ -103,14 +110,10 @@ def _merge_audio_video(video_path: str, audio_path: str, output_path: str) -> No
 
 
 def _render_manim(script_path: str, scene_class: str, video_dir: str) -> str:
-    """
-    Run the manimgl CLI and return the path of the rendered MP4.
-
-    Raises RuntimeError if no MP4 is found after rendering.
-    """
+    """Run the manimgl CLI and return the path of the rendered MP4."""
     cmd = [
         _MANIMGL, script_path, scene_class,
-        "-w",                        # write to file (no preview window)
+        "-w",
         "--video_dir", video_dir,
     ]
     print(f"  Rendering: {' '.join(cmd)}")
@@ -120,15 +123,21 @@ def _render_manim(script_path: str, scene_class: str, video_dir: str) -> str:
             f"manimgl render failed:\n{result.stderr}\n{result.stdout}"
         )
 
-    # manimgl writes to video_dir/<SceneName>/<SceneName>.mp4 (or similar)
     mp4_files = sorted(Path(video_dir).rglob("*.mp4"))
     if not mp4_files:
         raise RuntimeError(
             f"manimgl reported success but no MP4 found under {video_dir}.\n"
             f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
         )
-    # Pick the most recently modified one in case there are leftovers
     return str(max(mp4_files, key=lambda p: p.stat().st_mtime))
+
+
+def _write_script(code: str, path: str) -> None:
+    """Strip markdown fences if present, then write the Python script."""
+    if code.startswith("```"):
+        code = re.sub(r"^```[^\n]*\n", "", code).rstrip("`").strip()
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(code)
 
 
 # ---------------------------------------------------------------------------
@@ -136,83 +145,105 @@ def _render_manim(script_path: str, scene_class: str, video_dir: str) -> str:
 # ---------------------------------------------------------------------------
 
 class VideoGenerationPipeline:
-    """Orchestrates ManimAgent + VoiceAgent + ffmpeg into a single voiced MP4.
+    """Orchestrates ManimAgent + VoiceAgent + ffmpeg into two voiced MP4 reels.
 
     Args:
-        output_dir: Directory where intermediate and final files are written.
-            Created automatically if it does not exist.
+        output_dir: Directory where all intermediate and final files are written.
     """
 
     def __init__(self, output_dir: str = "output"):
         self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self._finals_dir = self.output_dir / "final"       # ← voiced MP4s here
+        self._scratch_dir = self.output_dir / "_scratch"   # ← scripts, audio, silent MP4s
+        self._finals_dir.mkdir(parents=True, exist_ok=True)
+        self._scratch_dir.mkdir(parents=True, exist_ok=True)
         self._manim_agent = ManimAgent()
         self._voice_agent = VoiceAgent()
 
-    async def run_from_json(self, json_path: str) -> str:
-        """Run the full pipeline for a single processed JSON file.
+    async def run_from_json(self, json_path: str) -> tuple[str, str]:
+        """Run the full pipeline for a processed JSON file.
 
         Args:
             json_path: Path to a ``processed.json`` file.
 
         Returns:
-            Absolute path to the final voiced MP4.
+            (concept_mp4_path, example_mp4_path)
         """
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
         return await self.run_from_dict(data)
 
-    async def run_from_dict(self, data: dict) -> str:
+    async def run_from_dict(self, data: dict) -> tuple[str, str]:
         """Run the full pipeline from a pre-loaded JSON dict.
 
+        Generates both reels in parallel where possible, then merges each.
+
         Args:
-            data: Dict with keys ``lecture_number``, ``subject``,
-                ``concepts``, ``examples``, and ``analogy``.
+            data: Processed JSON dict.
 
         Returns:
-            Absolute path to the final voiced MP4.
+            (concept_mp4_path, example_mp4_path)
         """
-        subject_slug = re.sub(r"\W+", "_", data.get("subject", "lecture")).strip("_")
+        slug = re.sub(r"\W+", "_", data.get("subject", "lecture")).strip("_")
+
+        concept_audio    = str(self._scratch_dir / f"{slug}_concept_narration.mp3")
+        example_audio    = str(self._scratch_dir / f"{slug}_example_narration.mp3")
+        concept_script   = str(self._scratch_dir / f"{slug}_concept.py")
+        example_script   = str(self._scratch_dir / f"{slug}_example.py")
+        concept_video_dir = str(self._scratch_dir / "silent" / "concept")
+        example_video_dir = str(self._scratch_dir / "silent" / "example")
+        concept_mp4      = str(self._finals_dir / f"{slug}_concept.mp4")
+        example_mp4      = str(self._finals_dir / f"{slug}_example.mp4")
 
         # ------------------------------------------------------------------ #
-        # Step 1 & 3 — generate code and narration concurrently
+        # Step 1 — generate both Manim scripts in parallel
         # ------------------------------------------------------------------ #
-        print("\n[1/4] Generating ManimGL code and narration in parallel …")
-        audio_path = str(self.output_dir / f"{subject_slug}_narration.mp3")
-
-        manim_result, _ = await asyncio.gather(
-            self._manim_agent.run_from_dict(data),
-            self._voice_agent.run_from_dict(data, output_path=audio_path),
+        print("\n[1/4] Generating Manim scripts in parallel …")
+        concept_manim_result, example_manim_result = await asyncio.gather(
+            self._manim_agent.run_concept_reel(data),
+            self._manim_agent.run_example_reel(data),
         )
-        manim_code: str = manim_result.output
+        concept_code: str = concept_manim_result.output
+        example_code: str = example_manim_result.output
 
         # ------------------------------------------------------------------ #
-        # Step 2 — write script and render with manimgl
+        # Step 2 — voice reads each animation code → narration, in parallel
         # ------------------------------------------------------------------ #
-        print("\n[2/4] Rendering ManimGL animation …")
-        scene_class = _extract_scene_class(manim_code)
-        script_path = str(self.output_dir / f"{subject_slug}.py")
-        video_dir   = str(self.output_dir / "videos")
-
-        with open(script_path, "w", encoding="utf-8") as f:
-            f.write(manim_code)
-
-        # Strip the markdown fences if the model wrapped the code
-        if manim_code.startswith("```"):
-            clean_code = re.sub(r"^```[^\n]*\n", "", manim_code).rstrip("`").strip()
-            with open(script_path, "w", encoding="utf-8") as f:
-                f.write(clean_code)
-
-        silent_mp4 = _render_manim(script_path, scene_class, video_dir)
-        print(f"  Silent video: {silent_mp4}")
+        print("\n[2/4] Generating narrations from animation code in parallel …")
+        await asyncio.gather(
+            self._voice_agent.run_from_code(data, concept_code, output_path=concept_audio),
+            self._voice_agent.run_from_code(data, example_code, output_path=example_audio),
+        )
 
         # ------------------------------------------------------------------ #
-        # Step 4 — merge audio + video
+        # Step 3 — render + merge both reels (sequentially to avoid GPU contention)
         # ------------------------------------------------------------------ #
-        print("\n[3/4] Merging audio and video …")
-        final_mp4 = str(self.output_dir / f"{subject_slug}_voiced.mp4")
-        _merge_audio_video(silent_mp4, audio_path, final_mp4)
+        print("\n[3/4] Rendering and merging …")
 
-        final_dur = _get_duration(final_mp4)
-        print(f"\n[4/4] Done!  Final video: {final_mp4}  ({final_dur:.1f}s)")
-        return final_mp4
+        _write_script(concept_code, concept_script)
+        _write_script(example_code, example_script)
+
+        print("  Rendering concept reel …")
+        concept_silent = _render_manim(
+            concept_script, _extract_scene_class(concept_code), concept_video_dir
+        )
+        print("  Rendering example reel …")
+        example_silent = _render_manim(
+            example_script, _extract_scene_class(example_code), example_video_dir
+        )
+
+        print("  Merging concept reel …")
+        _merge_audio_video(concept_silent, concept_audio, concept_mp4)
+        print("  Merging example reel …")
+        _merge_audio_video(example_silent, example_audio, example_mp4)
+
+        # ------------------------------------------------------------------ #
+        # Step 4 — done
+        # ------------------------------------------------------------------ #
+        concept_dur = _get_duration(concept_mp4)
+        example_dur = _get_duration(example_mp4)
+        print(f"\n[4/4] Done!")
+        print(f"  Concept reel: {concept_mp4}  ({concept_dur:.1f}s)")
+        print(f"  Example reel: {example_mp4}  ({example_dur:.1f}s)")
+
+        return concept_mp4, example_mp4

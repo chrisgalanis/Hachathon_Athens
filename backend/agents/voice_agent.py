@@ -1,29 +1,25 @@
 """
-VoiceAgent — generates spoken narration audio from structured math content.
+VoiceAgent — generates spoken narration from a ManimGL animation script.
 
-Pipeline
---------
-1. Formats the processed JSON (concepts / examples / analogies) into a prompt.
-2. Sends it to the LLM (via BaseAgent) to produce natural narration text.
-3. Passes the narration to ElevenLabs text-to-speech and writes an MP3.
+The animation code is the PRIMARY source. The voice agent reads what is
+actually on screen (the self.play() sequence) and narrates it. The processed
+JSON is secondary context — it helps the agent speak accurately about the math
+but only what the animation shows.
+
+This applies to both reels. There is no shortcut path.
 
 Usage::
 
     agent = VoiceAgent()
-
-    # From a processed JSON file:
-    audio_path = await agent.run_from_json(
-        "backend/scraper/processed/.../processed.json",
+    mp3_path = await agent.run_from_code(
+        data=data,
+        manim_code=manim_code,
         output_path="narration.mp3",
     )
-
-    # From a pre-loaded dict:
-    audio_path = await agent.run_from_dict(data, output_path="narration.mp3")
 """
 
-import json
 import os
-import textwrap
+import re
 
 from .base_agent import BaseAgent
 
@@ -31,8 +27,7 @@ _PROMPT_PATH = os.path.join(
     os.path.dirname(__file__), "agent_prompts", "voice_agent_system_prompt.md"
 )
 
-# ElevenLabs defaults — Aria: expressive, warm female (built-in voice)
-DEFAULT_VOICE_ID = "9BWtsMINqrJLrRacOk9x"
+DEFAULT_VOICE_ID = "9BWtsMINqrJLrRacOk9x"   # Aria — warm, expressive
 DEFAULT_MODEL_ID = "eleven_multilingual_v2"
 DEFAULT_OUTPUT_FORMAT = "mp3_44100_128"
 
@@ -42,40 +37,51 @@ def _load_prompt() -> str:
         return f.read()
 
 
-def _build_prompt_from_json(data: dict) -> str:
-    """Format a processed JSON object into a narration-generation prompt."""
+def _optimize_for_tts(text: str) -> str:
+    """Fix mathematical notation so ElevenLabs reads it naturally aloud."""
+    fixes = [
+        (r"([A-Za-z])₀", r"\1-zero"),
+        (r"([A-Za-z])₁", r"\1-one"),
+        (r"([A-Za-z])₂", r"\1-two"),
+        (r"([A-Za-z])₃", r"\1-three"),
+        (r"([A-Za-z])₄", r"\1-four"),
+        (r"([A-Za-z])₅", r"\1-five"),
+        (r"([A-Za-z])⁻¹", r"\1-inverse"),
+        (r"\bUx\b", "U times x"),
+        (r"\bAx\b", "A times x"),
+        (r"\bAb\b", "A times b"),
+    ]
+    for pattern, replacement in fixes:
+        text = re.sub(pattern, replacement, text)
+    return text
+
+
+def _build_prompt(data: dict, manim_code: str) -> str:
+    """Build prompt with animation code as primary, full JSON as math context."""
+    import json as _json
     subject = data.get("subject", "Unknown Topic")
     lecture_number = data.get("lecture_number", "?")
-    concepts = data.get("concepts", [])
-    examples = data.get("examples", [])
-    analogies = data.get("analogy", [])
 
-    def _numbered_list(items: list) -> str:
-        return "\n".join(f"  {i + 1}. {item}" for i, item in enumerate(items))
+    # Full JSON minus reviewed_transcript (already captured in the animation)
+    context_data = {k: v for k, v in data.items() if k != "reviewed_transcript"}
 
-    return textwrap.dedent(f"""\
-        Lecture {lecture_number}: {subject}
-
-        === CONCEPTS ===
-        {_numbered_list(concepts)}
-
-        === EXAMPLES ===
-        {_numbered_list(examples)}
-
-        === ANALOGIES ===
-        {_numbered_list(analogies)}
-
-        Write a warm, natural voice-over narration for an animation of this lecture.
-    """)
+    return (
+        f"Lecture {lecture_number}: {subject}\n\n"
+        f"ANIMATION CODE (PRIMARY — your script comes from this, in this order):\n"
+        f"```python\n{manim_code}\n```\n\n"
+        f"FULL LECTURE JSON (secondary math context — use for accuracy only, "
+        f"never narrate anything not shown in the animation above):\n"
+        f"```json\n{_json.dumps(context_data, indent=2)}\n```"
+    )
 
 
 def _text_to_speech(text: str, output_path: str) -> None:
-    """Synthesise speech with ElevenLabs and write it to *output_path* (MP3)."""
+    """Synthesise *text* with ElevenLabs and write MP3 to *output_path*."""
     try:
         from elevenlabs.client import ElevenLabs
     except ImportError as e:
         raise ImportError(
-            "elevenlabs package is required. Install it with: pip install elevenlabs"
+            "elevenlabs package is required: pip install elevenlabs"
         ) from e
 
     api_key = os.environ.get("ELEVENLABS_API_KEY")
@@ -100,17 +106,11 @@ def _text_to_speech(text: str, output_path: str) -> None:
 
 
 class VoiceAgent(BaseAgent):
-    """Agent that generates narration audio from a processed lecture JSON.
+    """Narrates a ManimGL animation script as a short reel voice-over.
 
-    The LLM writes the narration script; ElevenLabs converts it to speech.
-
-    Usage::
-
-        agent = VoiceAgent()
-        audio_path = await agent.run_from_json(
-            "backend/scraper/processed/Linear_Algebra/Elimination_with_matrices/2/processed.json",
-            output_path="narration.mp3",
-        )
+    The animation code is the source of truth — the narration describes
+    what is literally on screen, in the order it appears.
+    The processed JSON provides math context for accuracy.
     """
 
     def __init__(self, **kwargs):
@@ -120,42 +120,30 @@ class VoiceAgent(BaseAgent):
             **kwargs,
         )
 
-    async def run_from_json(self, json_path: str, output_path: str = "narration.mp3") -> str:
-        """Load a processed JSON file, generate narration, and synthesise audio.
+    async def run_from_code(
+        self,
+        data: dict,
+        manim_code: str,
+        output_path: str = "narration.mp3",
+    ) -> str:
+        """Generate narration from animation code, then synthesise to MP3.
 
         Args:
-            json_path: Path to a ``processed.json`` file with keys
-                ``concepts``, ``examples``, and ``analogy``.
-            output_path: Destination path for the output MP3 file.
+            data: Processed JSON dict (used as math context).
+            manim_code: The ManimGL Python script that will play on screen.
+            output_path: Destination MP3 path.
 
         Returns:
-            The path to the written MP3 file.
+            Path to the written MP3.
         """
-        with open(json_path, encoding="utf-8") as f:
-            data = json.load(f)
-        return await self.run_from_dict(data, output_path=output_path)
-
-    async def run_from_dict(self, data: dict, output_path: str = "narration.mp3") -> str:
-        """Generate narration audio from a pre-loaded JSON dict.
-
-        Args:
-            data: Dict with keys ``lecture_number``, ``subject``,
-                ``concepts``, ``examples``, and ``analogy``.
-            output_path: Destination path for the output MP3 file.
-
-        Returns:
-            The path to the written MP3 file.
-        """
-        prompt = _build_prompt_from_json(data)
+        prompt = _build_prompt(data, manim_code)
         result = await self.run(prompt)
-        narration: str = result.output
+        narration: str = _optimize_for_tts(result.output)
 
-        print(f"\n── Generated narration ({len(narration.split())} words) ──────────────")
+        print(f"\n── Narration: {len(narration.split())} words ─────────────────────────────")
         print(narration)
         print("──────────────────────────────────────────────────────────────────\n")
 
-        print(f"Synthesising speech with ElevenLabs → {output_path} …")
         _text_to_speech(narration, output_path)
         print(f"Audio saved: {output_path}")
-
         return output_path

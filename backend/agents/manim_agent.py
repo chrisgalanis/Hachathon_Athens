@@ -1,10 +1,25 @@
 """
-ManimAgent — generates ManimGL animation code from math content.
+ManimAgent — generates ManimGL animation code for two reel types.
+
+  Concept reel  — uses ``reviewed_transcript`` as the narrative script.
+                  Animates exactly what the transcript describes, nothing more.
+
+  Example reel  — uses ``examples[0]`` to animate a concrete step-by-step
+                  worked example with real numbers and matrices.
+
+Usage::
+
+    agent = ManimAgent()
+
+    concept_result = await agent.run_concept_reel(data)
+    example_result = await agent.run_example_reel(data)
+
+    print(concept_result.output)  # ManimGL Python script
+    print(example_result.output)  # ManimGL Python script
 """
 
 import json
 import os
-import textwrap
 
 from .base_agent import BaseAgent
 
@@ -18,48 +33,50 @@ def _load_prompt() -> str:
         return f.read()
 
 
-def _build_prompt_from_json(data: dict) -> str:
-    """Format a processed JSON object into a prompt for the agent."""
+def _build_concept_prompt(data: dict) -> str:
+    """Prompt that uses reviewed_transcript as the single narrative source."""
     subject = data.get("subject", "Unknown Topic")
     lecture_number = data.get("lecture_number", "?")
+    transcript = data.get("reviewed_transcript", "").strip()
 
-    concepts = data.get("concepts", [])
+    if not transcript:
+        raise ValueError(
+            "processed.json has no 'reviewed_transcript'. "
+            "Cannot build a concept reel prompt without it."
+        )
+
+    return (
+        f"Lecture {lecture_number}: {subject}\n\n"
+        f"NARRATION SCRIPT (this is the voice-over that will play alongside your animation):\n"
+        f"\"{transcript}\"\n\n"
+        "Animate exactly what the narration describes — one concept, one clean scene. "
+        "The animation must mirror the narrative arc of the transcript sentence by sentence. "
+        "Keep the total duration tight (30–90 seconds) to match the spoken length."
+    )
+
+
+def _build_example_prompt(data: dict) -> str:
+    """Prompt that animates the first concrete worked example."""
+    subject = data.get("subject", "Unknown Topic")
+    lecture_number = data.get("lecture_number", "?")
     examples = data.get("examples", [])
-    analogies = data.get("analogy", [])
+    example_text = examples[0] if examples else "(no example available)"
 
-    def _numbered_list(items: list) -> str:
-        return "\n".join(f"  {i + 1}. {item}" for i, item in enumerate(items))
-
-    return textwrap.dedent(f"""\
-        Lecture {lecture_number}: {subject}
-
-        === CONCEPTS ===
-        {_numbered_list(concepts)}
-
-        === EXAMPLES ===
-        {_numbered_list(examples)}
-
-        === ANALOGIES ===
-        {_numbered_list(analogies)}
-
-        Generate a complete ManimGL Python script that animates the key ideas above using your system prompt as your help.
-    """)
+    return (
+        f"Lecture {lecture_number}: {subject} — Worked Example\n\n"
+        f"EXAMPLE TO ANIMATE:\n{example_text}\n\n"
+        "Animate this example step by step with the exact numbers given. "
+        "Show each matrix, each row operation, each intermediate result as a distinct animation step. "
+        "Do NOT summarise — animate every calculation shown in the example. "
+        "Keep the scene focused: one example, one clean visual progression."
+    )
 
 
 class ManimAgent(BaseAgent):
-    """Agent that turns structured math content into runnable ManimGL scenes.
+    """Generates ManimGL animation code for concept and example reels.
 
-    Usage::
-
-        agent = ManimAgent()
-
-        # From a processed JSON file:
-        result = await agent.run_from_json("backend/scraper/processed/.../processed.json")
-        print(result.output)  # complete ManimGL Python script
-
-        # Or pass a pre-loaded dict:
-        result = await agent.run_from_dict(data)
-        print(result.output)
+    Concept reel  — narrative driven by ``reviewed_transcript``.
+    Example reel  — driven by the first entry in ``examples``.
     """
 
     def __init__(self, **kwargs):
@@ -69,29 +86,43 @@ class ManimAgent(BaseAgent):
             **kwargs,
         )
 
-    async def run_from_json(self, json_path: str):
-        """Load a processed JSON file and generate a ManimGL animation script.
+    async def run_concept_reel(self, data: dict):
+        """Generate a ManimGL script for the concept reel.
+
+        Uses ``reviewed_transcript`` as the narrative guide so the animation
+        stays in sync with the voice-over.
 
         Args:
-            json_path: Absolute or relative path to a ``processed.json`` file
-                with keys ``concepts``, ``examples``, and ``analogy``.
+            data: Processed JSON dict; must contain ``reviewed_transcript``.
 
         Returns:
-            The ``RunResult`` object (access ``.output`` for the Python script).
+            RunResult — access ``.output`` for the Python script.
         """
+        prompt = _build_concept_prompt(data)
+        return await self.run(prompt)
+
+    async def run_example_reel(self, data: dict):
+        """Generate a ManimGL script that animates ``examples[0]`` step by step.
+
+        Args:
+            data: Processed JSON dict; uses ``examples[0]``.
+
+        Returns:
+            RunResult — access ``.output`` for the Python script.
+        """
+        prompt = _build_example_prompt(data)
+        return await self.run(prompt)
+
+    # ------------------------------------------------------------------
+    # Legacy helpers kept for backward compatibility
+    # ------------------------------------------------------------------
+
+    async def run_from_json(self, json_path: str):
+        """Load a processed JSON file and run the concept reel."""
         with open(json_path, encoding="utf-8") as f:
             data = json.load(f)
-        return await self.run_from_dict(data)
+        return await self.run_concept_reel(data)
 
     async def run_from_dict(self, data: dict):
-        """Generate a ManimGL animation script from a pre-loaded JSON dict.
-
-        Args:
-            data: Dict with keys ``lecture_number``, ``subject``,
-                ``concepts``, ``examples``, and ``analogy``.
-
-        Returns:
-            The ``RunResult`` object (access ``.output`` for the Python script).
-        """
-        prompt = _build_prompt_from_json(data)
-        return await self.run(prompt)
+        """Run the concept reel from a pre-loaded dict."""
+        return await self.run_concept_reel(data)
