@@ -28,5 +28,6 @@
   "analogy": [
     "Markov steady state as equilibrium: The eigenvector for λ = 1 in a Markov matrix represents the population distribution at equilibrium, where no further change occurs despite individual movement between states.",
     "Least squares as geometric projection: Finding the least squares solution is equivalent to dropping a perpendicular from b to the column space of A, just as projecting a point onto a plane in 3D space."
-  ]
+  ],
+  "reviewed_transcript": "What if I told you four ideas tie together everything in linear algebra? First, think of matrix multiplication Ax as a recipe — you're blending columns of A using x as your ingredient list. That single insight powers least squares, where finding the best fit is just dropping a perpendicular from your target point down onto a flat plane — the column space. If your target isn't on that plane, no exact solution exists; rank tells you when you're stuck. Then there's AᵀA — invertible only when A has full column rank, and that's your green light for a unique least squares answer. Finally, picture a Markov population of ten people shuffling between three cities. No matter where they start, they always settle at the same steady state — the eigenvector for eigenvalue one, scaled to match the population — the system's equilibrium. Master these four pillars, and you hold the keys to data science, engineering, and machine learning."
 }
