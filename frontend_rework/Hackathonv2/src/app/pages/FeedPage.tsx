@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ReelCardPremium } from '../components/ReelCardPremium';
 import { FloatingNav } from '../components/FloatingNav';
-import { fetchAllReels, type RawReel } from '../api';
+import { fetchAllReels, resolveVideoUrl, type RawReel } from '../api';
 
 // Map a concept/subject name to a consistent accent colour
 const SUBJECT_COLORS = [
@@ -30,12 +30,12 @@ function rawToCardProps(reel: RawReel, index: number, total: number) {
     subjectColor: colorFor(reel.concept, SUBJECT_COLORS),
     topic: reel.topic,
     bullets: reel.concepts.slice(0, 4),
-    xp: 15,
     difficulty: 'Medium' as const,
     bgGradient: colorFor(reel.concept, BG_GRADIENTS),
     progress: 0,
     totalCards: total,
     currentCard: index + 1,
+    videoSrc: reel.videoSrc ? resolveVideoUrl(reel.videoSrc) : undefined,
   };
 }
 
