@@ -72,6 +72,43 @@ def _build_example_prompt(data: dict) -> str:
     )
 
 
+def _build_revision_prompt(original_code: str, narration: str) -> str:
+    """Build a prompt asking the Manim agent to revise its code to match the narration.
+
+    The voice agent has already written narration based on the original code,
+    but it may describe visuals slightly differently (e.g., "purple line" when
+    the code uses BLUE). This revision pass ensures the animation matches
+    exactly what the narrator says.
+    """
+    return (
+        "REVISION TASK — align your animation to the narration\n\n"
+        "A voice-over narrator has written the following narration for your animation. "
+        "The narration is split into beats separated by [BEAT] markers.\n\n"
+        f"─── NARRATION ───\n{narration}\n─── END NARRATION ───\n\n"
+        f"─── YOUR ORIGINAL CODE ───\n```python\n{original_code}\n```\n─── END CODE ───\n\n"
+        "Your job: revise the ManimGL code so the animation EXACTLY matches "
+        "what the narrator describes. Specifically:\n\n"
+        "1. **Colors**: If the narrator says \"purple line\", the code must use PURPLE. "
+        "If the narrator says \"green arrow\", the code must use GREEN. Match EVERY "
+        "color reference in the narration to the code.\n\n"
+        "2. **Labels & text**: If the narrator says \"lambda equals three\", the on-screen "
+        "text must show that. If the narrator references a specific label, it must exist.\n\n"
+        "3. **Order**: If the narrator describes events in a specific order, the "
+        "self.play() calls must match that order.\n\n"
+        "4. **Objects**: If the narrator says \"two arrows appear\", there must be "
+        "exactly two arrows. If the narrator says \"the grid stretches\", there must "
+        "be a grid transformation.\n\n"
+        "RULES:\n"
+        "- Output the COMPLETE revised ManimGL script (not a diff).\n"
+        "- Keep the same scene class name.\n"
+        "- Keep the same self.wait() boundaries — do NOT add, remove, or reorder them.\n"
+        "- Keep the same number of self.play() beats — only change visual properties "
+        "(colors, labels, text) to match the narration.\n"
+        "- Do NOT change the mathematical content or structure of animations.\n"
+        "- If the narration already matches the code perfectly, return the code unchanged.\n"
+    )
+
+
 class ManimAgent(BaseAgent):
     """Generates ManimGL animation code for concept and example reels.
 
@@ -111,6 +148,26 @@ class ManimAgent(BaseAgent):
             RunResult — access ``.output`` for the Python script.
         """
         prompt = _build_example_prompt(data)
+        return await self.run(prompt)
+
+    async def revise_to_match_narration(
+        self, original_code: str, narration: str
+    ):
+        """Revise a Manim script so its visuals match the narration exactly.
+
+        This is a follow-up call that uses the agent's conversation history
+        (from the original generation) plus a revision prompt. The LLM sees
+        the original code and the narration, then outputs a complete revised
+        ManimGL script with colors, labels, and visual details aligned.
+
+        Args:
+            original_code: The ManimGL script generated in the first pass.
+            narration: The beat-delimited narration text (with [BEAT] markers).
+
+        Returns:
+            RunResult — access ``.output`` for the revised Python script.
+        """
+        prompt = _build_revision_prompt(original_code, narration)
         return await self.run(prompt)
 
     # ------------------------------------------------------------------
