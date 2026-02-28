@@ -1,12 +1,13 @@
 """
 VoiceAgent — generates spoken narration from a ManimGL animation script.
 
-The animation code is the PRIMARY source. The voice agent reads what is
-actually on screen (the self.play() sequence) and narrates it. The processed
-JSON is secondary context — it helps the agent speak accurately about the math
-but only what the animation shows.
+The animation code is the SOLE narration source. The voice agent reads every
+``self.play()`` call top-to-bottom, translates each visual beat into one
+sentence of spoken narration, and outputs a tight 30–50 second voice-over.
 
-This applies to both reels. There is no shortcut path.
+The ``reviewed_transcript`` from the processed JSON is passed as background
+context so the LLM can use correct terminology and verify numbers — but it
+must NEVER narrate anything that isn't visually present in the animation code.
 
 Usage::
 
@@ -57,22 +58,38 @@ def _optimize_for_tts(text: str) -> str:
 
 
 def _build_prompt(data: dict, manim_code: str) -> str:
-    """Build prompt with animation code as primary, full JSON as math context."""
-    import json as _json
+    """Build prompt: animation code is the SOLE narration source.
+
+    The reviewed_transcript provides human-readable mathematical context
+    so the LLM can speak accurately, but the narration must describe
+    only what the animation code actually renders — nothing else.
+    """
     subject = data.get("subject", "Unknown Topic")
     lecture_number = data.get("lecture_number", "?")
+    reviewed_transcript = data.get("reviewed_transcript", "").strip()
 
-    # Full JSON minus reviewed_transcript (already captured in the animation)
-    context_data = {k: v for k, v in data.items() if k != "reviewed_transcript"}
+    parts = [
+        f"Lecture {lecture_number}: {subject}\n",
+        "─── ANIMATION CODE (this is your ONLY narration source) ───\n"
+        "Read every self.play() call top-to-bottom. That is the video.\n"
+        "Your narration must cover exactly these visual moments, in this order, "
+        "and nothing else.\n\n"
+        f"```python\n{manim_code}\n```\n",
+    ]
 
-    return (
-        f"Lecture {lecture_number}: {subject}\n\n"
-        f"ANIMATION CODE (PRIMARY — your script comes from this, in this order):\n"
-        f"```python\n{manim_code}\n```\n\n"
-        f"FULL LECTURE JSON (secondary math context — use for accuracy only, "
-        f"never narrate anything not shown in the animation above):\n"
-        f"```json\n{_json.dumps(context_data, indent=2)}\n```"
-    )
+    if reviewed_transcript:
+        parts.append(
+            "─── REVIEWED TRANSCRIPT (background context only) ───\n"
+            "This is a human-written explanation of the same concept. Use it to:\n"
+            "  - understand the mathematical intent behind the code\n"
+            "  - pick the right terminology and phrasing\n"
+            "  - ensure numerical values and definitions are correct\n"
+            "Do NOT narrate anything from this text that is not visually present "
+            "in the animation code above.\n\n"
+            f'"{reviewed_transcript}"'
+        )
+
+    return "\n".join(parts)
 
 
 def _text_to_speech(text: str, output_path: str) -> None:
