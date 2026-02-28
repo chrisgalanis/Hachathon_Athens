@@ -5,7 +5,7 @@ import sys
 from backend.agents.pipeline import VideoGenerationPipeline
 
 JSON_PATH = (
-    "backend/scraper/processed/Linear_Algebra/Determinant_formulas_and_cofactors/19/processed.json"
+    "backend/scraper/processed/Linear_Algebra/Eigenvalues_and_eigenvectors/21/processed.json"
 )
 
 
