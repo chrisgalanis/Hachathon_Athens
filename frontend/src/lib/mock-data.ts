@@ -39,6 +39,7 @@ export const MOCK_CARDS: ReelCard[] = [
     difficulty: "easy",
     bgGradient: "from-violet-900 via-purple-900 to-brand-bg",
     accentColor: "#7c3aed",
+    videoSrc: "/videos/Elimination_with_matrices_example.mp4",
   },
   {
     id: "card-2",

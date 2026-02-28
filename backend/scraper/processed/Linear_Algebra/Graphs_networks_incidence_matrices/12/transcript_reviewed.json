@@ -1,0 +1,22 @@
+{
+  "lecture_number": 12,
+  "subject": "Graphs, networks, incidence matrices",
+  "original_transcript": "What if a single matrix could encode an entire electrical network — every wire, every node, every current? That's exactly what the incidence matrix does. Think of it like a derivative operator: instead of measuring how a function changes over time, it measures how voltage changes across each wire. In a 4-node, 5-edge circuit, each row of this matrix has just two non-zero entries — a -1 where current leaves and a +1 where it arrives. Everything else is zero. Now, the null space of this matrix reveals something beautiful: only voltage *differences* drive current, never absolute voltage. The entire vector [1, 1, 1, 1] — every node at the same potential — produces nothing. And the left null space? That's Kirchhoff's current law built right into the algebra — what flows in must flow out, like water through pipes. Master this, and you hold the mathematical key to analysing any network — electrical grids, the internet, even neural connections.",
+  "reviewed_transcript": "What if a single matrix could encode an entire electrical network — every wire, every node, every current? That's exactly what the incidence matrix does. Think of it like a derivative operator: instead of measuring how a function changes over time, it measures how voltage changes across each edge. In a 4-node, 5-edge circuit, each row of this matrix has just two non-zero entries — a -1 where current leaves and a +1 where it arrives. Everything else is zero. Now, the null space of this matrix reveals something beautiful: only voltage *differences* drive current, never absolute voltage. The entire vector [1, 1, 1, 1] — every node at the same potential — maps to zero, producing no voltage differences. And the left null space? That's Kirchhoff's current law built right into the algebra — what flows in must flow out, like water through pipes. Master this, and you hold the mathematical key to analysing any network — electrical grids, the internet, even neural connections.",
+  "issues": [
+    {
+      "original_phrase": "it measures how voltage changes across each wire",
+      "issue": "Minor terminological inconsistency: the transcript uses 'wire' here but 'edge' everywhere else when describing the matrix structure. In graph/network theory the standard term is 'edge'; 'wire' is fine colloquially but mixing the two is slightly imprecise in a technical explanation.",
+      "corrected_phrase": "it measures how voltage changes across each edge",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "The entire vector [1, 1, 1, 1] — every node at the same potential — produces nothing.",
+      "issue": "Slightly hand-wavy: the sentence implies the vector 'produces nothing' without clearly stating *what* it produces nothing of. Technically, multiplying the incidence matrix by this vector yields the zero vector — meaning no voltage differences appear across any edge. A reader could misread 'produces nothing' as a vague dismissal rather than the precise statement that A·[1,1,1,1]ᵀ = 0.",
+      "corrected_phrase": "The entire vector [1, 1, 1, 1] — every node at the same potential — maps to zero, producing no voltage differences.",
+      "severity": "minor"
+    }
+  ],
+  "overall_accuracy": "minor_issues",
+  "reviewer_notes": "The transcript is mathematically sound overall and does an excellent job connecting linear algebra structure (null space, left null space) to physical meaning (voltage differences, Kirchhoff's current law). The incidence matrix convention used (-1 for the source node, +1 for the target node per row) is standard and correctly stated. The analogy to a derivative operator is a well-known and accurate framing used by Strang himself. Two minor issues were flagged: (1) a small terminological inconsistency between 'wire' and 'edge', and (2) a slightly imprecise phrase 'produces nothing' which should clarify *what* the matrix maps the uniform voltage vector to (the zero vector, i.e., no voltage differences). No major mathematical errors were found. Word count of the reviewed transcript remains within the ~120–140 word target."
+}

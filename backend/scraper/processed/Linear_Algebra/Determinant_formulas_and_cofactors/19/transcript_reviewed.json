@@ -1,0 +1,22 @@
+{
+  "lecture_number": 19,
+  "subject": "Determinant formulas and cofactors",
+  "original_transcript": "What if I told you the determinant of any matrix is secretly just a giant sum of signed products? Here's the idea. Imagine a banquet — one guest per row, one chair per column, no two guests sharing a chair. Every possible seating arrangement contributes exactly one term to the determinant. For a 3×3 matrix, that's 3! = 6 arrangements; for 4×4, it's 24. Each term gets a plus or minus sign depending on how scrambled the seating is from natural order — even shuffles get a plus, odd shuffles get a minus. Take a 2×2 matrix: ad minus bc. Two arrangements, two signs — that's the whole story. But computing all n! terms gets brutal fast, so we use cofactor expansion instead — a recursive trick that cracks an n×n problem into n smaller ones, like Russian nesting dolls, right down to easy 2×2 base cases. Master this, and you hold the key to solving systems, finding inverses, and unlocking some of the deepest structures in all of mathematics.",
+  "reviewed_transcript": "What if I told you the determinant of any square matrix is secretly just a giant sum of signed products? Here's the idea. Imagine a banquet — one guest per row, one chair per column, no two guests sharing a chair. Every possible seating arrangement contributes exactly one term to the determinant. For a 3×3 matrix, that's 3! = 6 arrangements; for 4×4, it's 24. Each term gets a plus or minus sign depending on how scrambled the seating is from natural order — even permutations get a plus, odd permutations get a minus. Take a 2×2 matrix: ad minus bc. Two arrangements, two signs — that's the whole story. But computing all n! terms gets brutal fast, so we use cofactor expansion instead — a recursive trick that cracks an n×n problem into n smaller ones, like Russian nesting dolls, right down to easy 2×2 base cases. Master this, and you hold the key to solving systems, finding inverses, and unlocking some of the deepest structures in all of mathematics.",
+  "issues": [
+    {
+      "original_phrase": "the determinant of any matrix",
+      "issue": "Determinants are only defined for square matrices. Saying 'any matrix' is misleading and mathematically incorrect.",
+      "corrected_phrase": "the determinant of any square matrix",
+      "severity": "major"
+    },
+    {
+      "original_phrase": "even shuffles get a plus, odd shuffles get a minus",
+      "issue": "The word 'shuffles' is informal and slightly ambiguous — it could be confused with a card-shuffling concept. The standard term is 'permutations.' While lay-friendly, 'even permutations' and 'odd permutations' are still accessible and precise, and are the correct terminology used in this context.",
+      "corrected_phrase": "even permutations get a plus, odd permutations get a minus",
+      "severity": "minor"
+    }
+  ],
+  "overall_accuracy": "minor_issues",
+  "reviewer_notes": "The transcript is broadly excellent — the permutation-based definition of the determinant is accurately described, the sign rule is correct, the factorial counts are right, and the cofactor expansion description is sound. Two issues were flagged: (1) a major but easily fixed error — 'any matrix' should be 'any square matrix,' since determinants are undefined for non-square matrices; and (2) a minor terminological imprecision — 'shuffles' should be 'permutations' to avoid ambiguity, though both terms are used in an otherwise correct context. The 2×2 example (ad − bc) is correct. The closing claims about inverses and systems are accurate — cofactors do underpin Cramer's rule and the adjugate-based inverse formula. Overall, a high-quality, engaging explanation that required only light corrections."
+}

@@ -1,0 +1,22 @@
+{
+  "lecture_number": 11,
+  "subject": "Matrix spaces; rank 1; small world graphs",
+  "original_transcript": "What if I told you a grid of numbers is secretly just a straight line? Here's the big idea: all 3×3 matrices form a vector space of dimension 9 — same rules as regular vectors, just with entries arranged in a square instead of a column. Think of it like Rⁿ wearing a disguise. Now, zoom in on just the symmetric matrices — those mirror-image grids — and their dimension drops to 6, because symmetry cuts the free choices roughly in half. Then there are rank 1 matrices, the atoms of linear algebra: every one of them factors neatly into a single column times a single row. Take [[1,4,5],[2,8,10]] — that's just the column [1,2] stretched by the row [1,4,5]. Beautiful. Any larger matrix is just a handful of these building blocks stacked together. Master this idea — that linearity is about structure, not shape — and suddenly functions, signals, and graphs all speak the same language.",
+  "reviewed_transcript": "What if I told you a grid of numbers is secretly just a straight line? Here's the big idea: all 3×3 matrices form a vector space of dimension 9 — same rules as regular vectors, just with entries arranged in a square instead of a column. Think of it like Rⁿ wearing a disguise. Now, zoom in on just the symmetric matrices — those mirror-image grids — and their dimension drops to 6, because symmetry cuts the free choices roughly in half. Then there are rank 1 matrices, the atoms of linear algebra: every one of them factors neatly into a single column times a single row. Take [[1,4,5],[2,8,10]] — that's just the column [1,2] times the row [1,4,5], scaled to build the full matrix. Beautiful. Any larger matrix is just a handful of these building blocks added together. Master this idea — that linearity is about structure, not shape — and suddenly functions, signals, and graphs all speak the same language.",
+  "issues": [
+    {
+      "original_phrase": "that's just the column [1,2] stretched by the row [1,4,5]",
+      "issue": "The word 'stretched' is ambiguous and slightly misleading. The rank-1 matrix is formed by the outer product — the column [1,2] times the row [1,4,5] — meaning each row of the result is a scalar multiple of [1,4,5]. Saying 'stretched' could imply a dot product or a scaling of a single vector rather than an outer product operation. A clearer phrasing makes the construction explicit.",
+      "corrected_phrase": "that's just the column [1,2] times the row [1,4,5], scaled to build the full matrix",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "Any larger matrix is just a handful of these building blocks stacked together.",
+      "issue": "The word 'stacked' implies vertical concatenation (like block matrices), which is not what's meant. Rank-1 matrices are *added* (summed) together to build a general matrix — this is the fundamental rank decomposition. 'Stacked' should be replaced with 'added together.'",
+      "corrected_phrase": "Any larger matrix is just a handful of these building blocks added together.",
+      "severity": "major"
+    }
+  ],
+  "overall_accuracy": "minor_issues",
+  "reviewer_notes": "The transcript is generally well-crafted and mathematically sound. The dimension of 3×3 symmetric matrices (6) is correctly stated, and the rank-1 factorization concept is correctly introduced. Two issues were flagged: (1) \"stretched by the row\" is slightly vague but not outright wrong — it loosely describes the outer product, so it's a minor clarity fix; (2) \"stacked together\" is the more significant error, as it implies concatenation rather than addition/superposition, which is the actual mechanism by which rank-1 matrices build up a general matrix (e.g., via SVD or rank decomposition). This was upgraded to major because it directly contradicts the standard mathematical definition and could leave viewers with a wrong mental model. The word count remains within the ~120–140 word target after corrections."
+}

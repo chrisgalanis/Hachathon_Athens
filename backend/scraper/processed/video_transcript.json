@@ -1,0 +1,28 @@
+{
+  "title": "What is Linear Algebra? A 60-Second Foundation",
+  "duration_estimate": "60 seconds (≈130 words)",
+  "selected_lectures": [
+    {
+      "lecture_number": 6,
+      "subject": "Column space and nullspace",
+      "reason": "Introduces the geometric intuition of linear algebra: what matrices can and cannot reach. Perfect entry point for beginners—concrete visual concept."
+    },
+    {
+      "lecture_number": 9,
+      "subject": "Independence, basis, and dimension",
+      "reason": "Builds abstraction by explaining the minimal 'language' needed to describe a space. Basis is a universal concept—like a coordinate system—that ties algebra to geometry."
+    },
+    {
+      "lecture_number": 21,
+      "subject": "Eigenvalues and eigenvectors",
+      "reason": "The 'wow' insight: reveals the hidden directions where matrices act simply. Shows why we care about matrix structure—eigen-directions are where the action happens."
+    },
+    {
+      "lecture_number": 23,
+      "subject": "Differential equations and exp(At)",
+      "reason": "The real-world payoff: demonstrates how eigenvalues predict growth, decay, and stability in systems that evolve over time (population, medicine, engineering). Connects abstraction to consequence."
+    }
+  ],
+  "narrative_arc": "\n**Act 1 (Intuition):** Start with what matrices do—they map vectors into new spaces. Ask: what vectors *can* we reach? This is the column space. What vectors disappear completely? The nullspace. These are concrete visual ideas.\n\n**Act 2 (Abstraction):** Zoom out. A basis is the minimal set of directions that spans a space—like longitude and latitude for Earth. Every vector is a unique combination of basis vectors. Dimension tells you how many independent directions matter.\n\n**Act 3 (Structure):** Some directions are *special*. Eigenvectors are the directions where the matrix just scales—no rotation, no mixing. This simplicity is the key to understanding the matrix's true nature.\n\n**Act 4 (Application/Payoff):** In the real world, systems evolve according to matrices (populations, chemical reactions, disease spread). Eigenvalues tell you if the system grows or dies. The largest eigenvalue predicts the future.\n\nThis arc moves from \"what can we do?\" (column space), through \"how do we describe it?\" (basis), to \"what's the simplest form?\" (eigenvalues), to \"what does it mean?\" (time evolution and stability).\n",
+  "transcript": "What if I told you that hidden inside every matrix are invisible arrows showing you exactly what matters?\n\nLinear algebra is the science of these hidden directions. Start with a simple question: a matrix transforms vectors. Which vectors can we actually reach? That's the *column space*—every point reachable by the matrix. Everything else is impossible.\n\nBut there's more. Some vectors vanish entirely—they're in the *null space*. Understanding what's reachable and what disappears is the first move.\n\nNow, zoom out. To describe any space, you need a minimal set of directions—a *basis*. Think of longitude and latitude on Earth. Your dimension is how many of these independent directions you need. Two numbers describe the whole globe.\n\nHere's where it gets powerful: some directions are *special*. Multiply the matrix by an eigenvector—and it just scales. No rotation. No mixing. The eigenvalue is that scale factor.\n\nIn the real world? A pandemic spreads, a population evolves, a chemical reaction cascades. These systems follow matrices. The largest eigenvalue tells you if growth explodes or fades. That's the prediction that changes everything.\n\nLinear algebra isn't about numbers in grids. It's about finding the hidden structure in transformation itself.\n"
+}

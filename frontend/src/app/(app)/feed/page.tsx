@@ -14,7 +14,7 @@ import { useSearchParams } from "next/navigation";
 import ReelFeed, { type ReelFeedHandle } from "@/components/reel/ReelFeed";
 import BottomNav from "@/components/nav/BottomNav";
 import { MOCK_CARDS, type ReelCard } from "@/lib/mock-data";
-import { fetchReels } from "@/lib/api";
+import { fetchReels, fetchAllReels } from "@/lib/api";
 
 export default function FeedPage() {
   const feedRef = useRef<ReelFeedHandle>(null);
@@ -23,22 +23,18 @@ export default function FeedPage() {
   const conceptParam = searchParams.get("concept");
   const lectureParam = searchParams.get("lecture");
 
-  const [cards, setCards] = useState<ReelCard[]>(MOCK_CARDS);
-  const [loading, setLoading] = useState(false);
+  const [cards, setCards] = useState<ReelCard[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // ── Fetch reels from backend whenever the concept param changes ──────────
   useEffect(() => {
-    if (!conceptParam) {
-      setCards(MOCK_CARDS);
-      setError(null);
-      return;
-    }
-
     setLoading(true);
     setError(null);
 
-    fetchReels(conceptParam)
+    const request = conceptParam ? fetchReels(conceptParam) : fetchAllReels();
+
+    request
       .then((reels) => {
         setCards(reels.length > 0 ? reels : MOCK_CARDS);
       })

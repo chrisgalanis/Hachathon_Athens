@@ -1,0 +1,22 @@
+{
+  "lecture_number": 27,
+  "subject": "Positive definite matrices and minima",
+  "original_transcript": "Imagine a rubber bowl — no matter which direction you roll a marble away from the bottom, it always climbs uphill. That's exactly what a positive definite matrix feels like geometrically. These special symmetric matrices guarantee that the quadratic form x-transpose-A-x is always positive for any non-zero vector x. But how do you test for that? You have three elegant shortcuts. Check that every eigenvalue is positive. Or check that every pivot from Gaussian elimination is positive — take the matrix with entries 2, 6, 6, and c: the pivots are 2 and then c-minus-18 over 2, so you need c greater than 18 to stay positive definite. Or check that all upper-left determinants are positive. And here's the beautiful connection: completing the square on the quadratic form is literally Gaussian elimination in disguise — the pivots become the coefficients on each squared term. Master positive definite matrices, and you hold the key to understanding why functions have true minima, unlocking optimisation across physics, engineering, and machine learning.",
+  "reviewed_transcript": "Imagine a rubber bowl — no matter which direction you roll a marble away from the bottom, it always climbs uphill. That's exactly what a positive definite matrix feels like geometrically. These special symmetric matrices guarantee that the quadratic form x-transpose-A-x is always positive for any non-zero vector x. But how do you test for that? You have three elegant shortcuts. Check that every eigenvalue is positive. Or check that every pivot from Gaussian elimination is positive — take the matrix with entries 2, 6, 6, and c: the pivots are 2 and then c-minus-18 over 2, so you need c greater than 9 to stay positive definite. Or check that all upper-left sub-matrix determinants are positive. And here's the beautiful connection: completing the square on the quadratic form is literally Gaussian elimination in disguise — the pivots become the coefficients on each squared term. Master positive definite matrices, and you hold the key to understanding why functions have true minima, unlocking optimisation across physics, engineering, and machine learning.",
+  "issues": [
+    {
+      "original_phrase": "so you need c greater than 18 to stay positive definite",
+      "issue": "Arithmetic error in the pivot threshold. For the 2x2 matrix with entries 2, 6, 6, c (i.e., [[2,6],[6,c]]), the second pivot is c − (6²/2) = c − 18/2 = c − 9. So the condition for the second pivot to be positive is c > 9, not c > 18. The transcript correctly states the pivot formula as 'c-minus-18 over 2' (i.e., (c−18)/2), but then gives the wrong threshold: setting (c−18)/2 > 0 gives c > 9, not c > 18.",
+      "corrected_phrase": "so you need c greater than 9 to stay positive definite",
+      "severity": "major"
+    },
+    {
+      "original_phrase": "all upper-left determinants are positive",
+      "issue": "Slightly imprecise terminology. These are the determinants of the upper-left sub-matrices (called leading principal sub-matrices or upper-left sub-matrices), not just 'upper-left determinants'. A small clarifying tweak keeps it accurate without losing accessibility.",
+      "corrected_phrase": "all upper-left sub-matrix determinants are positive",
+      "severity": "minor"
+    }
+  ],
+  "overall_accuracy": "major_issues",
+  "reviewer_notes": "The transcript is well-structured and conceptually sound overall — the rubber-bowl intuition, the three equivalent tests, and the pivot/completing-the-square connection are all mathematically legitimate and nicely explained. However, there is one significant arithmetic error: for the 2×2 matrix [[2,6],[6,c]], the second pivot is c − 36/2 = c − 18/2, which equals c − 9, so the positivity condition is c > 9, not c > 18. The transcript actually writes the pivot correctly as 'c-minus-18 over 2', making the stated threshold of c > 18 internally inconsistent as well as wrong (setting (c−18)/2 > 0 gives c > 9). This is a major factual error that would confuse learners. The minor terminology point about 'leading principal sub-matrix determinants' (often called 'upper-left determinants' colloquially, but slightly ambiguous) was softened minimally to preserve tone."
+}

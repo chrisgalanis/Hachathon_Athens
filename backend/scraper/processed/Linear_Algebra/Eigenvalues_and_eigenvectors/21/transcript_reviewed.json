@@ -1,0 +1,22 @@
+{
+  "lecture_number": 21,
+  "subject": "Eigenvalues and eigenvectors",
+  "original_transcript": "What if a matrix didn't rotate a vector at all — just stretched or shrunk it? That's the magic of eigenvectors. Every matrix has special \"natural directions\" — vectors it acts on like a simple zoom lens, scaling them without tilting them. That scaling factor is the eigenvalue. Take a projection matrix that flattens everything onto a single line: vectors already on that line stay put, eigenvalue one — no change. Vectors pointing away get crushed to zero, eigenvalue zero — complete collapse. Or flip to a permutation matrix that swaps two coordinates: the diagonal direction just bounces back unchanged, eigenvalue one, while the off-diagonal direction reverses, eigenvalue negative one. To hunt these down, you solve one elegant equation — det(A minus λI) equals zero — and the trace and determinant give you instant sanity checks. Master eigenvectors and you hold the skeleton key to everything from Google's PageRank to quantum mechanics.",
+  "reviewed_transcript": "What if a matrix didn't rotate a vector at all — just stretched or shrunk it? That's the magic of eigenvectors. Every square matrix has special \"natural directions\" — vectors it acts on like a simple zoom lens, scaling them without tilting them. That scaling factor is the eigenvalue. Take a projection matrix that flattens everything onto a single line: vectors already on that line stay put, eigenvalue one — no change. Vectors pointing away get crushed to zero, eigenvalue zero — complete collapse. Or flip to a permutation matrix that swaps two coordinates: the diagonal direction just bounces back unchanged, eigenvalue one, while the off-diagonal direction reverses, eigenvalue negative one. To hunt these down, you solve one elegant equation — det(A minus λI) equals zero — and the trace and determinant of A give you instant sanity checks on your eigenvalues. Master eigenvectors and you hold the skeleton key to everything from Google's PageRank to quantum mechanics.",
+  "issues": [
+    {
+      "original_phrase": "Every matrix has special 'natural directions'",
+      "issue": "Not every matrix has real eigenvectors — only square matrices are guaranteed to have eigenvalues (complex ones included, by the fundamental theorem of algebra). Non-square matrices do not have eigenvalues in the standard sense. The word 'every' applied to all matrices without qualification is misleading.",
+      "corrected_phrase": "Every square matrix has special 'natural directions'",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "the trace and determinant give you instant sanity checks",
+      "issue": "This is slightly ambiguous — it should be clarified that the trace and determinant of A (not of A − λI) give the sanity checks, specifically that the eigenvalues must sum to the trace and multiply to the determinant. Without that anchor the sentence could confuse listeners.",
+      "corrected_phrase": "the trace and determinant of A give you instant sanity checks on your eigenvalues",
+      "severity": "minor"
+    }
+  ],
+  "overall_accuracy": "minor_issues",
+  "reviewer_notes": "The transcript is largely accurate and well-pitched for a lay audience. Two minor issues were flagged: (1) The claim that \"every matrix\" has eigenvectors/eigenvalues should be restricted to square matrices — rectangular matrices do not admit the standard eigenvalue equation Av = λv. (2) The sanity-check sentence about the trace and determinant was made slightly more precise to clarify these are properties of A itself (eigenvalues sum to tr(A) and multiply to det(A)). No major mathematical errors were found. The projection and permutation matrix examples are correct and instructive. The characteristic equation det(A − λI) = 0 is stated correctly. The overall tone remains engaging and accessible."
+}
