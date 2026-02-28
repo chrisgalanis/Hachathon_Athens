@@ -2,24 +2,28 @@
 VideoGenerationPipeline
 =======================
 
-Full pipeline: processed JSON → two voiced, beat-synced MP4 reels.
+Voice-first pipeline: processed JSON → two voiced, beat-synced MP4 reels.
+
+The voice agent is the **source of truth**. It reads the JSON and produces
+[BEAT]-delimited narration. The Manim agent then generates animation code
+that matches **exactly** what the narrator describes.
 
   Reel 1 — Concept
-      ManimAgent animates the ``reviewed_transcript`` narrative.
-      VoiceAgent reads the animation code, writes [BEAT]-delimited narration.
+      VoiceAgent reads ``reviewed_transcript`` → beat-delimited narration.
+      ManimAgent animates the narration beat by beat.
 
   Reel 2 — Example
-      ManimAgent animates ``examples[0]`` step by step with concrete numbers.
-      VoiceAgent reads the animation code, writes [BEAT]-delimited narration.
+      VoiceAgent reads ``examples[0]`` → beat-delimited narration.
+      ManimAgent animates the narration beat by beat.
 
 Steps per reel
 --------------
-1. Generate ManimGL script (LLM).
-2. Generate beat-segmented narration from the code → per-beat MP3s.
-3. Revise the ManimGL script so visuals (colors, labels, objects) match
-   the narration exactly (LLM revision pass).
-4. Adjust ``self.wait()`` durations in the script so each animation beat
-   pauses long enough for its narration segment to finish.
+1. Voice agent generates [BEAT]-delimited narration from JSON.
+2. Each beat is TTS'd individually → per-beat MP3s with known durations.
+3. Manim agent generates ManimGL script from the narration (one self.wait()
+   per [BEAT] boundary).
+4. Adjust ``self.wait()`` durations so animation pauses long enough for each
+   narration beat.
 5. Render the timing-adjusted script with ``manimgl`` CLI → silent MP4.
 6. Merge audio + video with ffmpeg (freeze last frame if needed).
 
@@ -84,9 +88,6 @@ def _merge_audio_video(video_path: str, audio_path: str, output_path: str) -> No
     if audio_dur > video_dur:
         freeze_secs = audio_dur - video_dur
         print(f"  |  Freezing last frame +{freeze_secs:.1f}s")
-        # Use tpad filter to hold the last frame until the audio ends.
-        # tpad=stop_mode=clone:stop_duration=N  clones the final frame
-        # for N extra seconds — no re-encoding artefacts, pixel-perfect.
         cmd = [
             "ffmpeg", "-y",
             "-i", video_path,
@@ -122,6 +123,7 @@ def _render_manim(script_path: str, scene_class: str, video_dir: str) -> str:
     cmd = [
         _MANIMGL, script_path, scene_class,
         "-w",
+        "-r", "1080x1920",          # 9:16 portrait
         "--video_dir", video_dir,
     ]
     print(f"  Rendering: {' '.join(cmd)}")
@@ -167,7 +169,6 @@ def _estimate_beat_anim_durations(code: str) -> List[float]:
     Default run_time for a self.play() with no explicit arg is 1.0s.
     Default self.wait() with no arg is 1.0s.
     """
-    # Extract just the construct body lines
     lines = code.split("\n")
     in_construct = False
     beat_dur = 0.0
@@ -181,16 +182,13 @@ def _estimate_beat_anim_durations(code: str) -> List[float]:
             continue
         if not in_construct:
             continue
-        # End of construct (next def or class at same/lower indent)
         if stripped.startswith("def ") or stripped.startswith("class "):
             break
 
-        # self.play(...) — accumulate run_time
         if "self.play(" in stripped:
             rt_match = _PLAY_RUNTIME_RE.search(stripped)
             beat_dur += float(rt_match.group(1)) if rt_match else 1.0
 
-        # self.wait(...) — marks end of a beat
         wait_match = _WAIT_RE.search(stripped)
         if wait_match:
             wait_val = float(wait_match.group(1)) if wait_match.group(1) else 1.0
@@ -198,7 +196,6 @@ def _estimate_beat_anim_durations(code: str) -> List[float]:
             durations.append(beat_dur)
             beat_dur = 0.0
 
-    # Trailing beat after last self.wait (or if there's no wait at all)
     if beat_dur > 0 or not durations:
         durations.append(max(beat_dur, 1.0))
 
@@ -225,11 +222,10 @@ def _adjust_wait_times(code: str, beat_audio_durations: List[float]) -> str:
     ):
         print(f"    Beat {i}: anim={anim:.1f}s  audio={audio:.1f}s")
 
-    # Compute the new wait value for each beat
     lines = code.split("\n")
     in_construct = False
     beat_idx = 0
-    play_accum = 0.0  # accumulated play time in current beat
+    play_accum = 0.0
     new_lines: List[str] = []
 
     for line in lines:
@@ -247,26 +243,20 @@ def _adjust_wait_times(code: str, beat_audio_durations: List[float]) -> str:
             new_lines.append(line)
             continue
 
-        # Track play time
         if "self.play(" in stripped:
             rt_match = _PLAY_RUNTIME_RE.search(stripped)
             play_accum += float(rt_match.group(1)) if rt_match else 1.0
 
-        # Rewrite self.wait() if we have audio duration info for this beat
         wait_match = _WAIT_RE.search(stripped)
         if wait_match and in_construct:
             original_wait = float(wait_match.group(1)) if wait_match.group(1) else 1.0
 
             if beat_idx < len(beat_audio_durations):
                 audio_dur = beat_audio_durations[beat_idx]
-                # How much time the plays already take
                 anim_time_without_wait = play_accum
-                # Minimum wait = audio duration minus play time (at least original)
                 needed_wait = max(audio_dur - anim_time_without_wait, original_wait)
-                # Round to 1 decimal
                 needed_wait = round(needed_wait, 1)
 
-                # Replace the wait value in the line
                 indent = line[: len(line) - len(line.lstrip())]
                 new_lines.append(f"{indent}self.wait({needed_wait})")
 
@@ -284,11 +274,9 @@ def _adjust_wait_times(code: str, beat_audio_durations: List[float]) -> str:
 
         new_lines.append(line)
 
-    # If audio has more beats than code waits, extend the very last wait
     if len(beat_audio_durations) > len(anim_durations):
         extra_audio = sum(beat_audio_durations[len(anim_durations):])
         print(f"    Adding {extra_audio:.1f}s extra wait at end for {len(beat_audio_durations) - len(anim_durations)} extra audio beats")
-        # Find last self.wait and increase it
         for i in range(len(new_lines) - 1, -1, -1):
             wm = _WAIT_RE.search(new_lines[i])
             if wm:
@@ -306,7 +294,11 @@ def _adjust_wait_times(code: str, beat_audio_durations: List[float]) -> str:
 # ---------------------------------------------------------------------------
 
 class VideoGenerationPipeline:
-    """Orchestrates ManimAgent + VoiceAgent + ffmpeg into two voiced MP4 reels.
+    """Voice-first pipeline: VoiceAgent → ManimAgent → ffmpeg → voiced MP4 reels.
+
+    The voice agent reads the JSON and produces narration. The Manim agent
+    animates exactly what the narrator describes. Timing is adjusted so
+    the animation pauses long enough for each narration beat.
 
     Args:
         output_dir: Directory where all intermediate and final files are written.
@@ -314,15 +306,12 @@ class VideoGenerationPipeline:
 
     def __init__(self, output_dir: str = "output"):
         self.output_dir = Path(output_dir)
-        self._finals_dir = self.output_dir / "final"       # ← voiced MP4s here
-        self._scratch_dir = self.output_dir / "_scratch"   # ← scripts, audio, silent MP4s
+        self._finals_dir = self.output_dir / "final"
+        self._scratch_dir = self.output_dir / "_scratch"
         self._finals_dir.mkdir(parents=True, exist_ok=True)
         self._scratch_dir.mkdir(parents=True, exist_ok=True)
-        # Separate ManimAgent instances so each keeps its own conversation
-        # history for the revision follow-up call.
-        self._concept_manim_agent = ManimAgent()
-        self._example_manim_agent = ManimAgent()
         self._voice_agent = VoiceAgent()
+        self._manim_agent = ManimAgent()
 
     async def run_from_json(self, json_path: str) -> tuple[str, str]:
         """Run the full pipeline for a processed JSON file.
@@ -338,18 +327,15 @@ class VideoGenerationPipeline:
         return await self.run_from_dict(data)
 
     async def run_from_dict(self, data: dict) -> tuple[str, str]:
-        """Run the full beat-synced pipeline from a pre-loaded JSON dict.
+        """Run the full voice-first pipeline from a pre-loaded JSON dict.
 
         Flow per reel:
-          1. LLM generates ManimGL script.
-          2. LLM generates [BEAT]-delimited narration from the script.
-          3. LLM revises the Manim script so visuals match narration exactly
-             (colors, labels, objects).
-          4. Each beat is TTS'd individually → per-beat MP3s with known durations.
-          5. ``self.wait()`` durations in the Manim code are adjusted so the
-             animation pauses long enough for each narration beat.
-          6. The timing-adjusted script is rendered → silent MP4.
-          7. Audio + video are merged with ffmpeg.
+          1. Voice agent reads JSON → [BEAT]-delimited narration + TTS.
+          2. Manim agent reads narration → ManimGL script (one self.wait()
+             per beat boundary).
+          3. self.wait() durations adjusted to match per-beat audio durations.
+          4. Timing-adjusted script rendered → silent MP4.
+          5. Audio + video merged with ffmpeg.
 
         Args:
             data: Processed JSON dict.
@@ -358,6 +344,8 @@ class VideoGenerationPipeline:
             (concept_mp4_path, example_mp4_path)
         """
         slug = re.sub(r"\W+", "_", data.get("subject", "lecture")).strip("_")
+        subject = data.get("subject", "Unknown Topic")
+        lecture_number = str(data.get("lecture_number", "?"))
 
         concept_audio     = str(self._scratch_dir / f"{slug}_concept_narration.mp3")
         example_audio     = str(self._scratch_dir / f"{slug}_example_narration.mp3")
@@ -369,47 +357,35 @@ class VideoGenerationPipeline:
         example_mp4       = str(self._finals_dir / f"{slug}_example.mp4")
 
         # ------------------------------------------------------------------ #
-        # Step 1 — generate both Manim scripts in parallel (LLM)
+        # Step 1 — Voice agent generates narration from JSON (source of truth)
         # ------------------------------------------------------------------ #
-        print("\n[1/7] Generating Manim scripts in parallel …")
+        print("\n[1/5] Generating narrations from JSON in parallel …")
+        (concept_beats, _, concept_narration), (example_beats, _, example_narration) = (
+            await asyncio.gather(
+                self._voice_agent.run_concept_narration(data, output_path=concept_audio),
+                self._voice_agent.run_example_narration(data, output_path=example_audio),
+            )
+        )
+
+        # ------------------------------------------------------------------ #
+        # Step 2 — Manim agent generates animation FROM the narration
+        # ------------------------------------------------------------------ #
+        print("\n[2/5] Generating Manim scripts from narration in parallel …")
         concept_manim_result, example_manim_result = await asyncio.gather(
-            self._concept_manim_agent.run_concept_reel(data),
-            self._example_manim_agent.run_example_reel(data),
+            self._manim_agent.run_from_narration(
+                concept_narration, subject, lecture_number, reel_type="concept"
+            ),
+            self._manim_agent.run_from_narration(
+                example_narration, subject, lecture_number, reel_type="example"
+            ),
         )
         concept_code: str = concept_manim_result.output
         example_code: str = example_manim_result.output
 
         # ------------------------------------------------------------------ #
-        # Step 2 — voice agent reads each script → beat-delimited narration
-        #          Each beat is TTS'd individually so we know exact durations.
+        # Step 3 — Adjust self.wait() durations to match narration beats
         # ------------------------------------------------------------------ #
-        print("\n[2/7] Generating beat-synced narrations in parallel …")
-        (concept_beats, _, concept_narration), (example_beats, _, example_narration) = (
-            await asyncio.gather(
-                self._voice_agent.run_from_code(data, concept_code, output_path=concept_audio),
-                self._voice_agent.run_from_code(data, example_code, output_path=example_audio),
-            )
-        )
-
-        # ------------------------------------------------------------------ #
-        # Step 3 — revise Manim scripts to match narration exactly
-        #          (colours, labels, objects, order)
-        # ------------------------------------------------------------------ #
-        print("\n[3/7] Revising Manim scripts to match narration …")
-
-        print("  Revising concept reel …")
-        concept_revised_result, example_revised_result = await asyncio.gather(
-            self._concept_manim_agent.revise_to_match_narration(concept_code, concept_narration),
-            self._example_manim_agent.revise_to_match_narration(example_code, example_narration),
-        )
-        concept_code = concept_revised_result.output
-        print("  Revising example reel …")
-        example_code = example_revised_result.output
-
-        # ------------------------------------------------------------------ #
-        # Step 4 — adjust self.wait() durations so animation syncs to narration
-        # ------------------------------------------------------------------ #
-        print("\n[4/7] Adjusting animation timing to match narration beats …")
+        print("\n[3/5] Adjusting animation timing to match narration beats …")
 
         print("  Concept reel:")
         concept_code = _adjust_wait_times(concept_code, concept_beats)
@@ -417,9 +393,9 @@ class VideoGenerationPipeline:
         example_code = _adjust_wait_times(example_code, example_beats)
 
         # ------------------------------------------------------------------ #
-        # Step 5 — render timing-adjusted scripts + merge with audio
+        # Step 4 — Render timing-adjusted scripts + merge with audio
         # ------------------------------------------------------------------ #
-        print("\n[5/7] Rendering and merging …")
+        print("\n[4/5] Rendering and merging …")
 
         _write_script(concept_code, concept_script)
         _write_script(example_code, example_script)
@@ -439,11 +415,11 @@ class VideoGenerationPipeline:
         _merge_audio_video(example_silent, example_audio, example_mp4)
 
         # ------------------------------------------------------------------ #
-        # Step 6 — done
+        # Step 5 — Done
         # ------------------------------------------------------------------ #
         concept_dur = _get_duration(concept_mp4)
         example_dur = _get_duration(example_mp4)
-        print(f"\n[6/7] Done!")
+        print(f"\n[5/5] Done!")
         print(f"  Concept reel: {concept_mp4}  ({concept_dur:.1f}s)")
         print(f"  Example reel: {example_mp4}  ({example_dur:.1f}s)")
 

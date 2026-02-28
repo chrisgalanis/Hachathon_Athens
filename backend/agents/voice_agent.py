@@ -1,28 +1,32 @@
 """
-VoiceAgent — generates beat-synced spoken narration for ManimGL animations.
+VoiceAgent — voice-first narration from processed lecture JSON.
 
-The animation code is the SOLE narration source. The voice agent reads every
-``self.play()`` call top-to-bottom, groups them into logical beats (separated
-by ``self.wait()``), and writes one narration segment per beat.
+The voice agent is the **source of truth** for the entire pipeline. It reads
+the ``reviewed_transcript`` (concept reel) or ``examples[0]`` (example reel)
+directly from the processed JSON and produces [BEAT]-delimited narration.
+
+The narration is then passed to the ManimAgent, which animates **only** what
+the narrator describes. This guarantees perfect alignment between what the
+viewer hears and what they see.
 
 Each beat is synthesised to audio individually so we know its exact duration.
 The pipeline uses these durations to adjust ``self.wait()`` times in the Manim
 script *before* rendering — guaranteeing the animation pauses long enough for
 each narration segment to finish before moving on.
 
-The ``reviewed_transcript`` from the processed JSON is passed as background
-context so the LLM can use correct terminology and verify numbers — but it
-must NEVER narrate anything that isn't visually present in the animation code.
-
 Usage::
 
     agent = VoiceAgent()
-    beat_durations, mp3_path = await agent.run_from_code(
-        data=data,
-        manim_code=manim_code,
-        output_path="narration.mp3",
+
+    # Concept reel — from reviewed_transcript
+    beat_durations, mp3_path, narration = await agent.run_concept_narration(
+        data=data, output_path="concept_narration.mp3",
     )
-    # beat_durations = [3.2, 2.1, 4.5, ...]  seconds per beat
+
+    # Example reel — from examples[0]
+    beat_durations, mp3_path, narration = await agent.run_example_narration(
+        data=data, output_path="example_narration.mp3",
+    )
 """
 
 import json as _json_mod
@@ -68,40 +72,68 @@ def _optimize_for_tts(text: str) -> str:
     return text
 
 
-def _build_prompt(data: dict, manim_code: str) -> str:
-    """Build prompt: animation code is the SOLE narration source.
+# ---------------------------------------------------------------------------
+# Prompt builders — JSON is the input, NOT animation code
+# ---------------------------------------------------------------------------
 
-    The reviewed_transcript provides human-readable mathematical context
-    so the LLM can speak accurately, but the narration must describe
-    only what the animation code actually renders — nothing else.
-    """
+def _build_concept_prompt(data: dict) -> str:
+    """Build prompt for concept reel narration from reviewed_transcript."""
     subject = data.get("subject", "Unknown Topic")
     lecture_number = data.get("lecture_number", "?")
-    reviewed_transcript = data.get("reviewed_transcript", "").strip()
+    transcript = data.get("reviewed_transcript", "").strip()
 
-    parts = [
-        f"Lecture {lecture_number}: {subject}\n",
-        "─── ANIMATION CODE (this is your ONLY narration source) ───\n"
-        "Read every self.play() call top-to-bottom. That is the video.\n"
-        "Group them into beats (split at self.wait() boundaries).\n"
-        "Write one narration segment per beat, separated by [BEAT] markers.\n\n"
-        f"```python\n{manim_code}\n```\n",
-    ]
-
-    if reviewed_transcript:
-        parts.append(
-            "─── REVIEWED TRANSCRIPT (background context only) ───\n"
-            "This is a human-written explanation of the same concept. Use it to:\n"
-            "  • understand the mathematical intent behind the code\n"
-            "  • pick the right terminology and phrasing\n"
-            "  • ensure numerical values and definitions are correct\n"
-            "Do NOT narrate anything from this text that is not visually present "
-            "in the animation code above.\n\n"
-            f'"{reviewed_transcript}"'
+    if not transcript:
+        raise ValueError(
+            "processed.json has no 'reviewed_transcript'. "
+            "Cannot build a concept narration without it."
         )
 
-    return "\n".join(parts)
+    return (
+        f"Lecture {lecture_number}: {subject}\n\n"
+        "─── REVIEWED TRANSCRIPT (your primary source) ───\n"
+        f'"{transcript}"\n\n'
+        "Write a voice-over narration for a short animation reel that teaches "
+        "this concept visually. Your narration will be handed to an animation "
+        "engine that will create visuals to match exactly what you describe.\n\n"
+        "IMPORTANT: Describe specific visual actions the animation should show. "
+        "Name colors, objects, and movements explicitly. For example:\n"
+        '  - "A green arrow stretches along the x-axis"\n'
+        '  - "The blue grid warps under the transformation"\n'
+        '  - "A yellow highlight surrounds the pivot"\n\n'
+        "The animator will create exactly what you describe — so be precise "
+        "and visual."
+    )
 
+
+def _build_example_prompt(data: dict) -> str:
+    """Build prompt for example reel narration from examples[0]."""
+    subject = data.get("subject", "Unknown Topic")
+    lecture_number = data.get("lecture_number", "?")
+    examples = data.get("examples", [])
+    example_text = examples[0] if examples else "(no example available)"
+
+    return (
+        f"Lecture {lecture_number}: {subject} — Worked Example\n\n"
+        "─── EXAMPLE TO NARRATE ───\n"
+        f"{example_text}\n\n"
+        "Write a voice-over narration for a short animation reel that walks "
+        "through this example step by step. Your narration will be handed to "
+        "an animation engine that will create visuals to match exactly what "
+        "you describe.\n\n"
+        "IMPORTANT: Describe specific visual actions for each step. "
+        "Name every matrix, vector, number, color, and transformation "
+        "explicitly. For example:\n"
+        '  - "Here\'s our two-by-two matrix with entries one, two, three, four"\n'
+        '  - "Watch row two — subtract three times row one"\n'
+        '  - "A red arrow points to the pivot position"\n\n'
+        "The animator will create exactly what you describe — so be precise "
+        "and visual. Show every calculation."
+    )
+
+
+# ---------------------------------------------------------------------------
+# Beat splitting & audio helpers
+# ---------------------------------------------------------------------------
 
 def _split_beats(narration: str) -> List[str]:
     """Split a [BEAT]-delimited narration into individual beat texts.
@@ -175,12 +207,10 @@ def _synthesise_beats(
 def _concat_mp3s(mp3_paths: List[str], output_path: str) -> None:
     """Concatenate beat MP3 files into a single MP3 using ffmpeg."""
     if len(mp3_paths) == 1:
-        # Just copy the single file
         import shutil
         shutil.copy2(mp3_paths[0], output_path)
         return
 
-    # Build ffmpeg concat demuxer file list
     with tempfile.NamedTemporaryFile(
         mode="w", suffix=".txt", delete=False
     ) as f:
@@ -203,13 +233,53 @@ def _concat_mp3s(mp3_paths: List[str], output_path: str) -> None:
         os.unlink(list_path)
 
 
-class VoiceAgent(BaseAgent):
-    """Narrates a ManimGL animation script as beat-synced voice-over.
+# ---------------------------------------------------------------------------
+# Internal narration runner (shared by concept + example)
+# ---------------------------------------------------------------------------
 
-    The animation code is the source of truth — the narration describes
-    what is literally on screen, in the order it appears. The output is
-    split into beats (aligned with ``self.wait()`` boundaries in the code)
-    so the pipeline can adjust animation timing to match narration length.
+def _run_narration(
+    raw_narration: str, output_path: str
+) -> Tuple[List[float], str]:
+    """Split narration into beats, TTS each, concatenate, return durations.
+
+    Args:
+        raw_narration: LLM output with [BEAT] delimiters.
+        output_path: Destination MP3 path for the combined narration.
+
+    Returns:
+        (beat_durations, mp3_path)
+    """
+    beats = _split_beats(raw_narration)
+    beats = [_optimize_for_tts(b) for b in beats]
+
+    total_words = sum(len(b.split()) for b in beats)
+    print(f"\n── Narration: {total_words} words, {len(beats)} beats ──────────────────")
+    for i, b in enumerate(beats):
+        print(f"  [{i}] {b}")
+    print("──────────────────────────────────────────────────────────────────\n")
+
+    out_dir = os.path.dirname(os.path.abspath(output_path))
+    slug = Path(output_path).stem
+    print("  Synthesising beats …")
+    beat_durations, beat_paths = _synthesise_beats(beats, out_dir, slug)
+
+    _concat_mp3s(beat_paths, output_path)
+    total_dur = sum(beat_durations)
+    print(f"  Combined audio: {output_path}  ({total_dur:.1f}s)")
+
+    return beat_durations, output_path
+
+
+# ---------------------------------------------------------------------------
+# VoiceAgent class
+# ---------------------------------------------------------------------------
+
+class VoiceAgent(BaseAgent):
+    """Voice-first narration agent — reads JSON, produces [BEAT]-delimited
+    narration that drives the entire animation pipeline.
+
+    The narration is the source of truth. The Manim agent animates only
+    what the narrator describes.
     """
 
     def __init__(self, **kwargs):
@@ -219,47 +289,44 @@ class VoiceAgent(BaseAgent):
             **kwargs,
         )
 
-    async def run_from_code(
+    async def run_concept_narration(
         self,
         data: dict,
-        manim_code: str,
-        output_path: str = "narration.mp3",
+        output_path: str = "concept_narration.mp3",
     ) -> Tuple[List[float], str, str]:
-        """Generate beat-synced narration from animation code, then synthesise.
+        """Generate concept reel narration from reviewed_transcript.
 
         Args:
-            data: Processed JSON dict (used as math context).
-            manim_code: The ManimGL Python script that will play on screen.
+            data: Processed JSON dict; must contain ``reviewed_transcript``.
             output_path: Destination MP3 path for the combined narration.
 
         Returns:
-            (beat_durations, mp3_path, raw_narration) — list of seconds per
-            beat, the path to the concatenated MP3, and the raw [BEAT]-delimited
-            narration text from the LLM.
+            (beat_durations, mp3_path, raw_narration)
         """
-        prompt = _build_prompt(data, manim_code)
+        prompt = _build_concept_prompt(data)
         result = await self.run(prompt)
         raw_narration: str = result.output
 
-        # Split into beats and optimise each for TTS
-        beats = _split_beats(raw_narration)
-        beats = [_optimize_for_tts(b) for b in beats]
+        beat_durations, mp3_path = _run_narration(raw_narration, output_path)
+        return beat_durations, mp3_path, raw_narration
 
-        total_words = sum(len(b.split()) for b in beats)
-        print(f"\n── Narration: {total_words} words, {len(beats)} beats ──────────────────")
-        for i, b in enumerate(beats):
-            print(f"  [{i}] {b}")
-        print("──────────────────────────────────────────────────────────────────\n")
+    async def run_example_narration(
+        self,
+        data: dict,
+        output_path: str = "example_narration.mp3",
+    ) -> Tuple[List[float], str, str]:
+        """Generate example reel narration from examples[0].
 
-        # Synthesise each beat individually
-        out_dir = os.path.dirname(os.path.abspath(output_path))
-        slug = Path(output_path).stem
-        print("  Synthesising beats …")
-        beat_durations, beat_paths = _synthesise_beats(beats, out_dir, slug)
+        Args:
+            data: Processed JSON dict; uses ``examples[0]``.
+            output_path: Destination MP3 path for the combined narration.
 
-        # Concatenate all beats into one MP3
-        _concat_mp3s(beat_paths, output_path)
-        total_dur = sum(beat_durations)
-        print(f"  Combined audio: {output_path}  ({total_dur:.1f}s)")
+        Returns:
+            (beat_durations, mp3_path, raw_narration)
+        """
+        prompt = _build_example_prompt(data)
+        result = await self.run(prompt)
+        raw_narration: str = result.output
 
-        return beat_durations, output_path, raw_narration
+        beat_durations, mp3_path = _run_narration(raw_narration, output_path)
+        return beat_durations, mp3_path, raw_narration
