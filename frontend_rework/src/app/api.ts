@@ -28,6 +28,7 @@ export interface RawReel {
   transcript: string;
   captions: Array<{ start: number; end: number; text: string }>;
   videoSrc: string | null;
+  brainrotSrc: string | null;
   hasVideo: boolean;
 }
 

@@ -61,19 +61,23 @@ app.mount("/videos", StaticFiles(directory=str(VIDEOS_DIR)), name="videos")
 # reels.json — maps transcript dirs to video files
 # ---------------------------------------------------------------------------
 
-def _load_reels_map() -> dict[Path, Path]:
-    """Return {resolved_transcript_dir: resolved_video_path} from reels.json."""
+def _load_reels_map() -> tuple[dict[Path, Path], dict[Path, Path]]:
+    """Return ({transcript_dir: video_path}, {transcript_dir: brainrot_path}) from reels.json."""
     reels_json = BASE_DIR / "reels.json"
     if not reels_json.exists():
-        return {}
+        return {}, {}
     entries = json.loads(reels_json.read_text(encoding="utf-8"))
-    return {
-        Path(e["transcript"]).resolve(): Path(e["video"]).resolve()
-        for e in entries
-        if "transcript" in e and "video" in e
-    }
+    reels_map: dict[Path, Path] = {}
+    brainrot_map: dict[Path, Path] = {}
+    for e in entries:
+        if "transcript" in e and "video" in e:
+            t = Path(e["transcript"]).resolve()
+            reels_map[t] = Path(e["video"]).resolve()
+            if "brainrot_video" in e:
+                brainrot_map[t] = Path(e["brainrot_video"]).resolve()
+    return reels_map, brainrot_map
 
-REELS_MAP: dict[Path, Path] = _load_reels_map()
+REELS_MAP, BRAINROT_MAP = _load_reels_map()
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -130,6 +134,13 @@ def _build_reel(concept: str, lecture_dir: Path) -> dict | None:
 
     subject = data.get("subject", concept.replace("_", " "))
 
+    # Resolve brainrot video path if present
+    brainrot_abs = BRAINROT_MAP.get(lecture_dir.resolve())
+    if brainrot_abs and brainrot_abs.exists():
+        brainrot_rel = "/videos/" + brainrot_abs.relative_to(VIDEOS_DIR).as_posix()
+    else:
+        brainrot_rel = None
+
     return {
         "id": f"{concept}-lecture-{lecture_num}",
         "concept": concept,
@@ -143,6 +154,7 @@ def _build_reel(concept: str, lecture_dir: Path) -> dict | None:
         "captions": _transcript_to_captions(reviewed_transcript),
         "videoSrc": video_rel if video_abs.exists() else None,
         "hasVideo": video_abs.exists(),
+        "brainrotSrc": brainrot_rel,
     }
 
 

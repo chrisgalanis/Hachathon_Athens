@@ -13,6 +13,7 @@ interface ReelCardPremiumProps {
   totalCards: number;
   currentCard: number;
   videoSrc?: string;
+  compact?: boolean;
 }
 
 function formatTime(s: number) {
@@ -32,6 +33,7 @@ export function ReelCardPremium({
   totalCards,
   currentCard,
   videoSrc,
+  compact = false,
 }: ReelCardPremiumProps) {
   const [aura, setAura] = useState(0);
   // Non-video cards always show UI; video cards start hidden
@@ -126,7 +128,7 @@ export function ReelCardPremium({
   return (
     <div
       ref={cardRef}
-      className="h-screen w-full snap-start snap-always relative overflow-hidden"
+      className="h-full w-full relative overflow-hidden"
       onTouchStart={() => { if (videoSrc) showAndStartIdle(); }}
       onClick={handleInteraction}
     >
@@ -162,33 +164,35 @@ export function ReelCardPremium({
         transition={{ duration: 0.6, ease: 'easeInOut' }}
         style={{ pointerEvents: showUI ? 'auto' : 'none' }}
       >
-        {/* Story-style progress dots at top */}
-        <div className="absolute top-0 left-0 right-0 z-20 flex gap-1 p-4">
-          {[...Array(totalCards)].map((_, i) => (
-            <div key={i} className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-white rounded-full"
-                initial={{ width: 0 }}
-                animate={{
-                  width: i < currentCard - 1 ? '100%' : i === currentCard - 1 ? `${progress}%` : '0%',
-                }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
-          ))}
-        </div>
+        {/* Story-style progress dots at top — hidden in compact mode */}
+        {!compact && (
+          <div className="absolute top-0 left-0 right-0 z-20 flex gap-1 p-4">
+            {[...Array(totalCards)].map((_, i) => (
+              <div key={i} className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-white rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{
+                    width: i < currentCard - 1 ? '100%' : i === currentCard - 1 ? `${progress}%` : '0%',
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Subject chip */}
-        <div className="absolute top-16 left-6 z-20">
+        <div className={`absolute ${compact ? 'top-10' : 'top-16'} left-6 z-20`}>
           <div
-            className="px-4 py-2 rounded-full backdrop-blur-xl border border-white/20 shadow-2xl flex items-center gap-2"
+            className={`${compact ? 'px-3 py-1' : 'px-4 py-2'} rounded-full backdrop-blur-xl border border-white/20 shadow-2xl flex items-center gap-2`}
             style={{
               background: `linear-gradient(135deg, ${subjectColor}40, ${subjectColor}20)`,
               boxShadow: `0 0 30px ${subjectColor}40`,
             }}
           >
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: subjectColor }} />
-            <span className="text-white text-sm">{subject}</span>
+            <span className={`text-white ${compact ? 'text-xs' : 'text-sm'}`}>{subject}</span>
           </div>
         </div>
 
@@ -212,8 +216,8 @@ export function ReelCardPremium({
         )}
 
         {/* Main content */}
-        <div className={`absolute inset-x-0 px-8 ${videoSrc ? 'bottom-28' : 'top-1/3'}`}>
-          <h1 className="text-white text-3xl mb-4 leading-tight tracking-tight">{topic}</h1>
+        <div className={`absolute inset-x-0 ${compact ? 'px-4' : 'px-8'} ${videoSrc ? (compact ? 'bottom-16' : 'bottom-28') : (compact ? 'top-1/4' : 'top-1/3')}`}>
+          <h1 className={`text-white ${compact ? 'text-lg' : 'text-3xl'} mb-2 leading-tight tracking-tight`}>{topic}</h1>
 
           {!videoSrc && (
             <div className="space-y-4">
@@ -244,7 +248,7 @@ export function ReelCardPremium({
         {/* Video scrubber bar */}
         {videoSrc && duration > 0 && (
           <div
-            className="absolute bottom-4 left-4 right-20 z-20 flex items-center gap-3"
+            className={`absolute ${compact ? 'bottom-2' : 'bottom-4'} left-4 right-20 z-20 flex items-center gap-3`}
             onClick={(e) => e.stopPropagation()}
           >
             <span className="text-white/70 text-xs tabular-nums w-8 shrink-0">
@@ -280,7 +284,7 @@ export function ReelCardPremium({
         )}
 
         {/* Action sidebar */}
-        <div className="absolute right-4 bottom-32 z-20 flex flex-col gap-6">
+        <div className={`absolute right-4 ${compact ? 'bottom-16' : 'bottom-32'} z-20 flex flex-col gap-6`}>
           <motion.button
             whileTap={{ scale: 0.85 }}
             onClick={(e) => { e.stopPropagation(); setAura(a => a + 10); }}

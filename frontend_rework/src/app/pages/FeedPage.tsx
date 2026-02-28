@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ReelCardPremium } from '../components/ReelCardPremium';
 import { FloatingNav } from '../components/FloatingNav';
 import { fetchAllReels, resolveVideoUrl, type RawReel } from '../api';
@@ -17,6 +17,35 @@ const BG_GRADIENTS = [
   'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
   'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)',
 ];
+
+// Simple muted autoplay video for the brainrot bottom slot
+function BrainrotVideo({ src }: { src: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) ref.current?.play().catch(() => {});
+        else ref.current?.pause();
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <video
+      ref={ref}
+      src={src}
+      className="w-full h-full object-cover"
+      playsInline
+      muted
+      loop
+    />
+  );
+}
 
 function colorFor(concept: string, palette: string[]): string {
   let hash = 0;
@@ -74,12 +103,35 @@ export function FeedPage() {
     <div className="relative w-full h-screen overflow-hidden bg-[#0a0a0f]">
       {/* Main scroll container */}
       <div className="h-screen overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
-        {reels.map((reel, index) => (
-          <ReelCardPremium
-            key={reel.id}
-            {...rawToCardProps(reel, index, reels.length)}
-          />
-        ))}
+        {reels.map((reel, index) => {
+          const brainrotUrl = reel.brainrotSrc ? resolveVideoUrl(reel.brainrotSrc) : null;
+
+          if (brainrotUrl) {
+            // Split-screen: top half = main video, bottom half = muted brainrot
+            return (
+              <div key={reel.id} className="h-screen snap-start snap-always flex flex-col">
+                <div className="h-1/2 overflow-hidden">
+                  <ReelCardPremium
+                    {...rawToCardProps(reel, index, reels.length)}
+                    compact
+                  />
+                </div>
+                <div className="h-1/2 overflow-hidden bg-black relative">
+                  <BrainrotVideo src={brainrotUrl} />
+                </div>
+              </div>
+            );
+          }
+
+          // Full-screen: no brainrot video
+          return (
+            <div key={reel.id} className="h-screen snap-start snap-always">
+              <ReelCardPremium
+                {...rawToCardProps(reel, index, reels.length)}
+              />
+            </div>
+          );
+        })}
       </div>
 
       {/* Floating Navigation */}
