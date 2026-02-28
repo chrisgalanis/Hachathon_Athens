@@ -1,8 +1,13 @@
 """
-MIT 18.06 Linear Algebra (Spring 2010) lecture transcript extractor.
+OCW lecture transcript extractor — multi-course edition.
 
-Reads all 35 lecture PDFs from the local OCW directory and writes
-a sorted data/lectures.json with lecture_number, subject, content, examples.
+Iterates over every subdirectory in ./input/, treats each as a course root,
+and writes individual JSON files organised as:
+
+    data/{course}/{subject_slug}/{lecture_number}/data.json
+
+where subject_slug is the lecture subject with spaces replaced by underscores
+and non-alphanumeric characters removed.
 
 Usage:
     python3 extract.py
@@ -17,9 +22,7 @@ import re
 import subprocess
 import sys
 
-# Hardcoded path to the local OCW course directory.
-# Update this if the course is stored elsewhere.
-BASE = '/home/chris/Downloads/18.06-spring-2010'
+INPUT_DIR = './input'
 
 
 def discover_lectures(base):
@@ -74,50 +77,58 @@ def sort_key(entry):
     return (base, suffix)
 
 
-def main():
+def slugify(text):
+    """Convert a subject string to a safe directory name.
+
+    Replaces whitespace with underscores and strips characters that are
+    not alphanumeric, underscores, or hyphens.
+    """
+    text = re.sub(r'\s+', '_', text.strip())
+    text = re.sub(r'[^\w\-]', '', text)
+    return text
+
+
+def process_course(course_dir, course_name):
+    """Extract all lectures from one course directory.
+
+    Returns a sorted list of lecture entry dicts.
+    """
     lectures = []
 
-    for data_path in discover_lectures(BASE):
-        # Load the lecture metadata JSON
+    for data_path in discover_lectures(course_dir):
         with open(data_path) as f:
             data = json.load(f)
 
         title = data.get('title', '')
         num_str, subject = parse_title(title)
         if num_str is None:
-            print(f'WARNING: Cannot parse title: {title!r}', file=sys.stderr)
+            print(f'[{course_name}] WARNING: Cannot parse title: {title!r}', file=sys.stderr)
             continue
 
         tf = data.get('transcript_file', '')
         if not tf:
-            print(f'WARNING: No transcript_file for: {title}', file=sys.stderr)
+            print(f'[{course_name}] WARNING: No transcript_file for: {title}', file=sys.stderr)
             continue
 
-        # IMPORTANT: transcript_file is a URL path, e.g.
-        #   '/courses/18-06-linear-algebra-spring-2010/HASH.pdf'
-        # NOT a filesystem path. Use only the basename.
+        # transcript_file is a URL path — use only the basename.
         pdf_fname = os.path.basename(tf)
-        pdf_path = os.path.join(BASE, 'static_resources', pdf_fname)
+        pdf_path = os.path.join(course_dir, 'static_resources', pdf_fname)
 
         if not os.path.exists(pdf_path):
-            print(f'WARNING: PDF not found: {pdf_path}', file=sys.stderr)
+            print(f'[{course_name}] WARNING: PDF not found: {pdf_path}', file=sys.stderr)
             continue
 
-        # QUAL-02: print progress for each lecture being processed
-        print(f'Processing lecture {num_str}: {subject}...')
+        print(f'[{course_name}] Processing lecture {num_str}: {subject}...')
 
         content = extract_pdf_text(pdf_path)
         if content is None:
-            print(f'WARNING: pdftotext failed for: {pdf_fname}', file=sys.stderr)
+            print(f'[{course_name}] WARNING: pdftotext failed for: {pdf_fname}', file=sys.stderr)
             continue
 
-        # Store lecture_number as int for pure-digit entries (1-34),
-        # and as the string '24b' for the supplementary lecture.
-        # int("24b") raises ValueError, which we catch here.
         try:
             lecture_number = int(num_str)
         except ValueError:
-            lecture_number = num_str  # '24b' — one entry, cannot be int
+            lecture_number = num_str
 
         lectures.append({
             'lecture_number': lecture_number,
@@ -126,14 +137,45 @@ def main():
             'examples': []
         })
 
-    # Sort ascending: 1, 2, ..., 24, '24b', 25, ..., 35
     lectures.sort(key=sort_key)
+    return lectures
 
-    os.makedirs('data', exist_ok=True)
-    with open('data/lectures.json', 'w', encoding='utf-8') as f:
-        json.dump(lectures, f, indent=2, ensure_ascii=False)
 
-    print(f'\nDone. Wrote {len(lectures)} lectures to data/lectures.json')
+def main():
+    if not os.path.isdir(INPUT_DIR):
+        print(f'ERROR: input directory not found: {INPUT_DIR}', file=sys.stderr)
+        sys.exit(1)
+
+    courses = sorted(
+        d for d in os.listdir(INPUT_DIR)
+        if os.path.isdir(os.path.join(INPUT_DIR, d))
+    )
+
+    if not courses:
+        print(f'ERROR: no subdirectories found in {INPUT_DIR}', file=sys.stderr)
+        sys.exit(1)
+
+    total_written = 0
+
+    for course_name in courses:
+        course_dir = os.path.join(INPUT_DIR, course_name)
+        print(f'\n=== Course: {course_name} ===')
+        lectures = process_course(course_dir, course_name)
+
+        written = 0
+        for entry in lectures:
+            subject_slug = slugify(entry['subject'])
+            lecture_dir = os.path.join('data', course_name, subject_slug, str(entry['lecture_number']))
+            os.makedirs(lecture_dir, exist_ok=True)
+            out_path = os.path.join(lecture_dir, 'data.json')
+            with open(out_path, 'w', encoding='utf-8') as f:
+                json.dump(entry, f, indent=2, ensure_ascii=False)
+            written += 1
+
+        print(f'  Wrote {written} lectures to data/{course_name}/<subject>/<lecture>/data.json')
+        total_written += written
+
+    print(f'\nDone. {total_written} lectures total across {len(courses)} course(s).')
 
 
 if __name__ == '__main__':
