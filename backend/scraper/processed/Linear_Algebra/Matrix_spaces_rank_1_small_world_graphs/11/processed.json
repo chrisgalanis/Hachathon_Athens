@@ -1,0 +1,30 @@
+{
+  "lecture_number": 11,
+  "subject": "Matrix spaces; rank 1; small world graphs",
+  "concepts": [
+    "Matrix spaces: The set of all m×n matrices forms a vector space M under addition and scalar multiplication (but NOT matrix multiplication, which is not part of the vector space structure). Example: M = all 3×3 matrices has dimension 9, since each matrix has 9 independent entries.",
+    "Subspaces of matrix spaces: The symmetric n×n matrices, upper triangular n×n matrices, and diagonal n×n matrices are subspaces. For example, the 3×3 symmetric matrices have dimension 6 (3 diagonal entries + 3 above-diagonal entries). The upper triangular 3×3 matrices also have dimension 6.",
+    "Intersection and sum of subspaces: For subspaces S and U, the intersection S ∩ U is always a subspace, while the union S ∪ U is not. The sum S + U = {s + u : s ∈ S, u ∈ U} is a subspace. Dimension formula: dim(S) + dim(U) = dim(S ∩ U) + dim(S + U).",
+    "Rank 1 matrices: Every rank 1 matrix can be written as A = uvᵀ (column times row). For example, [[1,4,5],[2,8,10]] = [[1],[2]][1,4,5]. Rank 1 matrices are the building blocks of all matrices; any rank r matrix is the sum of r rank 1 matrices.",
+    "Rank 1 matrices are not a subspace: The subset of rank 1 matrices (or rank r matrices) in a matrix space does NOT form a subspace, because the sum of two rank 1 matrices typically has higher rank.",
+    "Solution spaces of differential equations: The solution space to a second-order linear ODE like y'' + y = 0 forms a vector space. For this equation, cos(x) and sin(x) form a basis, making the solution space 2-dimensional. The dimension of the solution space equals the order of the differential equation.",
+    "Null space and dimension formula: For an m×n matrix A of rank r, the dimension of the null space N(A) is n - r (the number of free variables). Similarly, dim(C(A)) = r (column space dimension equals rank).",
+    "Four fundamental subspaces of an m×n matrix A of rank r: (1) Row space C(Aᵀ), dimension r, subspace of Rⁿ; (2) Null space N(A), dimension n - r, subspace of Rⁿ; (3) Column space C(A), dimension r, subspace of Rᵐ; (4) Null space of Aᵀ (left null space), dimension m - r, subspace of Rᵐ. Dimension check: r + (n-r) = n and r + (m-r) = m.",
+    "Special solutions as basis for null space: Given a matrix in row echelon form, the special solutions (obtained by setting each free variable to 1 and solving for pivot variables) form a basis for the null space.",
+    "Graph representation as matrix: A graph with m edges and n nodes can be represented by an incidence matrix or adjacency matrix, with dimensions related to the number of edges and nodes. Rank and null space properties encode structural information about the graph."
+  ],
+  "examples": [
+    "3×3 matrix space: Dimension is 9. Standard basis: nine matrices, each with a single 1 entry and rest 0s. The space can be thought of as R¹, just with numbers arranged in a square.",
+    "Symmetric 3×3 matrices: Dimension 6. Example basis: [[1,0,0],[0,0,0],[0,0,0]], [[0,0,0],[0,1,0],[0,0,0]], [[0,0,0],[0,0,0],[0,0,1]], [[0,1,0],[1,0,0],[0,0,0]], [[0,0,1],[0,0,0],[1,0,0]], [[0,0,0],[0,0,1],[0,1,0]].",
+    "Rank 1 matrix example: A = [[1,4,5],[2,8,10]] = [[1],[2]][1,4,5]. Rank is 1 because second row is 2 times the first row. Column space basis: {[1,2]ᵀ}. Row space basis: {[1,4,5]}.",
+    "Intersection of subspaces: S = symmetric 3×3 matrices (dim 6), U = upper triangular 3×3 matrices (dim 6). S ∩ U = diagonal 3×3 matrices (dim 3). S + U = all 3×3 matrices (dim 9). Check: 6 + 6 = 3 + 9.",
+    "Null space of [1, 1, 1, 1]: For the matrix A = [1, 1, 1, 1], representing v₁ + v₂ + v₃ + v₄ = 0 in R⁴. The rank is 1, so null space has dimension 4 - 1 = 3. Basis (special solutions): [1, -1, 0, 0]ᵀ, [1, 0, -1, 0]ᵀ, [1, 0, 0, -1]ᵀ.",
+    "Differential equation y'' + y = 0: Solution space is 2-dimensional with basis {cos(x), sin(x)}. Any solution is y = c₁cos(x) + c₂sin(x).",
+    "Small world graph: 260 million nodes (people in US), edges = friendships. Distance from one person to Clinton is 2-3 steps (degrees of separation). The phrase 'six degrees of separation' refers to the typical maximum distance in social networks."
+  ],
+  "analogy": [
+    "Vector spaces beyond Rⁿ: Just as Rⁿ vectors can be added and scaled, matrices can be added and scaled, forming a vector space with no reference to coordinates. This shows linearity is about structure, not about what objects look like.",
+    "Basis as coordinate system for abstract spaces: Whether in a matrix space, function space, or differential equation solution space, a basis provides a way to express every element as a unique linear combination.",
+    "Rank 1 matrices as atomic building blocks: Rank 1 matrices are to general matrices what prime numbers are to integers—the fundamental units from which all higher-rank objects can be constructed."
+  ]
+}

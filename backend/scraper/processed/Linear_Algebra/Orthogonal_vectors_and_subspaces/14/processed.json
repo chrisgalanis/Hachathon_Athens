@@ -1,0 +1,26 @@
+{
+  "lecture_number": 14,
+  "subject": "Orthogonal vectors and subspaces",
+  "concepts": [
+    "Orthogonal vectors: Two vectors x and y are orthogonal if x^T y = 0 (dot product equals zero). This is equivalent to the Pythagorean theorem: ||x||² + ||y||² = ||x+y||² holds if and only if x and y are perpendicular. The zero vector is orthogonal to all vectors.",
+    "Orthogonal subspaces: Two subspaces S and T are orthogonal if every vector in S is orthogonal to every vector in T. This requires (1) they intersect only at the zero vector, and (2) no non-zero vector in one subspace is orthogonal to any vector in the other. Not merely non-intersecting—strict perpendicularity in terms of inner products.",
+    "Row space and null space are orthogonal: If Ax = 0, then x is orthogonal to each row of A (and hence to all linear combinations of rows). This follows directly from the matrix equation: each row dot product with x equals zero. Therefore, the null space N(A) is orthogonal to the row space C(A^T).",
+    "Orthogonal complements: The orthogonal complement of a subspace S (denoted S^⊥) is the set of all vectors orthogonal to every vector in S. The null space is the orthogonal complement of the row space, and vice versa: N(A) = C(A^T)^⊥ and C(A^T) = N(A)^⊥.",
+    "Fundamental dimensions in the four subspaces: For an m×n matrix A of rank r: dim(C(A)) = r, dim(N(A)) = n-r, dim(C(A^T)) = r, dim(N(A^T)) = m-r. The row and null spaces partition R^n: dim(C(A^T)) + dim(N(A)) = n. Similarly for R^m.",
+    "Normal equations: When Ax = b has no solution (b ∉ C(A)), the best approximate solution solves A^T Ax̂ = A^T b. This comes from multiplying the original system by A^T and finding the least-squares fit.",
+    "Matrix A^T A: For any m×n matrix A, A^T A is always symmetric (n×n) and rank(A^T A) = rank(A). The matrix A^T A is invertible if and only if A has full column rank (independent columns). The null space of A^T A equals the null space of A: N(A^T A) = N(A).",
+    "Overdetermined and underdetermined systems: An overdetermined system (m > n equations, n unknowns) typically has no exact solution unless b lies in the column space. The normal equations A^T Ax̂ = A^T b provide the best least-squares solution."
+  ],
+  "examples": [
+    "Orthogonal vectors: x = [1, 2, 3]^T and y = [2, -1, 0]^T are orthogonal because x^T y = 2 - 2 + 0 = 0. Verify: ||x||² = 14, ||y||² = 5, ||x+y||² = ||[3, 1, 3]^T||² = 19 = 14 + 5.",
+    "Row and null space orthogonality: For the 2×3 matrix A = [[1, 2, 5], [2, 4, 10]] (rank 1), the row space is spanned by [1, 2, 5], and the null space consists of all x solving x₁ + 2x₂ + 5x₃ = 0. Every solution x satisfies [1, 2, 5] · x = 0, confirming orthogonality.",
+    "Four subspaces partition: For a 3×2 matrix A of rank 2, the row space C(A^T) has dimension 2 (subspace of R²), the null space N(A) has dimension 0 (only zero vector). Together: 2 + 0 = 2 = n.",
+    "Normal equations from overdetermined system: For A = [[1, 1], [1, 2], [2, 5]] (3×2 rank 2) and Ax = b with no solution, form A^T A = [[6, 8], [8, 30]] and A^T b = [b₁ + b₂ + 2b₃, b₁ + 2b₂ + 5b₃]^T. Solve the 2×2 system to find x̂.",
+    "A^T A invertibility: For A = [[1, 1], [1, 2], [2, 5]], A^T A = [[6, 8], [8, 30]] is invertible (det = 180 - 64 = 116 ≠ 0) because columns of A are independent. For the rank-1 matrix A = [[1, 1], [1, 2], [2, 4]], A^T A = [[6, 9], [9, 27]] has rank 1 and is singular, matching rank(A) = 1."
+  ],
+  "analogy": [
+    "Orthogonal subspaces as perpendicular walls and floors: Just as a wall and floor in a room meet at right angles, orthogonal subspaces in higher dimensions maintain perpendicularity. However, not all pairs of perpendicular directions form orthogonal subspaces (e.g., two intersecting planes in R³).",
+    "Null space as the 'shadow' of the row space: The null space orthogonal to the row space is like the shadow or absence of a direction—every vector in the null space 'disappears' when projected onto any direction in the row space.",
+    "A^T A as a 'quality control' matrix: The matrix A^T A acts as a gatekeeper for invertibility: if A has independent columns (no redundancy), A^T A opens the door to unique solutions; if A has dependent columns (redundancy), A^T A remains locked (singular), reflecting that information can't be perfectly recovered from redundant data."
+  ]
+}

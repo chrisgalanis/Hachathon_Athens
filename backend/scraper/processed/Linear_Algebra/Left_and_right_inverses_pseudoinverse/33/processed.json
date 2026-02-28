@@ -1,0 +1,28 @@
+{
+  "lecture_number": 33,
+  "subject": "Left and right inverses; pseudoinverse",
+  "concepts": [
+    "Two-sided inverse (invertible matrix): Exists when r = m = n (square matrix with full rank). The matrix A has inverse A⁻¹ satisfying AA⁻¹ = A⁻¹A = I. Both null spaces are {0}.",
+    "Left-inverse: Exists when A has full column rank (r = n < m, typically m > n). The left-inverse is A_left⁻¹ = (AᵀA)⁻¹Aᵀ, satisfying A_left⁻¹ A = I_n. The null space of A contains only the zero vector. This is crucial for least squares because (AᵀA)⁻¹ exists.",
+    "Right-inverse: Exists when A has full row rank (r = m < n, typically m < n). The right-inverse is A_right⁻¹ = Aᵀ(AAᵀ)⁻¹, satisfying A A_right⁻¹ = I_m. The null space of Aᵀ contains only the zero vector. Systems Ax = b always have solutions but not unique ones.",
+    "Null spaces in different rank cases: (1) r = m = n: both null spaces are {0}. (2) r = n < m: N(A) = {0}, N(Aᵀ) has dimension m - n. (3) r = m < n: N(Aᵀ) = {0}, N(A) has dimension n - m. (4) r < min(m,n): both N(A) and N(Aᵀ) are non-trivial.",
+    "Projection matrices from one-sided inverses: When multiplying a left-inverse in the wrong order, A A_left⁻¹ = P_col, the projection onto the column space. When multiplying a right-inverse in the wrong order, A_right⁻¹ A = P_row, the projection onto the row space.",
+    "Pseudo-inverse (Moore-Penrose inverse): Denoted A⁺, the best generalized inverse for any matrix. It maps the row space bijectively to the column space and annihilates null spaces. Satisfies AA⁺A = A and A⁺AA⁺ = A⁺. Satisfying A A⁺ = projection onto column space and A⁺ A = projection onto row space.",
+    "Fundamental property of A on row space and column space: If x and y are distinct vectors in the row space of A, then Ax ≠ Ay. The restriction of A to a mapping from row space to column space is bijective (one-to-one and onto). This is because (x - y) ∈ N(A) ∩ C(Aᵀ) = {0}.",
+    "Existence of pseudo-inverse from SVD: For A = UΣVᵀ (singular value decomposition), the pseudo-inverse is A⁺ = VΣ⁺ Uᵀ, where Σ⁺ is the pseudo-inverse of the diagonal matrix Σ. The non-zero diagonal entries 1/σ_i are inverted, and the shape is transposed (m×n becomes n×m).",
+    "Pseudo-inverse of rectangular diagonal matrix: For an m×n diagonal matrix Σ with rank r, its pseudo-inverse Σ⁺ is an n×m diagonal matrix with 1/σ_i for the first r diagonal entries and zeros elsewhere. Products Σ⁺Σ and ΣΣ⁺ are projections (not identities) onto the appropriate subspaces.",
+    "Least squares and pseudo-inverses: The least squares solution x̂ = (AᵀA)⁻¹Aᵀb works when A has full column rank. When A does not have full column rank, the pseudo-inverse provides the minimum-norm solution to the least squares problem."
+  ],
+  "examples": [
+    "Full rank (r = m = n): A = [[1, 2], [3, 4]] is 2×2, invertible, with A⁻¹ existing as a two-sided inverse.",
+    "Full column rank (r = n < m): A = [[1, 0], [0, 1], [1, 1]] is 3×2. Columns are independent (rank = 2), null space of A = {0}, but rows are dependent. Left-inverse exists: A_L = (AᵀA)⁻¹Aᵀ = (2×2 invertible matrix)⁻¹Aᵀ. We have A_L A = I_2 but A A_L ≠ I_3.",
+    "Full row rank (r = m < n): A = [[1, 0, 1], [0, 1, 1]] is 2×3. Rows are independent (rank = 2), null space of Aᵀ = {0}, but columns are dependent. Right-inverse exists: A_R = Aᵀ(AAᵀ)⁻¹ = Aᵀ(2×2 invertible matrix)⁻¹. We have A A_R = I_2 but A_R A ≠ I_3.",
+    "Projection from one-sided inverse: For A = [[1, 0], [0, 1], [1, 1]] (3×2, full column rank), A A_L = P_col is a 3×3 projection onto the column space, not the identity.",
+    "Pseudo-inverse from SVD: For A = UΣVᵀ with Σ = [[2, 0, 0], [0, 3, 0]] (2×3 with rank 2), the pseudo-inverse is A⁺ = V [[1/2, 0], [0, 1/3], [0, 0]] Uᵀ (3×2 matrix). Products A⁺ A = V [[1, 0, 0], [0, 1, 0], [0, 0, 0]] Vᵀ (projection) and A A⁺ = U [[1, 0], [0, 1]] Uᵀ (projection)."
+  ],
+  "analogy": [
+    "One-sided inverses as partial fixes: A left-inverse is like being able to 'undo' what A does when data comes from the row space. A right-inverse is like being able to 'reach' any point in the column space by going backward. Both are compromises when the matrix is not square.",
+    "Pseudo-inverse as 'best effort': The pseudo-inverse is the closest thing to a true inverse for a non-invertible matrix, minimizing deviation from the ideal while respecting the matrix's null spaces. It's the unique matrix satisfying both AA⁺A = A and A⁺AA⁺ = A⁺.",
+    "Subspaces and inverse quality: The larger the null spaces, the further the matrix is from being invertible. The pseudo-inverse navigates this by restricting focus to the row and column spaces, where the matrix acts as a perfect bijection."
+  ]
+}

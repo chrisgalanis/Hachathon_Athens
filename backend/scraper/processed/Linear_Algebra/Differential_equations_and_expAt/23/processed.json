@@ -1,0 +1,31 @@
+{
+  "lecture_number": 23,
+  "subject": "Differential equations and exp(At)",
+  "concepts": [
+    "System of first-order linear differential equations: A system du/dt = Au with constant coefficient matrix A has solutions expressed in terms of eigenvalues and eigenvectors. Each eigenvector contributes a pure exponential solution e^(λt)x.",
+    "Pure exponential solutions: If λ is an eigenvalue and x is the corresponding eigenvector, then u(t) = e^(λt)x is a solution to du/dt = Au. This can be verified by differentiation: d/dt(e^(λt)x) = λe^(λt)x = A(e^(λt)x).",
+    "General solution to du/dt = Au: The general solution is u(t) = c₁e^(λ₁t)x₁ + c₂e^(λ₂t)x₂ + ... + cₙe^(λₙt)xₙ, where λᵢ are eigenvalues with eigenvectors xᵢ. The coefficients cᵢ are determined by the initial condition u(0).",
+    "Stability for differential equations: The solution u(t) → 0 as t → ∞ if and only if all eigenvalues have negative real parts (i.e., Re(λᵢ) < 0). Complex eigenvalues contribute oscillations (imaginary part) modulated by exponential decay or growth (real part).",
+    "Complex eigenvalues and oscillations: For a complex eigenvalue λ = α + iβ, the solution e^(λt) = e^(αt)e^(iβt) = e^(αt)(cos(βt) + i sin(βt)). The real part α determines decay (α < 0) or growth (α > 0); the imaginary part β causes oscillation at frequency β.",
+    "Steady-state solutions: A steady-state solution (time-independent) occurs when one eigenvalue is zero (λ₁ = 0) and all other eigenvalues have negative real parts. The corresponding eigenvector gives the steady state u(∞).",
+    "Two-by-two stability conditions: For a 2×2 matrix A = [a b; c d], stability requires: (1) trace(A) = a + d < 0 (sum of eigenvalues negative), and (2) det(A) = ad - bc > 0 (product of eigenvalues positive). Together, these ensure both eigenvalues have negative real parts.",
+    "Matrix exponential e^(At): Defined via the power series e^(At) = I + At + A²t²/2! + A³t³/3! + ... = Σ(A^n t^n / n!). This series always converges. The solution to du/dt = Au is u(t) = e^(At)u(0).",
+    "Diagonalization formula for matrix exponential: If A = SΛS⁻¹, then e^(At) = S e^(Λt) S⁻¹, where e^(Λt) is the diagonal matrix with diagonal entries e^(λ₁t), e^(λ₂t), ..., e^(λₙt). This reduces computation to evaluating scalar exponentials.",
+    "Converting higher-order ODEs to first-order systems: A scalar n-th order ODE (e.g., y'' + by' + ky = 0) can be converted to a first-order system by introducing a vector u = [y', y, ...] of derivatives. The resulting matrix is companion matrix with coefficients of the equation in the first row and ones on the subdiagonal."
+  ],
+  "examples": [
+    "2×2 differential system: du/dt = [-1, 2; 1, -2]u with u(0) = [1, 0]ᵀ. Eigenvalues are λ₁ = 0, λ₂ = -3. Eigenvectors are x₁ = [2, 1]ᵀ and x₂ = [1, -1]ᵀ. The general solution is u(t) = c₁e^(0·t)[2, 1]ᵀ + c₂e^(-3t)[1, -1]ᵀ. From u(0) = [1, 0]ᵀ, we get c₁ = c₂ = 1/3, so u(t) = (1/3)[2, 1]ᵀ + (1/3)e^(-3t)[1, -1]ᵀ. As t → ∞, u(t) → [2/3, 1/3]ᵀ (steady state).",
+    "Unstable system from sign reversal: If the matrix is negated (A → -A), eigenvalues change sign: λ₁ = 0 stays at 0, but λ₂ = 3 > 0. The solution now contains e^(3t) and blows up unless the initial condition is in the 0-eigenvalue direction.",
+    "Complex eigenvalues with oscillation: For a system with λ = -1 + 2i, the solution includes e^(-t)e^(2it) = e^(-t)[cos(2t) + i sin(2t)]. This gives decaying oscillations at frequency 2 radians per unit time.",
+    "Second-order ODE to first-order system: y'' + by' + ky = 0 becomes the system u' = Au where u = [y', y]ᵀ and A = [[-b, -k], [1, 0]]. Eigenvalues of this companion matrix relate to roots of the characteristic equation λ² + bλ + k = 0.",
+    "Fibonacci recurrence as differential-like system: The discrete system u_{n+1} = Au_n with A = [[1, 1], [1, 0]] has eigenvalues λ₁ = (1+√5)/2 ≈ 1.618 (golden ratio) and λ₂ = (1-√5)/2 ≈ -0.618. The continuous analogue du/dt = Au has the same diagonalization structure but uses e^(λt) instead of λ^n.",
+    "Power series for matrix exponential: For e^(At) = I + At + (At)²/2! + (At)³/3! + ..., if At is small, the approximation e^(At) ≈ I + At gives the first-order correction. For example, if A = [[0, 1], [-1, 0]] (rotation), then (At)² = [[−t², 0], [0, -t²]] and higher terms alternate between this and At, producing the rotation matrix [cos(t) -sin(t); sin(t) cos(t)].",
+    "Geometric series for inverse approximation: (I - At)⁻¹ ≈ I + At + (At)² + ... when eigenvalues of At are less than 1. This provides a matrix inverse approximation useful for iterative methods."
+  ],
+  "analogy": [
+    "Eigenvalues as 'growth/decay rates' in differential equations: Just as bank interest rates determine how fast money grows, eigenvalues determine how fast each eigenvector direction grows (λ > 0) or decays (λ < 0) over time.",
+    "Complex eigenvalues as 'rotation with scaling': A complex eigenvalue λ = α + iβ acts like a machine that simultaneously stretches by factor e^(αt) (real part) and rotates at frequency β (imaginary part), much like a spiral.",
+    "Matrix exponential as 'continuous analogue of matrix powers': While A^k = SΛ^k S⁻¹ shows discrete jumps in powers, e^(At) = S e^(Λt) S⁻¹ shows smooth continuous change, unifying discrete and continuous dynamics.",
+    "Stability region in complex plane: The left half-plane (Re(λ) < 0) for differential equations is analogous to the unit disk (|λ| < 1) for matrix powers—both represent regions where solutions decay, but in different ways (continuous vs. discrete)."
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "lecture_number": 9,
+  "subject": "Independence, basis, and dimension",
+  "concepts": [
+    "Linear independence: Vectors v₁, v₂, ..., v_n are linearly independent if the only solution to c₁v₁ + c₂v₂ + ... + c_nv_n = 0 is c₁ = c₂ = ... = c_n = 0. Equivalently, when the vectors are columns of matrix A, they are independent if and only if the null space of A contains only the zero vector.",
+    "Spanning: Vectors v₁, v₂, ..., v_l span a space (or subspace) S if every vector in S can be expressed as a linear combination of these vectors. The set of all such combinations forms the smallest space containing these vectors, called the span of the vectors.",
+    "Basis: A set of vectors is a basis for a vector space if (1) the vectors are linearly independent and (2) the vectors span the space. A basis is a minimal spanning set—it has just the right number of vectors: no more (which would violate independence), no fewer (which would not span).",
+    "Dimension: The dimension of a vector space is the number of vectors in any basis for that space. This number is unique—all bases for a given space have the same number of vectors. For a subspace, dimension = rank (for column space) or dimension = n - rank (for null space).",
+    "Rank and column space: For an m×n matrix A of rank r, the dimension of the column space equals r. The rank r equals the number of pivot columns, which form a basis for the column space.",
+    "Null space and dimension: For an m×n matrix A of rank r, the dimension of the null space equals n - r. These are the number of free variables; the special solutions (setting each free variable to 1 in turn) form a basis for the null space.",
+    "Connection: More unknowns than equations (n > m) guarantees non-trivial solutions to Ax = 0. If A is m×n with m < n, then rank(A) ≤ m < n, so there are at least n - m ≥ 1 free variables, giving at least one non-zero vector in the null space.",
+    "Matrices and column/row perspective: Vectors are independent if arranged as columns of matrix A with null space = {0}. Spanning and basis are defined via column combinations. Different bases can represent the same space but must have the same cardinality."
+  ],
+  "examples": [
+    "Dependent vectors: [1, 0] and [2, 0] are dependent because 2[1, 0] - [2, 0] = [0, 0]. Also [1, 0] and [0, 0] are dependent because any multiple of [0, 0] gives [0, 0].",
+    "Independent vectors in 2D: [1, 0] and [0, 1] are independent; the only solution to c₁[1, 0] + c₂[0, 1] = [0, 0] is c₁ = c₂ = 0.",
+    "Three vectors in 2D are dependent: Any three vectors in R² must be dependent by the pigeonhole principle (more variables than equations means non-trivial null space).",
+    "Basis for R³: {[1, 0, 0], [0, 1, 0], [0, 0, 1]} (standard basis). Another basis: {[1, 1, 2], [2, 2, 5], [3, 3, 8]} (columns of an invertible 3×3 matrix).",
+    "Basis for a plane in R³: The vectors [1, 1, 2] and [2, 2, 5] are independent and span a plane, so they form a basis for that 2D subspace.",
+    "Column space and rank: For A = [[1, 1, 1, 1], [2, 1, 2, 2], [3, 2, 3, 3]], columns 1 and 2 are pivot columns forming a basis for the column space. Rank = 2, dim(column space) = 2.",
+    "Null space basis: For the same matrix, the null space has dimension 4 - 2 = 2. Special solutions [1, -1, 0, 0] and [0, 0, 1, -1] (or similar, depending on free variables) form a basis for the null space, with dimension 4 - rank = 2.",
+    "Many bases for same space: For the column space of the above matrix, bases include {col 1, col 2}, {col 1, col 3}, {[2, 2, 2], [6, 4, 6]} (any 2 independent vectors in the column space)."
+  ],
+  "analogy": [
+    "Basis as 'coordinate system': A basis is like a coordinate system for a space. Just as any point in 3D can be uniquely described using (x, y, z) coordinates with respect to the standard axes, any vector in a space can be uniquely written as a combination of basis vectors.",
+    "Dimension as 'degrees of freedom': The dimension tells you how many independent pieces of information you need to specify a vector. A 2D plane requires 2 numbers; a 3D space requires 3 numbers.",
+    "Independence vs. spanning as balancing act: A basis achieves perfect balance—independent enough that no vector is redundant, but spanning enough that every vector in the space is reachable. Too many vectors and they become dependent; too few and you can't reach the whole space."
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "lecture_number": 2,
+  "subject": "Elimination with matrices",
+  "concepts": [
+    "Gaussian elimination: The systematic process of using row operations to reduce a system Ax = b to upper triangular form Ux = c, where U is upper triangular and c is the transformed right-hand side. This allows solving by back substitution. The process identifies pivots (non-zero diagonal elements used as multipliers) and eliminates entries below them.",
+    "Pivot: A non-zero element in the diagonal position used to eliminate entries below it in the same column. If a pivot position contains 0, a row exchange is performed. The product of all pivots equals the determinant of A.",
+    "Row operations and elementary matrices: Each elimination step (subtracting a multiple of one row from another) can be expressed as left-multiplication by an elementary matrix E. For example, E₂₁ (which eliminates the 2,1 position) is the identity with an appropriate non-zero value replacing a zero entry.",
+    "Forward elimination and back substitution: Forward elimination reduces the system to upper triangular form Ux = c. Back substitution solves this triangular system starting from the last equation and working upward, immediately finding variables one by one.",
+    "Upper triangular matrix U: The result of elimination, where all entries below the diagonal are zero. A system with an upper triangular coefficient matrix is easily solved by back substitution.",
+    "Associative law for matrix multiplication: Matrix multiplication satisfies E₂₁(E₃₂A) = (E₂₁E₃₂)A, allowing us to group matrix products in different ways. This means the sequence of elementary matrices can be combined into a single transformation matrix that performs all elimination steps simultaneously.",
+    "Augmented matrix: The matrix [A | b] formed by appending the right-hand side vector b to the coefficient matrix A. Row operations are performed on the entire augmented matrix so that both sides of the equations are transformed equally.",
+    "Row operations vs. column operations: Left-multiplication by a matrix performs row operations. Right-multiplication by a matrix performs column operations. Elimination uses row operations (left-multiplication), so elementary matrices appear on the left.",
+    "Matrix multiplication by rows and columns: (1) A matrix times a column vector is a linear combination of the columns of the matrix. (2) A row vector times a matrix is a linear combination of the rows of the matrix. These perspectives are essential for understanding how matrices act on vectors.",
+    "Elementary matrices and inverses: Each elementary matrix E that performs a row operation has an inverse E⁻¹ that undoes that operation. For example, if E subtracts a multiple c of row i from row j, then E⁻¹ adds c times row i to row j.",
+    "Permutation matrices: Elementary matrices that exchange rows. Multiplied on the left, they perform row exchanges. Multiplied on the right, they perform column exchanges. The permutation matrix for a 2×2 identity with rows exchanged is [[0, 1], [1, 0]].",
+    "Non-commutativity of matrix multiplication: AB ≠ BA in general. The order of matrix multiplication matters and cannot be reversed. However, the associative law (grouping with parentheses) applies.",
+    "Singular matrices and pivot failure: If elimination produces a zero in a pivot position with no non-zero entries below it to exchange with, the matrix is singular (non-invertible). A successful elimination with all non-zero pivots indicates an invertible matrix."
+  ],
+  "examples": [
+    "3×3 system elimination: Starting with A = [[1, 2, 1], [3, 8, 1], [0, 4, 1]] and b = [2, 12, 2], the first step multiplies row 1 by 3 and subtracts from row 2 to get 0 in the (2,1) position. After all elimination steps, U = [[1, 2, 1], [0, 2, -1], [0, 0, 5]] and c = [2, 6, -10].",
+    "Elementary matrix E₂₁: For the first elimination step, E₂₁ = [[1, 0, 0], [-3, 1, 0], [0, 0, 1]] transforms the first two rows by subtracting 3 times row 1 from row 2.",
+    "Elementary matrix E₃₂: For the second elimination step, E₃₂ = [[1, 0, 0], [0, 1, 0], [0, -2, 1]] transforms the second and third rows by subtracting 2 times row 2 from row 3.",
+    "Back substitution: From Ux = c with U = [[1, 2, 1], [0, 2, -1], [0, 0, 5]] and c = [2, 6, -10], solve 5z = -10 to get z = -2. Then 2y - z = 6 gives y = 1. Finally, x + 2y + z = 2 gives x = 2.",
+    "Row exchange via permutation matrix: If the first pivot is 0, swap row 1 and row 2 using P = [[0, 1], [1, 0]], which transforms [[a, b], [c, d]] to [[c, d], [a, b]].",
+    "Combined elimination matrix: E₃₂E₂₁A = U, showing that the combined effect of two elementary matrices multiplied together (maintaining order) equals the matrix that does the full elimination from A to U.",
+    "Matrix-vector multiplication by rows: Multiplying a row vector [1, 2, 7] on the left by a 3×3 matrix produces a linear combination of the rows: 1×(row 1) + 2×(row 2) + 7×(row 3).",
+    "Inverse of elementary matrix: The inverse of E₂₁ = [[1, 0, 0], [-3, 1, 0], [0, 0, 1]] is E₂₁⁻¹ = [[1, 0, 0], [3, 1, 0], [0, 0, 1]], which adds back 3 times row 1 to row 2."
+  ],
+  "analogy": [
+    "Elimination as a sequence of cleaning steps: Each pivot removes (eliminates) one variable from lower equations, like systematically removing clutter from a room level by level.",
+    "Elementary matrices as 'recorded steps': Each elementary matrix E is like a recording of a single elimination step; combining them via multiplication is like playing back the entire sequence of steps in order.",
+    "Row and column operations as 'directions': Left multiplication accesses the row perspective; right multiplication accesses the column perspective. Just as you can approach a building from different sides, you can view matrix operations through rows or columns.",
+    "Associative law as 'flexibility in grouping': While the order of operations (matrices) is fixed, the associative law allows you to mentally group sub-problems differently, like combining small tasks into larger batches before executing them."
+  ]
+}

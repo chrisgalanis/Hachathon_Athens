@@ -1,0 +1,27 @@
+{
+  "lecture_number": 30,
+  "subject": "Linear transformations and their matrices",
+  "concepts": [
+    "Linear transformation: A function T: V → W between vector spaces satisfying two properties: (1) T(v + w) = T(v) + T(w) (additivity), and (2) T(cv) = cT(v) for any scalar c (homogeneity). These two properties are equivalent to requiring T(c₁v₁ + c₂v₂ + ...) = c₁T(v₁) + c₂T(v₂) + ... (linearity with respect to linear combinations).",
+    "Zero maps to zero: For any linear transformation T, we have T(0) = 0. This is a necessary condition for linearity and rules out non-linear maps like translations (shifting by a fixed non-zero vector).",
+    "Linear transformations determined by action on basis: A linear transformation T is completely determined by its action on a basis of the input space. If v₁, v₂, ..., vₙ form a basis and we know T(v₁), T(v₂), ..., T(vₙ), then T(v) is determined for all v by linearity.",
+    "Matrix representation of linear transformation: Every linear transformation T: Rⁿ → Rᵐ can be represented as a unique m×n matrix A (once bases are chosen) such that the transformation corresponds to multiplication by A: the output coordinates equal A times the input coordinates.",
+    "Constructing the matrix: Given a linear transformation T: Rⁿ → Rᵐ with input basis {v₁, ..., vₙ} and output basis {w₁, ..., wᵐ}, the j-th column of matrix A is found by: (1) applying T to the j-th basis vector T(v_j), (2) expressing T(v_j) as a linear combination of output basis vectors T(v_j) = a₁_j w₁ + a₂_j w₂ + ... + aᵐ_j wᵐ, and (3) placing coefficients [a₁_j, a₂_j, ..., aᵐ_j]ᵀ in the j-th column.",
+    "Basis changes the matrix: Different choices of input and output bases yield different matrices representing the same linear transformation. The standard basis is convenient but not always optimal. Eigenvector bases often yield diagonal matrices.",
+    "Composition of linear transformations corresponds to matrix multiplication: If T₁: Rⁿ → Rᵐ has matrix A₁ and T₂: Rᵐ → R⅔ has matrix A₂, then the composition T₂ ∘ T₁: Rⁿ → R⅔ has matrix A₂ A₁. This explains why matrix multiplication has the form it does."
+  ],
+  "examples": [
+    "Projection onto a line: A linear transformation from R² to R² that projects every vector onto a specified line. In the eigenvector basis (one vector along the line, one perpendicular), the matrix is [[1, 0], [0, 0]] (diagonal, easy). In the standard basis, the matrix is typically not diagonal but still represents the same transformation.",
+    "Rotation by 45 degrees: A linear transformation from R² to R² that rotates every vector counterclockwise by 45°. Can be represented by the matrix [[cos(45°), -sin(45°)], [sin(45°), cos(45°)]], or approximately [[√2/2, -√2/2], [√2/2, √2/2]].",
+    "Reflection (flip): A transformation like [1, 0; 0, -1] that flips the plane upside down, reversing the y-coordinate while keeping the x-coordinate unchanged. This is linear: T(cv) = cT(v) and T(v+w) = T(v) + T(w).",
+    "Derivative operator: A linear transformation from the space of polynomials of degree ≤ 2 to polynomials of degree ≤ 1, where T(c₁ + c₂x + c₃x²) = c₂ + 2c₃x. The matrix representation (with standard bases) is [[0, 1, 0], [0, 0, 2]] (2×3 matrix).",
+    "Matrix multiplication: The linear transformation T(v) = Av (for a fixed matrix A) is always linear. For example, T(v) = [[2, 0], [0, -1]]v is linear: it scales the x-component by 2 and flips the y-component.",
+    "Non-linear transformation (shift): T(v) = v + v₀ (translating by a fixed vector v₀) is NOT linear because T(0) ≠ 0 and T(cv) ≠ cT(v).",
+    "Non-linear transformation (length): T(v) = ||v|| (the norm/length of v) is NOT linear because it maps Rₙ to R (not even vector-valued) and ||cv|| = |c| ||v||, not c||v|| when c is negative."
+  ],
+  "analogy": [
+    "Linear transformations as generalizations of matrices: Matrices are the coordinate-based description of linear transformations. A transformation is like the abstract concept; the matrix is the concrete computational tool once coordinates (a basis) are chosen.",
+    "Coordinate system as a choice: Choosing a basis (and thus a coordinate system) is like choosing a perspective. Different bases give different matrix representations of the same underlying transformation, just as different viewpoints yield different descriptions of the same physical object.",
+    "Eigenvector basis as optimal coordinates: Using eigenvectors as a basis is like finding the 'natural' coordinates for a transformation, where the action becomes transparent (diagonal matrix). It's the physicist's way of choosing coordinates that respect the transformation's structure."
+  ]
+}
