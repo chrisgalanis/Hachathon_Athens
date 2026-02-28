@@ -101,6 +101,9 @@ def make_matrix(rows, font_size=36, color=WHITE):
 
 class <ConceptName>(Scene):
     def construct(self):
+        # === PORTRAIT 9:16 (1080×1920) ===
+        self.frame.set_shape(8.0, 14.222222)
+
         # === SETUP ===
         # Create coordinate system and visual scaffolding
 
@@ -1117,10 +1120,12 @@ def make_matrix(rows, font_size=36, color=WHITE):
 
 class <DescriptiveName>(Scene):
     def construct(self):
+        self.frame.set_shape(8.0, 14.222222)   # 9:16 portrait
         ...
 ```
 
 That is the entire response. One fenced code block. Nothing else.
+**CRITICAL**: The very first line of `construct()` MUST be `self.frame.set_shape(8.0, 14.222222)` — this switches the canvas from landscape to 9:16 portrait. Never omit it.
 
 ---
 
@@ -1175,11 +1180,17 @@ beat across multiple `self.wait()` calls.
 
 The narration is your **only** input. You must animate exactly what it says:
 
-### Colors
-If the narrator says "green arrow", use `color=GREEN`. If they say "purple
-vector", use `color=PURPLE`. If they say "yellow highlight", use `color=YELLOW`.
-Match **every** color word in the narration to the corresponding ManimGL color
-constant. Do NOT pick your own colors when the narrator has specified one.
+### Colors — you decide
+The narrator does **not** specify colors. You are responsible for choosing
+a clear, consistent color scheme using the 3Blue1Brown palette:
+- `GREEN` for i-hat / first basis vector
+- `RED` for j-hat / second basis vector
+- `YELLOW` for highlights, pivots, and emphasis
+- `BLUE` for grids and coordinate planes
+- `PURPLE` for special / result vectors
+- `WHITE` for text and labels
+
+Pick colors that distinguish objects clearly. Stay consistent within a reel.
 
 ### Numbers and values
 If the narrator says "matrix two, one, zero, one", use `[[2,1],[0,1]]`.

@@ -96,12 +96,13 @@ def _build_concept_prompt(data: dict) -> str:
         "this concept visually. Your narration will be handed to an animation "
         "engine that will create visuals to match exactly what you describe.\n\n"
         "IMPORTANT: Describe specific visual actions the animation should show. "
-        "Name colors, objects, and movements explicitly. For example:\n"
-        '  - "A green arrow stretches along the x-axis"\n'
-        '  - "The blue grid warps under the transformation"\n'
-        '  - "A yellow highlight surrounds the pivot"\n\n'
+        "Name objects by their label, position, or coordinates — NEVER by color. "
+        "The animation engine picks its own colors. For example:\n"
+        '  - "An arrow for i-hat stretches to one, zero"\n'
+        '  - "The grid warps under the transformation"\n'
+        '  - "A highlight surrounds the pivot"\n\n'
         "The animator will create exactly what you describe — so be precise "
-        "and visual."
+        "and visual. Never mention colors."
     )
 
 
@@ -121,13 +122,15 @@ def _build_example_prompt(data: dict) -> str:
         "an animation engine that will create visuals to match exactly what "
         "you describe.\n\n"
         "IMPORTANT: Describe specific visual actions for each step. "
-        "Name every matrix, vector, number, color, and transformation "
-        "explicitly. For example:\n"
+        "Name every matrix, vector, number, and transformation "
+        "explicitly — but NEVER mention colors. The animation engine picks "
+        "its own colors. Identify objects by name or position instead. "
+        "For example:\n"
         '  - "Here\'s our two-by-two matrix with entries one, two, three, four"\n'
         '  - "Watch row two — subtract three times row one"\n'
-        '  - "A red arrow points to the pivot position"\n\n'
+        '  - "An arrow marks the pivot position"\n\n'
         "The animator will create exactly what you describe — so be precise "
-        "and visual. Show every calculation."
+        "and visual. Show every calculation. Never reference colors."
     )
 
 

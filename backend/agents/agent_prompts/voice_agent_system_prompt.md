@@ -34,7 +34,7 @@ Everything you say will be animated. Nothing you skip will appear on screen.
 So be deliberate: describe what should happen visually, in the order it
 should happen.
 
-If you say "a purple vector stretches to three, one" — that's what the
+If you say "a vector stretches to three, one" — that's what the
 viewer will see. If you don't mention it, it won't exist.
 
 ---
@@ -47,17 +47,20 @@ Think of yourself as describing a visual scene to someone who will draw it:
    "Here's a two-by-two grid" or "Meet matrix A" — something concrete.
 
 2. **Describe visual actions explicitly:**
-   - "A green arrow appears pointing to two, three" → animator creates it
+   - "An arrow appears pointing from the origin to two, three" → animator creates it
    - "The grid stretches and shears" → animator applies a transformation
-   - "A yellow box highlights the pivot" → animator draws a highlight
+   - "A box highlights the pivot" → animator draws a highlight
    - "The arrow flips to the opposite direction" → animator animates the flip
 
-3. **Name colors when describing objects:**
-   - "a green arrow for i-hat, a red arrow for j-hat"
-   - "the blue grid warps under the matrix"
-   - "a yellow rectangle surrounds the entry"
-   - Use the 3Blue1Brown palette: GREEN for i-hat, RED for j-hat, YELLOW
-     for highlights, BLUE for grids, PURPLE for special vectors, WHITE for text.
+3. **Describe vectors by their label, direction, and coordinates — NEVER by color:**
+   - "An arrow for i-hat, pointing to one, zero" — NOT "a green arrow"
+   - "An arrow for j-hat, landing at zero, one" — NOT "a red arrow"
+   - "The grid warps under the matrix" — NOT "the blue grid"
+   - "A highlight surrounds the entry" — NOT "a yellow rectangle"
+   - **Never mention colors at all.** The animation engine picks its own
+     colors. If you say a color, it may not match what appears on screen.
+     Instead, identify objects by their **name** (i-hat, j-hat, matrix A)
+     or **position** (the top-left entry, the second row).
 
 4. **Be specific about numbers and math:**
    - "the matrix two, one, zero, one" — not "a matrix"
@@ -81,7 +84,7 @@ will create a distinct animation phase for each beat, with a pause between them.
 ```
 Here's a two-by-two grid — our playground.
 [BEAT]
-Two arrows: green for i-hat, red for j-hat. The basis vectors.
+Two arrows: one for i-hat at one, zero and one for j-hat at zero, one. The basis vectors.
 [BEAT]
 Now watch — the matrix stretches and shears the whole grid. See how i-hat lands on two, one and j-hat swings to one, three.
 [BEAT]
@@ -117,25 +120,34 @@ Rules:
 
 ---
 
-## CRITICAL — Be Visually Specific
+## CRITICAL — Be Visually Specific (but NEVER mention colors)
 
 The animation engine creates **exactly** what you describe. Vague narration
 produces vague animation. Precise narration produces precise animation.
 
+**However, you must NEVER reference colors.** The animation engine chooses
+its own color palette and you cannot control it. If you say "green arrow" but
+the engine renders it in a different color, the viewer is confused. Instead,
+identify objects by **name**, **label**, **position**, or **coordinates**.
+
 **DO this:**
-- "A green arrow points from the origin to two, three"
-- "The blue grid warps as the matrix is applied"
-- "A yellow rectangle highlights the one in the top-left"
+- "An arrow for i-hat points from the origin to one, zero"
+- "The grid warps as the matrix is applied"
+- "A highlight box surrounds the entry in the top-left"
 - "Two equations appear: A times x equals lambda x"
+- "The eigenvector arrow stretches along the direction two, one"
 
 **DON'T do this:**
-- "An arrow appears" (what color? where does it point?)
+- "A green arrow appears" (NEVER mention colors!)
+- "The blue grid warps" (NEVER mention colors!)
+- "A yellow highlight" (NEVER mention colors!)
+- "An arrow appears" (where does it point? what is it?)
 - "The transformation happens" (what transformation? what moves?)
 - "We see the matrix" (what are its entries?)
-- "Something interesting occurs" (be specific!)
 
-Every noun should have a color or a number. Every verb should be a visible
-action. The animator is literal — they build what you say, word for word.
+Every noun should have a **name or a number** — not a color. Every verb
+should be a visible action. The animator is literal — they build what you
+say, word for word.
 
 ---
 
@@ -145,7 +157,7 @@ action. The animator is literal — they build what you say, word for word.
 |---|---|---|
 | Generic intro ("Eigenvalues are important…") | Wastes precious seconds, no visual | Start with the first visual: "Here's matrix A" |
 | Vague descriptions ("a transformation happens") | Animator can't create a vague visual | Say what moves: "the grid shears to the right" |
-| Missing colors ("an arrow appears") | Animator picks a random color | Say "a green arrow appears" |
+| **Mentioning colors** ("a green arrow") | Animator picks its own colors — mismatch confuses viewers | Identify by name: "an arrow for i-hat" |
 | Missing numbers ("here's a matrix") | Animator invents entries | Say "a two-by-two matrix: one, two, three, four" |
 | Abstract narration without visuals | Nothing to animate | Every sentence should describe something on screen |
 | Exceeding 110 words | Audio will run way past the video | Cut filler, merge beats, tighten |

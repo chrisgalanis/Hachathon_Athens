@@ -47,7 +47,7 @@ from pathlib import Path
 from typing import List
 
 from .manim_agent import ManimAgent
-from .voice_agent import VoiceAgent
+from .voice_agent import VoiceAgent, _split_beats
 
 _MANIMGL = str(Path(sys.executable).parent / "manimgl")
 
@@ -148,6 +148,48 @@ def _write_script(code: str, path: str) -> None:
         code = re.sub(r"^```[^\n]*\n", "", code).rstrip("`").strip()
     with open(path, "w", encoding="utf-8") as f:
         f.write(code)
+
+
+def _save_subtitle_json(
+    narration: str,
+    beat_durations: List[float],
+    output_path: str,
+) -> None:
+    """Save beat-level subtitle data as JSON for downstream subtitle generation.
+
+    Each entry has the beat text, its duration, and cumulative start/end
+    timestamps — everything needed to produce SRT, VTT, or ASS subtitles.
+    """
+    beats = _split_beats(narration)
+    entries = []
+    cursor = 0.0
+    for i, (text, dur) in enumerate(zip(beats, beat_durations)):
+        entries.append({
+            "beat": i,
+            "start": round(cursor, 3),
+            "end": round(cursor + dur, 3),
+            "duration": round(dur, 3),
+            "text": text,
+        })
+        cursor += dur
+    # If there are more beats than durations, append them with 0 duration
+    for j in range(len(beat_durations), len(beats)):
+        entries.append({
+            "beat": j,
+            "start": round(cursor, 3),
+            "end": round(cursor, 3),
+            "duration": 0.0,
+            "text": beats[j],
+        })
+
+    payload = {
+        "total_duration": round(cursor, 3),
+        "beat_count": len(entries),
+        "beats": entries,
+    }
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, ensure_ascii=False)
+    print(f"  Saved subtitle data → {output_path}")
 
 
 # ---------------------------------------------------------------------------
@@ -349,6 +391,8 @@ class VideoGenerationPipeline:
 
         concept_audio     = str(self._scratch_dir / f"{slug}_concept_narration.mp3")
         example_audio     = str(self._scratch_dir / f"{slug}_example_narration.mp3")
+        concept_subs      = str(self._finals_dir / f"{slug}_concept_subtitles.json")
+        example_subs      = str(self._finals_dir / f"{slug}_example_subtitles.json")
         concept_script    = str(self._scratch_dir / f"{slug}_concept.py")
         example_script    = str(self._scratch_dir / f"{slug}_example.py")
         concept_video_dir = str(self._scratch_dir / "silent" / "concept")
@@ -366,6 +410,10 @@ class VideoGenerationPipeline:
                 self._voice_agent.run_example_narration(data, output_path=example_audio),
             )
         )
+
+        # Save subtitle JSON for both reels
+        _save_subtitle_json(concept_narration, concept_beats, concept_subs)
+        _save_subtitle_json(example_narration, example_beats, example_subs)
 
         # ------------------------------------------------------------------ #
         # Step 2 — Manim agent generates animation FROM the narration
