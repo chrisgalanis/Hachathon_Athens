@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 
 const NAV_ITEMS = [
   {
-    href: "/",
+    href: "/feed",
     label: "Home",
     icon: (active: boolean) => (
       <svg viewBox="0 0 24 24" className="w-6 h-6" fill={active ? "#7c3aed" : "none"} stroke="currentColor" strokeWidth={2}>

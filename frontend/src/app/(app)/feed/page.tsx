@@ -37,22 +37,9 @@ export default function FeedPage() {
   }, [searchParams]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "stretch",
-        background: "#111116",
-        minHeight: "100dvh",
-        overflow: "hidden",
-      }}
-    >
-      <div className="phone-frame">
-        <main className="relative w-full h-full overflow-hidden bg-brand-bg">
-          <ReelFeed ref={feedRef} cards={MOCK_CARDS} />
-          <BottomNav />
-        </main>
-      </div>
-    </div>
+    <main className="relative w-full h-full overflow-hidden bg-brand-bg">
+      <ReelFeed ref={feedRef} cards={MOCK_CARDS} />
+      <BottomNav />
+    </main>
   );
 }

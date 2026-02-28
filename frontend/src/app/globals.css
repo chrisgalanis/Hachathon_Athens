@@ -15,6 +15,8 @@
     overscroll-behavior: none;
     -webkit-tap-highlight-color: transparent;
     font-family: "Inter", system-ui, sans-serif;
+    /* landing page needs to scroll freely */
+    overflow-x: hidden;
   }
 
   * {
@@ -32,16 +34,7 @@
    * No fake phone bezel — this IS a web app.
    */
 
-  /* Dark sidebar fill for wide screens */
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    background: #111116;
-    min-height: 100dvh;
-    overflow: hidden;
-  }
-
+  /* phone-frame — used by (app) layout only */
   .phone-frame {
     /* Tall portrait column, centered */
     width: 100%;

@@ -1,85 +1,147 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-// ── Floating orb background ───────────────────────────────────────────────────
-function Orbs() {
+// ── Lava lamp background ─────────────────────────────────────────────────────
+function LavaLamp() {
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
-      <div
-        className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full opacity-30"
-        style={{ background: "radial-gradient(circle, #7c3aed 0%, transparent 70%)", filter: "blur(60px)" }}
-      />
-      <div
-        className="absolute bottom-0 -right-24 w-[380px] h-[380px] rounded-full opacity-20"
-        style={{ background: "radial-gradient(circle, #f59e0b 0%, transparent 70%)", filter: "blur(80px)" }}
-      />
-      <div
-        className="absolute top-1/2 right-8 w-[200px] h-[200px] rounded-full opacity-20"
-        style={{ background: "radial-gradient(circle, #06b6d4 0%, transparent 70%)", filter: "blur(50px)" }}
-      />
+      <style>{`
+        @keyframes lava1 {
+          0%   { transform: translate(0, 0)    scale(1); }
+          25%  { transform: translate(0, 18%)  scale(1.12); }
+          50%  { transform: translate(0, 35%)  scale(0.95); }
+          75%  { transform: translate(0, 18%)  scale(1.08); }
+          100% { transform: translate(0, 0)    scale(1); }
+        }
+        @keyframes lava2 {
+          0%   { transform: translate(0, 0)    scale(1.05); }
+          33%  { transform: translate(0, -22%) scale(0.92); }
+          66%  { transform: translate(0, 12%)  scale(1.15); }
+          100% { transform: translate(0, 0)    scale(1.05); }
+        }
+        @keyframes lava3 {
+          0%   { transform: translate(0, 0)    scale(1); }
+          40%  { transform: translate(0, 28%)  scale(1.1); }
+          80%  { transform: translate(0, -10%) scale(0.9); }
+          100% { transform: translate(0, 0)    scale(1); }
+        }
+        @keyframes lava4 {
+          0%   { transform: translate(0, 0)   scale(0.95); }
+          50%  { transform: translate(0, -30%) scale(1.2); }
+          100% { transform: translate(0, 0)   scale(0.95); }
+        }
+        @keyframes lava5 {
+          0%   { transform: translate(0, 0)   scale(1.1); }
+          35%  { transform: translate(0, 20%) scale(0.88); }
+          70%  { transform: translate(0, -15%) scale(1.15); }
+          100% { transform: translate(0, 0)   scale(1.1); }
+        }
+      `}</style>
+
+      {/* ── LEFT COLUMN ── */}
+      {/* blob L1 — purple, top */}
+      <div style={{
+        position: "absolute", left: "8%", top: "-10%",
+        width: 340, height: 340, borderRadius: "50%",
+        background: "radial-gradient(circle, #7c3aed 0%, transparent 70%)",
+        filter: "blur(72px)", opacity: 0.35,
+        animation: "lava1 14s ease-in-out infinite",
+      }} />
+      {/* blob L2 — cyan, mid */}
+      <div style={{
+        position: "absolute", left: "4%", top: "30%",
+        width: 260, height: 260, borderRadius: "50%",
+        background: "radial-gradient(circle, #06b6d4 0%, transparent 70%)",
+        filter: "blur(60px)", opacity: 0.22,
+        animation: "lava3 18s ease-in-out infinite",
+      }} />
+      {/* blob L3 — gold, bottom */}
+      <div style={{
+        position: "absolute", left: "6%", bottom: "-5%",
+        width: 300, height: 300, borderRadius: "50%",
+        background: "radial-gradient(circle, #f59e0b 0%, transparent 70%)",
+        filter: "blur(80px)", opacity: 0.2,
+        animation: "lava2 22s ease-in-out infinite",
+      }} />
+
+      {/* ── RIGHT COLUMN (mirror) ── */}
+      {/* blob R1 — purple, top */}
+      <div style={{
+        position: "absolute", right: "8%", top: "-10%",
+        width: 340, height: 340, borderRadius: "50%",
+        background: "radial-gradient(circle, #7c3aed 0%, transparent 70%)",
+        filter: "blur(72px)", opacity: 0.35,
+        animation: "lava1 14s ease-in-out infinite",
+      }} />
+      {/* blob R2 — cyan, mid */}
+      <div style={{
+        position: "absolute", right: "4%", top: "30%",
+        width: 260, height: 260, borderRadius: "50%",
+        background: "radial-gradient(circle, #06b6d4 0%, transparent 70%)",
+        filter: "blur(60px)", opacity: 0.22,
+        animation: "lava3 18s ease-in-out infinite",
+      }} />
+      {/* blob R3 — gold, bottom */}
+      <div style={{
+        position: "absolute", right: "6%", bottom: "-5%",
+        width: 300, height: 300, borderRadius: "50%",
+        background: "radial-gradient(circle, #f59e0b 0%, transparent 70%)",
+        filter: "blur(80px)", opacity: 0.2,
+        animation: "lava2 22s ease-in-out infinite",
+      }} />
+
+      {/* ── CENTRE accent (shared) ── */}
+      <div style={{
+        position: "absolute", left: "50%", top: "55%",
+        transform: "translateX(-50%)",
+        width: 200, height: 200, borderRadius: "50%",
+        background: "radial-gradient(circle, #a855f7 0%, transparent 70%)",
+        filter: "blur(90px)", opacity: 0.18,
+        animation: "lava4 26s ease-in-out infinite",
+      }} />
+      <div style={{
+        position: "absolute", left: "50%", top: "10%",
+        transform: "translateX(-50%)",
+        width: 160, height: 160, borderRadius: "50%",
+        background: "radial-gradient(circle, #10b981 0%, transparent 70%)",
+        filter: "blur(70px)", opacity: 0.14,
+        animation: "lava5 20s ease-in-out infinite",
+      }} />
     </div>
   );
 }
 
-// ── Animated counter ──────────────────────────────────────────────────────────
-function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
-  const [val, setVal] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      observer.disconnect();
-      let start = 0;
-      const step = Math.ceil(to / 60);
-      const timer = setInterval(() => {
-        start += step;
-        if (start >= to) { setVal(to); clearInterval(timer); }
-        else setVal(start);
-      }, 16);
-    }, { threshold: 0.5 });
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [to]);
-  return <span ref={ref}>{val.toLocaleString()}{suffix}</span>;
-}
-
-// ── Reel preview card ─────────────────────────────────────────────────────────
+// ── Phone mockup with cycling cards ──────────────────────────────────────────
 const PREVIEW_CARDS = [
-  { emoji: "📐", subject: "Γραμμική Άλγεβρα", title: "Eigenvalues σε 60 δευτερόλεπτα", color: "#7c3aed" },
-  { emoji: "⚛️", subject: "Κβαντική Φυσική", title: "Schrödinger — αρχή αβεβαιότητας", color: "#06b6d4" },
-  { emoji: "📈", subject: "Μικροοικονομία", title: "Nash Equilibrium χωρίς bullshit", color: "#10b981" },
-  { emoji: "💻", subject: "Αλγόριθμοι", title: "Big-O notation — τελικά τι σημαίνει;", color: "#f59e0b" },
+  { emoji: "📐", subject: "Linear Algebra", title: "Eigenvalues in 60 seconds", color: "#7c3aed" },
+  { emoji: "⚛️", subject: "Quantum Physics", title: "Schrödinger's uncertainty principle", color: "#06b6d4" },
+  { emoji: "💻", subject: "Algorithms", title: "Big-O — what it actually means", color: "#10b981" },
+  { emoji: "📈", subject: "Microeconomics", title: "Nash Equilibrium, no BS", color: "#f59e0b" },
 ];
 
 function PhoneMockup() {
   const [active, setActive] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setActive((p) => (p + 1) % PREVIEW_CARDS.length), 2400);
+    const t = setInterval(() => setActive((p) => (p + 1) % PREVIEW_CARDS.length), 2200);
     return () => clearInterval(t);
   }, []);
   const card = PREVIEW_CARDS[active];
   return (
-    <div className="relative mx-auto select-none" style={{ width: 220, height: 390 }}>
-      <div
-        className="absolute inset-0 rounded-[36px] border border-white/10"
-        style={{ background: "linear-gradient(160deg, #18182a 0%, #0a0a0f 100%)", boxShadow: "0 40px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06)" }}
-      />
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1.5 rounded-full bg-white/10" />
-      <div
-        className="absolute inset-[10px] rounded-[28px] overflow-hidden flex flex-col justify-end p-4 transition-all duration-500"
-        style={{ background: `linear-gradient(180deg, ${card.color}22 0%, ${card.color}66 60%, #0a0a0f 100%)` }}
-      >
-        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full self-start mb-2" style={{ background: card.color + "33", color: card.color }}>
-          {card.subject}
-        </span>
-        <div className="text-5xl mb-2">{card.emoji}</div>
-        <p className="text-white text-sm font-bold leading-snug">{card.title}</p>
-        <div className="flex gap-3 mt-3">{["❤️", "💬", "🔖"].map((ic) => <span key={ic} className="text-lg opacity-70">{ic}</span>)}</div>
-        <div className="flex gap-1 mt-3 justify-center">
+    <div className="relative mx-auto select-none" style={{ width: 200, height: 360 }}>
+      {/* shell */}
+      <div className="absolute inset-0 rounded-[34px] border border-white/10" style={{ background: "linear-gradient(160deg,#18182a,#0a0a0f)", boxShadow: "0 32px 64px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06)" }} />
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 w-14 h-1.5 rounded-full bg-white/10" />
+      {/* card */}
+      <div className="absolute inset-[8px] rounded-[26px] overflow-hidden flex flex-col justify-end p-4 transition-all duration-500" style={{ background: `linear-gradient(180deg,${card.color}18 0%,${card.color}55 60%,#0a0a0f 100%)` }}>
+        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full self-start mb-2" style={{ background: card.color + "30", color: card.color }}>{card.subject}</span>
+        <div className="text-4xl mb-2">{card.emoji}</div>
+        <p className="text-white text-xs font-bold leading-snug">{card.title}</p>
+        <div className="flex gap-2 mt-3 text-base opacity-60">❤️ 💬 🔖</div>
+        <div className="flex gap-1 mt-2 justify-center">
           {PREVIEW_CARDS.map((_, i) => (
-            <div key={i} className="h-0.5 rounded-full transition-all duration-300" style={{ width: i === active ? 20 : 6, background: i === active ? "#fff" : "rgba(255,255,255,0.3)" }} />
+            <div key={i} className="h-0.5 rounded-full transition-all duration-300" style={{ width: i === active ? 18 : 5, background: i === active ? "#fff" : "rgba(255,255,255,.25)" }} />
           ))}
         </div>
       </div>
@@ -87,190 +149,143 @@ function PhoneMockup() {
   );
 }
 
-// ── Feature card ──────────────────────────────────────────────────────────────
-function FeatureCard({ icon, title, desc, color }: { icon: string; title: string; desc: string; color: string }) {
+// ── Step card ─────────────────────────────────────────────────────────────────
+function Step({ n, icon, title, desc, color }: { n: string; icon: string; title: string; desc: string; color: string }) {
   return (
-    <div className="rounded-2xl p-5 border border-white/5 flex flex-col gap-2 hover:scale-[1.02] transition-transform duration-200" style={{ background: "linear-gradient(140deg, #16162299, #0a0a0f99)", backdropFilter: "blur(12px)" }}>
-      <div className="text-2xl w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: color + "22" }}>{icon}</div>
-      <p className="font-bold text-white text-sm">{title}</p>
-      <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
-    </div>
-  );
-}
-
-// ── Testimonial ───────────────────────────────────────────────────────────────
-function Testimonial({ text, name, uni, avatar }: { text: string; name: string; uni: string; avatar: string }) {
-  return (
-    <div className="rounded-2xl p-5 border border-white/5 flex flex-col gap-3" style={{ background: "linear-gradient(140deg, #16162299, #0a0a0f99)", backdropFilter: "blur(12px)" }}>
-      <p className="text-sm text-gray-300 leading-relaxed italic">"{text}"</p>
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: "#7c3aed33", color: "#a855f7" }}>{avatar}</div>
-        <div>
-          <p className="text-white text-xs font-semibold">{name}</p>
-          <p className="text-gray-500 text-[10px]">{uni}</p>
-        </div>
+    <div className="flex gap-4 items-start">
+      <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black" style={{ background: color + "22", color }}>{n}</div>
+      <div className="pt-1">
+        <p className="font-bold text-sm text-white">{icon} {title}</p>
+        <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">{desc}</p>
       </div>
     </div>
   );
 }
 
-// ── Main landing page ─────────────────────────────────────────────────────────
+// ── Landing page ──────────────────────────────────────────────────────────────
 export default function LandingPage() {
   const router = useRouter();
-  return (
-    <div className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden text-white" style={{ background: "#0a0a0f" }}>
-      <Orbs />
 
-      {/* ── NAV ── */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
+  return (
+    <div className="relative min-h-screen w-full text-white" style={{ background: "#0a0a0f", overflowY: "auto", overflowX: "hidden" }}>
+      <LavaLamp />
+
+      {/* NAV */}
+      <header className="relative z-10 flex items-center justify-between px-6 py-5 max-w-3xl mx-auto">
         <div className="flex items-center gap-2">
           <span className="text-xl">🎓</span>
           <span className="font-extrabold text-lg tracking-tight">Learn<span style={{ color: "#a855f7" }}>Reel</span></span>
         </div>
-        <button onClick={() => router.push("/feed")} className="text-xs font-semibold px-4 py-2 rounded-full border border-purple-500/40 text-purple-300 hover:bg-purple-500/10 transition-colors">
-          Είσοδος →
+        <button
+          onClick={() => router.push("/feed")}
+          className="text-xs font-semibold px-4 py-2 rounded-full border border-purple-500/40 text-purple-300 hover:bg-purple-500/10 transition-colors"
+        >
+          Enter app →
         </button>
       </header>
 
-      {/* ── HERO ── */}
-      <section className="relative z-10 flex flex-col items-center text-center px-6 pt-10 pb-20 max-w-2xl mx-auto">
+      {/* HERO */}
+      <section className="relative z-10 flex flex-col items-center text-center px-6 pt-8 pb-16 max-w-xl mx-auto">
+        {/* badge */}
         <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full mb-6" style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(168,85,247,0.3)", color: "#c084fc" }}>
-          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-          Διαθέσιμο στα ελληνικά πανεπιστήμια
+          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
+          Built for Greek universities · NTUA · UoA · AUTH
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight mb-4">
-          Μάθε{" "}
-          <span style={{ background: "linear-gradient(90deg, #a855f7, #06b6d4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            σαν να κάνεις scroll
+
+        <h1 className="text-4xl sm:text-5xl font-black leading-[1.1] tracking-tight mb-4">
+          University<br />
+          <span style={{ background: "linear-gradient(90deg,#a855f7,#06b6d4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            for&nbsp;Gen&nbsp;Z
           </span>
-          <br />στο TikTok.
         </h1>
-        <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-sm">
-          Εξηγήσεις πανεπιστημιακών μαθημάτων σε <strong className="text-white">60 δευτερόλεπτα</strong>.
-          Από φοιτητές, για φοιτητές. Χωρίς διαφημίσεις, χωρίς bullshit.
+
+        <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-xs">
+          Lecture content turned into <strong className="text-white">60-second reels</strong>. Swipe, learn, pass.
         </p>
+
+        {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
           <button
             onClick={() => router.push("/feed")}
             className="relative px-8 py-4 rounded-2xl font-bold text-sm text-white overflow-hidden group transition-all duration-200 hover:scale-[1.03] active:scale-95"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #a855f7)", boxShadow: "0 0 30px rgba(124,58,237,0.5)" }}
+            style={{ background: "linear-gradient(135deg,#7c3aed,#a855f7)", boxShadow: "0 0 28px rgba(124,58,237,0.55)" }}
           >
-            <span className="relative z-10">Ξεκίνα δωρεάν →</span>
-            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
+            Start for free →
           </button>
-          <button onClick={() => router.push("/upload")} className="px-8 py-4 rounded-2xl font-bold text-sm border border-white/10 text-gray-300 hover:bg-white/5 transition-all duration-200">
-            📤 Ανέβασε διαλέξεις
+          <button
+            onClick={() => router.push("/upload")}
+            className="px-8 py-4 rounded-2xl font-bold text-sm border border-white/10 text-gray-300 hover:bg-white/5 transition-all duration-200"
+          >
+            📤 Upload lectures
           </button>
         </div>
-        <div className="flex items-center gap-2 mt-6 text-xs text-gray-500">
+
+        {/* social proof avatars */}
+        <div className="flex items-center gap-2 mt-5 text-xs text-gray-500">
           <div className="flex -space-x-1.5">
             {["🧑‍🎓","👩‍🎓","🧑‍💻","👩‍🔬"].map((e, i) => (
               <div key={i} className="w-6 h-6 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-[10px]">{e}</div>
             ))}
           </div>
-          <span><strong className="text-gray-300">2.400+</strong> φοιτητές χρησιμοποιούν ήδη το LearnReel</span>
+          <span><strong className="text-gray-300">2,400+</strong> students already learning</span>
         </div>
-        <div className="mt-16"><PhoneMockup /></div>
+
+        {/* phone mockup */}
+        <div className="mt-14"><PhoneMockup /></div>
       </section>
 
-      {/* ── STATS ── */}
-      <section className="relative z-10 py-12 px-6 max-w-2xl mx-auto">
-        <div className="grid grid-cols-3 gap-4">
+      {/* STATS */}
+      <section className="relative z-10 py-10 px-6 max-w-xl mx-auto">
+        <div className="grid grid-cols-3 gap-3">
           {[
-            { val: 1200, suffix: "+", label: "Reels μαθημάτων" },
-            { val: 34, suffix: "", label: "Ελληνικά ΑΕΙ & ΤΕΙ" },
-            { val: 92, suffix: "%", label: "Επιτυχία στις εξετάσεις" },
-          ].map(({ val, suffix, label }) => (
+            { n: "1,200+", label: "Lecture reels" },
+            { n: "34",     label: "Greek universities" },
+            { n: "92%",    label: "Pass rate boost" },
+          ].map(({ n, label }) => (
             <div key={label} className="rounded-2xl p-4 text-center border border-white/5" style={{ background: "rgba(255,255,255,0.03)" }}>
-              <p className="text-2xl font-black" style={{ background: "linear-gradient(90deg, #a855f7, #06b6d4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                <Counter to={val} suffix={suffix} />
-              </p>
-              <p className="text-[10px] text-gray-500 mt-1 leading-tight">{label}</p>
+              <p className="text-xl font-black" style={{ background: "linear-gradient(90deg,#a855f7,#06b6d4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{n}</p>
+              <p className="text-[10px] text-gray-500 mt-1">{label}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section className="relative z-10 py-12 px-6 max-w-2xl mx-auto">
-        <p className="text-xs font-semibold text-center mb-2" style={{ color: "#a855f7" }}>ΠΩΣ ΛΕΙΤΟΥΡΓΕΙ</p>
-        <h2 className="text-2xl font-black text-center mb-10">Απλό σαν TikTok.<br /><span className="text-gray-400 font-normal text-base">Χωρίς τις χαζές χορογραφίες.</span></h2>
-        <div className="flex flex-col gap-4">
-          {[
-            { step: "01", icon: "📂", title: "Ανέβασε τη διάλεξή σου", desc: "PDF, σημειώσεις, YouTube link — τα δέχεται όλα.", color: "#7c3aed" },
-            { step: "02", icon: "🤖", title: "Το AI τα μετατρέπει σε Reels", desc: "Εξηγήσεις 60 δευτερολέπτων με κινούμενα διαγράμματα.", color: "#06b6d4" },
-            { step: "03", icon: "📱", title: "Κάνε scroll & μάθε", desc: "Swipe up σαν στο Instagram. Κάθε reel = μία έννοια.", color: "#10b981" },
-            { step: "04", icon: "🏆", title: "Μάζεψε XP & ξεκλείδωσε badges", desc: "Gamified μάθηση που σε κρατά on track για τις εξετάσεις.", color: "#f59e0b" },
-          ].map(({ step, icon, title, desc, color }) => (
-            <div key={step} className="flex gap-4 items-start">
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black" style={{ background: color + "22", color }}>{step}</div>
-              <div className="pt-1">
-                <p className="font-bold text-sm text-white">{icon} {title}</p>
-                <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">{desc}</p>
-              </div>
-            </div>
-          ))}
+      {/* HOW IT WORKS */}
+      <section className="relative z-10 py-10 px-6 max-w-xl mx-auto">
+        <p className="text-xs font-semibold text-center mb-1" style={{ color: "#a855f7" }}>HOW IT WORKS</p>
+        <h2 className="text-2xl font-black text-center mb-8">As simple as TikTok.</h2>
+        <div className="flex flex-col gap-5">
+          <Step n="01" icon="📂" title="Upload your lecture" desc="PDF, notes, YouTube link — it takes anything." color="#7c3aed" />
+          <Step n="02" icon="🤖" title="AI builds the reels" desc="60-second explanations with animated visuals." color="#06b6d4" />
+          <Step n="03" icon="📱" title="Scroll & learn" desc="Swipe up like Instagram. One reel = one concept." color="#10b981" />
+          <Step n="04" icon="🏆" title="Earn XP & streak badges" desc="Gamified learning that keeps you on track for exams." color="#f59e0b" />
         </div>
       </section>
 
-      {/* ── FEATURES ── */}
-      <section className="relative z-10 py-12 px-6 max-w-2xl mx-auto">
-        <p className="text-xs font-semibold text-center mb-2" style={{ color: "#06b6d4" }}>ΧΑΡΑΚΤΗΡΙΣΤΙΚΑ</p>
-        <h2 className="text-2xl font-black text-center mb-8">Ό,τι χρειάζεσαι για τις εξετάσεις.</h2>
-        <div className="grid grid-cols-2 gap-3">
-          <FeatureCard icon="🎬" title="Reels 60 δευτερολέπτων" desc="Κάθε βίντεο καλύπτει ακριβώς μία έννοια. Χωρίς padding." color="#7c3aed" />
-          <FeatureCard icon="🤖" title="AI εξηγήσεις" desc="GPT-powered περιεχόμενο βασισμένο στις επίσημες διαλέξεις σου." color="#06b6d4" />
-          <FeatureCard icon="🔖" title="Αποθήκευσε & επανέλαβε" desc="Bookmark reels για εξετάσεις. Flashcard mode included." color="#10b981" />
-          <FeatureCard icon="🏆" title="Streaks & XP" desc="Μάθε κάθε μέρα 10 λεπτά και ξεπέρασε τους συμφοιτητές σου." color="#f59e0b" />
-          <FeatureCard icon="🇬🇷" title="Ελληνικό περιεχόμενο" desc="ΕΜΠ, ΕΚΠΑ, ΑΠΘ και 30+ ιδρύματα. Στη γλώσσα σου." color="#ef4444" />
-          <FeatureCard icon="📊" title="Πρόοδος & analytics" desc="Δες ακριβώς πού χρειάζεσαι βοήθεια πριν τις εξετάσεις." color="#a855f7" />
-        </div>
-      </section>
-
-      {/* ── TESTIMONIALS ── */}
-      <section className="relative z-10 py-12 px-6 max-w-2xl mx-auto">
-        <p className="text-xs font-semibold text-center mb-2" style={{ color: "#f59e0b" }}>ΤΙ ΛΕΝΕ ΟΙ ΦΟΙΤΗΤΕΣ</p>
-        <h2 className="text-2xl font-black text-center mb-8">Αληθινές ιστορίες. Χωρίς PR.</h2>
-        <div className="flex flex-col gap-3">
-          <Testimonial text="Είχα εξετάσεις Γραμμικής Άλγεβρας σε 3 μέρες. Το LearnReel με έσωσε κυριολεκτικά. Πέρασα με 8." name="Νίκος Π." uni="ΕΜΠ — Ηλεκτρολόγος 3ο έτος" avatar="Ν" />
-          <Testimonial text="Τέλος με τα 4ωρα YouTube tutorials. Τώρα μαθαίνω στο λεωφορείο, 10 λεπτά τη μέρα." name="Μαρία Κ." uni="ΕΚΠΑ — Πληροφορική 2ο έτος" avatar="Μ" />
-          <Testimonial text="Ανέβασα τις σημειώσεις της διάλεξης και σε 5 λεπτά είχα 12 reels έτοιμα. Απίστευτο." name="Δημήτρης Α." uni="ΑΠΘ — Φυσική 4ο έτος" avatar="Δ" />
-        </div>
-      </section>
-
-      {/* ── CTA FINAL ── */}
-      <section className="relative z-10 py-16 px-6 max-w-xl mx-auto text-center">
-        <div className="rounded-3xl p-8 border border-purple-500/20 relative overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(6,182,212,0.05) 100%)" }}>
-          <div className="absolute inset-0 rounded-3xl opacity-30 pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%, rgba(124,58,237,0.4), transparent 60%)" }} />
-          <p className="text-4xl mb-4">🚀</p>
-          <h2 className="text-2xl font-black mb-3">Έτοιμος να αλλάξεις<br />τον τρόπο που μελετάς;</h2>
-          <p className="text-gray-400 text-sm mb-6">Εγγραφή σε λιγότερο από 30 δευτερόλεπτα.<br />Χωρίς credit card. Χωρίς BS.</p>
+      {/* FINAL CTA */}
+      <section className="relative z-10 py-14 px-6 max-w-md mx-auto text-center">
+        <div className="rounded-3xl p-8 border border-purple-500/20 relative overflow-hidden" style={{ background: "linear-gradient(135deg,rgba(124,58,237,0.15),rgba(6,182,212,0.05))" }}>
+          <div className="absolute inset-0 rounded-3xl pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%,rgba(124,58,237,0.35),transparent 65%)" }} />
+          <p className="text-4xl mb-3">🚀</p>
+          <h2 className="text-xl font-black mb-2">Ready to study smarter?</h2>
+          <p className="text-gray-400 text-sm mb-6">Sign up in under 30 seconds. No credit card.</p>
           <button
             onClick={() => router.push("/feed")}
-            className="relative w-full py-4 rounded-2xl font-black text-base text-white overflow-hidden group transition-all duration-200 hover:scale-[1.02] active:scale-95"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #a855f7)", boxShadow: "0 0 40px rgba(124,58,237,0.5)" }}
+            className="w-full py-4 rounded-2xl font-black text-base text-white transition-all duration-200 hover:scale-[1.02] active:scale-95"
+            style={{ background: "linear-gradient(135deg,#7c3aed,#a855f7)", boxShadow: "0 0 36px rgba(124,58,237,0.5)" }}
           >
-            Ξεκίνα τώρα — είναι δωρεάν →
+            Start now — it's free →
           </button>
-          <p className="text-gray-600 text-xs mt-4">
-            Ήδη μέλος;{" "}
-            <button onClick={() => router.push("/feed")} className="text-purple-400 underline">Σύνδεση</button>
-          </p>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
+      {/* FOOTER */}
       <footer className="relative z-10 py-8 px-6 text-center border-t border-white/5">
-        <div className="flex items-center justify-center gap-2 mb-3">
-          <span className="text-lg">🎓</span>
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <span>🎓</span>
           <span className="font-extrabold text-sm">Learn<span style={{ color: "#a855f7" }}>Reel</span></span>
         </div>
-        <p className="text-gray-600 text-xs">Φτιαγμένο με ❤️ από φοιτητές για φοιτητές · Athens Hackathon 2026</p>
-        <div className="flex justify-center gap-4 mt-4 text-xs text-gray-600">
-          {["Αρχική","Μαθήματα","Chatbot","Επικοινωνία"].map((l) => (
-            <span key={l} className="hover:text-gray-400 cursor-pointer transition-colors">{l}</span>
-          ))}
-        </div>
+        <p className="text-gray-600 text-xs">Made with ❤️ by students for students · Athens Hackathon 2026</p>
       </footer>
     </div>
   );
