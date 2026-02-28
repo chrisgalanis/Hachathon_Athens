@@ -1,0 +1,3 @@
+manimgl
+pydantic-ai
+python-dotenv
