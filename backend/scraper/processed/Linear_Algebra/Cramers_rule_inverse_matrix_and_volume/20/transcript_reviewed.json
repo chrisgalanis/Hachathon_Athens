@@ -1,0 +1,28 @@
+{
+  "lecture_number": 20,
+  "subject": "Cramer's rule, inverse matrix, and volume",
+  "original_transcript": "What if you could solve any linear system just by computing determinants? That's exactly what Cramer's Rule promises — and it's gorgeous. Take the system with matrix A equals [2,1; 3,4] and right-hand side [5; 11]. Want the first unknown? Just swap column one with your target vector, take that new determinant, and divide by det(A). You get nine-fifths — no row reduction needed. The same elegant idea powers the inverse matrix formula: A-inverse equals one over det(A), times the transpose of the cofactor matrix. For a 2×2, that's why the inverse flips the diagonal, negates the off-diagonal, and scales by one over ad-minus-bc. Think of cofactors as the matrix's own DNA — each one encodes how the whole structure changes when you remove one row and one column. Here's the catch: computing determinants this way costs factorial time, so for large systems, elimination wins every time. But master these ideas, and you hold the theoretical keys to understanding why inverses exist, when they break down, and how geometry — area, volume — lives inside every determinant.",
+  "reviewed_transcript": "What if you could solve any linear system just by computing determinants? That's exactly what Cramer's Rule promises — and it's gorgeous. Take the system with matrix A equals [2,1; 3,4] and right-hand side [5; 11]. Want the first unknown? Just swap column one with your target vector, take that new determinant, and divide by det(A). You get nine-fifths — no row reduction needed. The same elegant idea powers the inverse matrix formula: A-inverse equals one over det(A), times the transpose of the cofactor matrix — also called the adjugate. For a 2×2, that's why the inverse flips the diagonal, negates the off-diagonal, and scales by one over ad-minus-bc. Think of cofactors as the matrix's own DNA — each one encodes how the whole structure changes when you eliminate one row and one column and take the resulting determinant. Here's the catch: computing determinants this way costs factorial time, so for large systems, elimination wins every time. But master these ideas, and you hold the theoretical keys to understanding why inverses exist, when they break down, and how geometry — area, volume — lives inside every determinant.",
+  "issues": [
+    {
+      "original_phrase": "You get nine-fifths — no row reduction needed.",
+      "issue": "The numerical answer is incorrect. For A = [2,1; 3,4] and b = [5; 11]: det(A) = (2)(4)-(1)(3) = 5. Replacing column 1 with [5;11] gives the matrix [5,1;11,4], whose determinant is (5)(4)-(1)(11) = 20-11 = 9. So x₁ = 9/5, which is correct. Actually this checks out — 9/5 is correct.",
+      "corrected_phrase": "You get nine-fifths — no row reduction needed.",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "times the transpose of the cofactor matrix",
+      "issue": "While technically correct, the transpose of the cofactor matrix has a standard name — the adjugate (or classical adjoint) — and omitting it leaves a gap that could confuse learners who encounter the term elsewhere. Naming it adds precision without losing accessibility.",
+      "corrected_phrase": "times the transpose of the cofactor matrix — also called the adjugate",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "each one encodes how the whole structure changes when you remove one row and one column",
+      "issue": "This is imprecise and slightly misleading. A cofactor is not just about 'removing' a row and column — it is specifically the signed determinant of the submatrix obtained by deleting that row and column. The word 'remove' hand-waves away the determinant computation that is the actual content of a cofactor.",
+      "corrected_phrase": "each one encodes how the whole structure changes when you eliminate one row and one column and take the resulting determinant",
+      "severity": "minor"
+    }
+  ],
+  "overall_accuracy": "minor_issues",
+  "reviewer_notes": "The transcript is largely accurate and does a fine job conveying Cramer's Rule and the adjugate/inverse formula at a lay level. Three minor issues were identified: (1) The numerical answer of 9/5 was verified to be correct — no fix needed there. (2) The phrase 'transpose of the cofactor matrix' is correct but benefits from naming it the 'adjugate,' which is the standard term students will encounter in textbooks and follow-up study. (3) The cofactor description 'when you remove one row and one column' is a common but incomplete simplification — cofactors are signed determinants of the resulting submatrix, not merely a structural 'removal.' The fix preserves the DNA metaphor while sneaking in the word 'determinant,' which is the key mathematical content. Overall the transcript is a strong, engaging explainer that accurately represents the theory."
+}

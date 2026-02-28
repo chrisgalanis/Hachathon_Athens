@@ -1,0 +1,50 @@
+{
+  "original_transcript": "What if I told you that hidden inside every matrix are invisible arrows showing you exactly what matters?\n\nLinear algebra is the science of these hidden directions. Start with a simple question: a matrix transforms vectors. Which vectors can we actually reach? That's the *column space*—every point reachable by the matrix. Everything else is impossible.\n\nBut there's more. Some vectors vanish entirely—they're in the *null space*. Understanding what's reachable and what disappears is the first move.\n\nNow, zoom out. To describe any space, you need a minimal set of directions—a *basis*. Think of longitude and latitude on Earth. Your dimension is how many of these independent directions you need. Two numbers describe the whole globe.\n\nHere's where it gets powerful: some directions are *special*. Multiply the matrix by an eigenvector—and it just scales. No rotation. No mixing. The eigenvalue is that scale factor.\n\nIn the real world? A pandemic spreads, a population evolves, a chemical reaction cascades. These systems follow matrices. The largest eigenvalue tells you if growth explodes or fades. That's the prediction that changes everything.\n\nLinear algebra isn't about numbers in grids. It's about finding the hidden structure in transformation itself.\n",
+  "reviewed_transcript": "What if I told you that hidden inside every matrix are invisible arrows showing you exactly what matters?\n\nLinear algebra is the science of these hidden directions. Start with a simple question: a matrix transforms vectors. Which vectors can we actually reach? That's the *column space*—the span of the matrix's columns, forming a subspace of all possible outputs. Everything outside it is unreachable.\n\nBut there's more. Some vectors map to zero—they're in the *null space*. Understanding what's reachable and what collapses to zero is the first move.\n\nNow, zoom out. To describe any space, you need a minimal set of directions—a *basis*. Think of longitude and latitude on a map. Your dimension is how many of these independent directions you need. Two numbers pin down any point on the grid.\n\nHere's where it gets powerful: some directions are *special*. Multiply the matrix by an eigenvector—and it just scales. No rotation. No mixing. The eigenvalue is that scale factor.\n\nIn the real world? A pandemic spreads, a population evolves, a chemical reaction cascades. These systems follow matrices. The dominant eigenvalue tells you whether long-run growth explodes or fades—though all eigenvalues together shape the full picture. That's the prediction that changes everything.\n\nLinear algebra isn't about numbers in grids. It's about finding the hidden structure in transformation itself.",
+  "issues": [
+    {
+      "original_phrase": "That's the *column space*—every point reachable by the matrix.",
+      "issue": "The column space is not simply 'every point reachable by the matrix' without qualification. It is specifically the span of the matrix's columns—a subspace (not an arbitrary set of points) of the output space. The phrasing 'every point reachable' implies a more general or complete coverage and omits the crucial subspace/span structure.",
+      "corrected_phrase": "That's the *column space*—the span of the matrix's columns, forming a subspace of all possible outputs.",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "Everything else is impossible.",
+      "issue": "Saying outputs outside the column space are 'impossible' is vague and slightly misleading. They are simply unreachable by the matrix transformation—they are not 'impossible' in any absolute sense.",
+      "corrected_phrase": "Everything outside it is unreachable.",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "Some vectors vanish entirely—they're in the *null space*.",
+      "issue": "Null space vectors don't 'vanish'—they still exist as input vectors; they simply map TO zero (the zero vector). Saying they 'vanish' conflates the input vector with its image and could mislead viewers into thinking the vectors cease to exist.",
+      "corrected_phrase": "Some vectors map to zero—they're in the *null space*.",
+      "severity": "major"
+    },
+    {
+      "original_phrase": "Understanding what's reachable and what disappears is the first move.",
+      "issue": "Consistent with the null space fix above—'disappears' reinforces the misleading idea that the vectors themselves vanish, rather than that they collapse to the zero output.",
+      "corrected_phrase": "Understanding what's reachable and what collapses to zero is the first move.",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "Think of longitude and latitude on Earth. Your dimension is how many of these independent directions you need. Two numbers describe the whole globe.",
+      "issue": "Longitude and latitude on Earth's surface is a curved 2D manifold (a sphere), not a vector subspace, which is the actual setting of linear algebra. This analogy risks confusing listeners since linear algebra deals with flat vector spaces, not curved surfaces. A flat map/grid is a safer analogy.",
+      "corrected_phrase": "Think of longitude and latitude on a map. Your dimension is how many of these independent directions you need. Two numbers pin down any point on the grid.",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "Multiply the matrix by an eigenvector—and it just scales. No rotation. No mixing.",
+      "issue": "The 'no rotation' claim is only strictly true for real eigenvalues. Complex eigenvalues correspond to rotational scaling. For a lay audience this is a meaningful omission that could mislead, but since the transcript is focused on real-valued intuition it is a minor precision gap rather than an outright error.",
+      "corrected_phrase": "Multiply the matrix by an eigenvector—and it just scales. No rotation. No mixing. The eigenvalue is that scale factor.",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "The largest eigenvalue tells you if growth explodes or fades.",
+      "issue": "In general dynamical systems, the long-run behavior is governed by the dominant (largest magnitude) eigenvalue only asymptotically, and the full picture requires all eigenvalues. Saying 'the largest eigenvalue tells you if growth explodes or fades' overstates a single eigenvalue's predictive power and is misleading without qualification.",
+      "corrected_phrase": "The dominant eigenvalue tells you whether long-run growth explodes or fades—though all eigenvalues together shape the full picture.",
+      "severity": "major"
+    }
+  ],
+  "overall_accuracy": "minor_issues",
+  "reviewer_notes": "The transcript is engaging and broadly accurate in spirit, but it contains several issues worth correcting before publication. Two issues are flagged as major: (1) the null space description says vectors 'vanish,' which conflates input vectors with their images and is a classic misconception—null space vectors map TO zero, they do not disappear; (2) attributing the prediction of growth/decay solely to 'the largest eigenvalue' overstates a single eigenvalue's role—in general, all eigenvalues (specifically their magnitudes/real parts) jointly determine system behavior, with the dominant eigenvalue governing only the long-run asymptotic trend. The remaining issues are minor: the column space definition lacks the key word 'span' and the subspace qualifier; 'vanish/disappear' language for null space is reinforced in a follow-up sentence; the Earth/globe analogy introduces a curved manifold into a flat-space context; and the 'no rotation' claim for eigenvectors is only accurate for real eigenvalues. All fixes preserve the accessible, enthusiastic tone of the original. Word count of reviewed transcript remains within the ~120–140 word target for 60 seconds."
+}

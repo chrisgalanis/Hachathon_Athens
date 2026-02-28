@@ -1,0 +1,22 @@
+{
+  "lecture_number": 33,
+  "subject": "Left and right inverses; pseudoinverse",
+  "original_transcript": "What if a matrix can't be inverted — can we at least get close? Most real-world matrices aren't square, so a perfect two-sided inverse is off the table. But here's the trick: we can often find a *partial* inverse. Take a tall, skinny matrix — more rows than columns, like a 3×2 matrix with independent columns. It has a left-inverse: multiply from the left, and you undo what the matrix did. That's exactly the engine behind least squares, where the formula (AᵀA)⁻¹Aᵀ does the heavy lifting. Flip it around — a short, wide matrix has a right-inverse, letting you always *reach* any target, though not uniquely. And when even that fails, the pseudoinverse steps in as the best-effort substitute, ignoring the null space and inverting everything it possibly can. Master these ideas, and you hold the keys to solving virtually any linear system the real world throws at you.",
+  "reviewed_transcript": "What if a matrix can't be inverted — can we at least get close? Most real-world matrices aren't square, so a perfect two-sided inverse is off the table. But here's the trick: we can often find a *partial* inverse. Take a tall, skinny matrix — more rows than columns, like a 3×2 matrix with independent columns. It has a left-inverse: multiply from the left, and you undo what the matrix did. That's exactly the engine behind least squares, where the formula (AᵀA)⁻¹Aᵀ does the heavy lifting. Flip it around — a short, wide matrix with independent rows has a right-inverse, letting you always *reach* any target, though not uniquely. And when even that fails, the pseudoinverse steps in as the best-effort substitute, ignoring the null space and the left null space, and inverting everything it possibly can. Master these ideas, and you hold the keys to solving virtually any linear system the real world throws at you.",
+  "issues": [
+    {
+      "original_phrase": "a short, wide matrix has a right-inverse, letting you always *reach* any target, though not uniquely.",
+      "issue": "A short, wide matrix (more columns than rows) only has a right-inverse when its rows are linearly independent (i.e., it has full row rank). Without that condition, a right-inverse is not guaranteed. The original phrasing implies any short, wide matrix has a right-inverse, which is incorrect.",
+      "corrected_phrase": "a short, wide matrix with independent rows has a right-inverse, letting you always *reach* any target, though not uniquely.",
+      "severity": "major"
+    },
+    {
+      "original_phrase": "ignoring the null space and inverting everything it possibly can.",
+      "issue": "The pseudoinverse doesn't only ignore the (right) null space — it also ignores the left null space (the null space of Aᵀ). The pseudoinverse inverts A on its column space and row space while mapping both null spaces to zero. Mentioning only 'the null space' is incomplete and potentially misleading.",
+      "corrected_phrase": "ignoring the null space and the left null space, and inverting everything it possibly can.",
+      "severity": "minor"
+    }
+  ],
+  "overall_accuracy": "minor_issues",
+  "reviewer_notes": "The transcript is generally well-written and accessible. There are two issues to address: (1) A major omission — the right-inverse only exists for a short, wide matrix when it has full row rank (independent rows); stating this condition is essential to avoid a mathematically false claim. (2) A minor incompleteness — the pseudoinverse zeros out both the (right) null space and the left null space (null space of Aᵀ); only mentioning \"the null space\" undersells the full picture and could mislead attentive viewers. Both fixes are minimal and preserve the engaging tone. Word count remains comfortably within the ~120–140 word target."
+}

@@ -30,7 +30,7 @@ export default function ReelCard({ card, cardIndex, totalCards }: ReelCardProps)
   const { level } = useXpStore();
   const prevLevel = useRef(level);
   const [showLevelUp, setShowLevelUp] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // Level-up detection
@@ -64,8 +64,7 @@ export default function ReelCard({ card, cardIndex, totalCards }: ReelCardProps)
         <video
           ref={videoRef}
           src={card.videoSrc}
-          className="absolute inset-0 w-full h-full object-cover"
-          autoPlay
+          className="absolute inset-0 w-full h-full object-contain"
           loop
           muted={false}
           playsInline

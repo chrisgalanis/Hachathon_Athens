@@ -1,0 +1,22 @@
+{
+  "lecture_number": 6,
+  "subject": "Column space and nullspace",
+  "original_transcript": "What if I told you a matrix is really just a map to hidden treasure? Every matrix A has a column space — the set of all targets you can actually reach by combining its columns. Think of the columns as directions you're allowed to move in. The column space is every single point you can get to. A plane through the origin in three dimensions? That's a column space. A line through the origin? Also a column space. Both are subspaces — special sets where adding or scaling vectors never kicks you out of the set. Then there's the null space: all the inputs x where Ax lands exactly on zero. These aren't dead ends — they reveal the hidden structure of the system. Master column spaces and null spaces, and you unlock the ability to solve equations, understand what's possible, and see exactly where a system's power — and its limits — truly lie.",
+  "reviewed_transcript": "What if I told you a matrix is really just a map to hidden treasure? Every matrix A has a column space — the set of all targets you can actually reach by taking linear combinations of its columns. Think of the columns as directions you're allowed to move in. The column space is every point you can get to in this way. A plane through the origin in three dimensions? That's a column space. A line through the origin? Also a column space. Both are subspaces — special sets where adding or scaling vectors never kicks you out of the set. Then there's the null space: all the inputs x where Ax lands exactly on zero. These aren't dead ends — they reveal the hidden structure of the system. Master column spaces and null spaces, and you unlock the ability to solve equations, understand what's possible, and see exactly where a system's power — and its limits — truly lie.",
+  "issues": [
+    {
+      "original_phrase": "the set of all targets you can actually reach by combining its columns",
+      "issue": "The phrase 'combining its columns' is ambiguous — it could imply finite sums or arbitrary combinations without scaling. The column space is precisely the set of all *linear combinations* (arbitrary scalar multiples summed together) of the columns. Omitting 'linear' is a common hand-wavy imprecision that can mislead lay audiences into thinking only addition is involved.",
+      "corrected_phrase": "the set of all targets you can actually reach by taking linear combinations of its columns",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "The column space is every single point you can get to.",
+      "issue": "Without a qualifier, this implies you can reach *any* point in the ambient space, which is false — you can only reach points spanned by the columns. Adding 'in this way' (or similar) ties the claim back to the linear-combination structure just described and preserves accuracy.",
+      "corrected_phrase": "The column space is every point you can get to in this way.",
+      "severity": "minor"
+    }
+  ],
+  "overall_accuracy": "minor_issues",
+  "reviewer_notes": "The transcript is broadly accurate and does a great job conveying the geometric intuition behind column spaces and null spaces for a lay audience. Two minor imprecisions were found: (1) 'combining' should be 'taking linear combinations of' — linear combinations involve both scaling and adding, and the distinction matters for correctness; (2) 'every single point you can get to' overstates reachability without the qualifier 'in this way,' implying all of space is reachable rather than just the column space. Both fixes are small and preserve the engaging tone. No major mathematical errors were detected — the subspace characterisation, the null space definition (Ax = 0), and the geometric examples (plane/line through the origin) are all correct."
+}

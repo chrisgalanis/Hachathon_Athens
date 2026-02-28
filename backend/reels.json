@@ -1,0 +1,12 @@
+[
+  {
+    "video": "/home/chris/uni/Hackathon-Athens/backend/videos/Elimination_with_matrices_example.mp4",
+    "transcript": "/home/chris/uni/Hackathon-Athens/backend/scraper/processed/Linear_Algebra/Elimination_with_matrices/2"
+  }
+  ,
+  {
+    "brainrot_video": "/home/chris/uni/Hackathon-Athens/backend/videos/Eigenvalues_and_eigenvectors_concept.mp4",
+    "video": "/home/chris/uni/Hackathon-Athens/backend/videos/Eigenvalues_and_eigenvectors_concept.mp4",
+    "transcript": "/home/chris/uni/Hackathon-Athens/backend/scraper/processed/Linear_Algebra/Eigenvalues_and_eigenvectors/21"
+  }
+]

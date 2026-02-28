@@ -1,0 +1,28 @@
+{
+  "lecture_number": 9,
+  "subject": "Independence, basis, and dimension",
+  "original_transcript": "Here's a question that unlocks all of linear algebra: what's the bare minimum set of vectors needed to describe an entire space? That idea has a name — a basis. Think of it like a coordinate system: just as every point in 3D space gets a unique address using x, y, and z, every vector in your space gets a unique address using basis vectors. But the ingredients have to be just right. Take [1,0] and [2,0] — they look like two vectors, but they're really just one direction in disguise, so they're dependent and useless as a basis. Swap in [1,0] and [0,1] instead, and suddenly you can reach anywhere in 2D. The number of vectors in any basis is the dimension — your space's degrees of freedom. Master basis and dimension, and you hold the key to understanding rank, null spaces, and the deep geometry hiding inside every matrix.",
+  "reviewed_transcript": "Here's a question that unlocks all of linear algebra: what's the bare minimum set of vectors needed to describe an entire space? That idea has a name — a basis. Think of it like a coordinate system: just as every point in 3D space gets a unique address using x, y, and z, every vector in your space gets a unique representation using basis vectors. But the ingredients have to be just right. Take [1,0] and [2,0] — they look like two vectors, but they're really just one direction in disguise, so they're linearly dependent and can't form a basis. Swap in [1,0] and [0,1] instead, and suddenly you can reach anywhere in 2D — and do so uniquely. The number of vectors in any basis is the dimension — your space's degrees of freedom. Master basis and dimension, and you hold the key to understanding rank, null spaces, and the deep geometry hiding inside every matrix.",
+  "issues": [
+    {
+      "original_phrase": "every vector in your space gets a unique address using basis vectors",
+      "issue": "The word 'address' is borrowed from the coordinate-system analogy and is fine, but saying 'address' without the word 'unique' matching the earlier analogy is slightly inconsistent. More importantly, the key mathematical property being hinted at — uniqueness of representation — is the defining feature of a basis and should be stated, not just implied.",
+      "corrected_phrase": "every vector in your space gets a unique representation using basis vectors",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "they're dependent and useless as a basis",
+      "issue": "Calling them 'useless' is colloquially fine, but 'dependent' alone without the qualifier 'linearly' can be ambiguous to a newcomer. The standard term 'linearly dependent' should be used at least once for correctness and to plant the proper vocabulary.",
+      "corrected_phrase": "they're linearly dependent and can't form a basis",
+      "severity": "minor"
+    },
+    {
+      "original_phrase": "suddenly you can reach anywhere in 2D",
+      "issue": "This phrasing echoes the common conflation of 'spanning' with mere reachability, without mentioning that a basis also guarantees uniqueness of that representation. Spanning alone (e.g., three vectors in 2D) lets you 'reach anywhere,' but without the independence condition you lose the unique-address property that was just advertised as the hallmark of a basis.",
+      "corrected_phrase": "suddenly you can reach anywhere in 2D — and do so uniquely",
+      "severity": "major"
+    }
+  ],
+  "overall_accuracy": "minor_issues",
+  "reviewer_notes": "The transcript is engaging and broadly correct. Its biggest mathematical soft-spot is the classic basis conflation: it correctly implies uniqueness early (the 'unique address' framing) but then describes a basis purely in terms of spanning ('reach anywhere in 2D') without circling back to note that independence is what *guarantees* that uniqueness. A reader could walk away thinking any spanning set is a basis. The fixes are light-touch — adding 'and do so uniquely' and swapping 'dependent' for 'linearly dependent' — and fully preserve the accessible tone. Word count of the revised transcript remains within the 120–140 word target (~135 words)."
+}
