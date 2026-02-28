@@ -1,4 +1,4 @@
-import { Heart, Sparkles, Pause, Play } from 'lucide-react';
+import { Sparkles, Pause, Play } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'motion/react';
 
@@ -33,8 +33,7 @@ export function ReelCardPremium({
   currentCard,
   videoSrc,
 }: ReelCardPremiumProps) {
-  const [liked, setLiked] = useState(false);
-const [aura, setAura] = useState(0);
+  const [aura, setAura] = useState(0);
   // Non-video cards always show UI; video cards start hidden
   const [showUI, setShowUI] = useState(!videoSrc);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -283,17 +282,6 @@ const [aura, setAura] = useState(0);
         {/* Action sidebar */}
         <div className="absolute right-4 bottom-32 z-20 flex flex-col gap-6">
           <motion.button
-            whileTap={{ scale: 0.85 }}
-            onClick={(e) => { e.stopPropagation(); setLiked(!liked); }}
-            className="flex flex-col items-center gap-2"
-          >
-            <div className="w-14 h-14 rounded-full backdrop-blur-xl bg-white/10 border border-white/20 flex items-center justify-center shadow-lg">
-              <Heart className={`w-6 h-6 transition-all ${liked ? 'fill-red-500 text-red-500' : 'text-white'}`} />
-            </div>
-            <span className="text-white text-xs">Like</span>
-          </motion.button>
-
-<motion.button
             whileTap={{ scale: 0.85 }}
             onClick={(e) => { e.stopPropagation(); setAura(a => a + 10); }}
             className="flex flex-col items-center gap-2"
