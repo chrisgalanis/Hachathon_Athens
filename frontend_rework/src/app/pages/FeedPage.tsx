@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { ReelCardPremium } from '../components/ReelCardPremium';
 import { FloatingNav } from '../components/FloatingNav';
 import { fetchAllReels, resolveVideoUrl, type RawReel } from '../api';
@@ -72,13 +73,64 @@ export function FeedPage() {
   const [reels, setReels] = useState<RawReel[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const reelRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   useEffect(() => {
     fetchAllReels()
-      .then(setReels)
+      .then(data => {
+        // Handle ?uploadReel=1 — prepend user-uploaded reel from sessionStorage
+        const uploadParam = searchParams.get('uploadReel');
+        if (uploadParam === '1') {
+          try {
+            const raw = sessionStorage.getItem('learnreel_upload_reel');
+            if (raw) {
+              const uploadedReel = JSON.parse(raw) as RawReel;
+              setReels([uploadedReel, ...data]);
+              return;
+            }
+          } catch { /* ignore */ }
+        }
+        setReels(data);
+      })
       .catch(() => setError('Could not load reels. Is the backend running?'))
       .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Scroll to the target reel once reels are loaded and refs are attached
+  useEffect(() => {
+    if (loading || reels.length === 0) return;
+    const concept = searchParams.get('concept');
+    const lectureParam = searchParams.get('lecture');
+    const uploadParam = searchParams.get('uploadReel');
+
+    if (uploadParam === '1') {
+      // Scroll to top — uploaded reel is always first
+      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+      return;
+    }
+
+    if (!concept) return;
+
+    const lectureNumber = lectureParam ? parseInt(lectureParam, 10) : 1;
+
+    // Find the matching reel
+    const target = reels.find(
+      r => r.concept === concept && r.lectureNumber === lectureNumber
+    ) ?? reels.find(r => r.concept === concept);
+
+    if (!target) return;
+
+    // Small delay to let the DOM render all reel divs
+    const timer = setTimeout(() => {
+      const el = reelRefs.current.get(target.id);
+      el?.scrollIntoView({ behavior: 'instant' });
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [loading, reels, searchParams]);
 
   if (loading) {
     return (
@@ -102,14 +154,22 @@ export function FeedPage() {
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#0a0a0f]">
       {/* Main scroll container */}
-      <div className="h-screen overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
+      <div
+        ref={scrollContainerRef}
+        className="h-screen overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
+      >
         {reels.map((reel, index) => {
           const brainrotUrl = reel.brainrotSrc ? resolveVideoUrl(reel.brainrotSrc) : null;
+
+          const setRef = (el: HTMLDivElement | null) => {
+            if (el) reelRefs.current.set(reel.id, el);
+            else reelRefs.current.delete(reel.id);
+          };
 
           if (brainrotUrl) {
             // Split-screen: top half = main video, bottom half = muted brainrot
             return (
-              <div key={reel.id} className="h-screen snap-start snap-always flex flex-col">
+              <div key={reel.id} ref={setRef} className="h-screen snap-start snap-always flex flex-col">
                 <div className="h-1/2 overflow-hidden">
                   <ReelCardPremium
                     {...rawToCardProps(reel, index, reels.length)}
@@ -125,7 +185,7 @@ export function FeedPage() {
 
           // Full-screen: no brainrot video
           return (
-            <div key={reel.id} className="h-screen snap-start snap-always">
+            <div key={reel.id} ref={setRef} className="h-screen snap-start snap-always">
               <ReelCardPremium
                 {...rawToCardProps(reel, index, reels.length)}
               />

@@ -181,16 +181,22 @@ def health():
 
 @app.get("/api/reels")
 def get_all_reels():
-    """Return reels for every entry in reels.json, in order."""
+    """Return all reels from every processed concept, sorted by concept + lecture number."""
     reels = []
-    for transcript_dir, video_abs in REELS_MAP.items():
-        # Infer concept from the transcript path (grandparent of lecture dir)
-        # e.g. .../Linear_Algebra/Elimination_with_matrices/2  → concept = Elimination_with_matrices
-        lecture_dir = transcript_dir
-        concept = lecture_dir.parent.name
-        reel = _build_reel(concept, lecture_dir)
-        if reel:
-            reels.append(reel)
+    for course_dir in PROCESSED_DIR.iterdir():
+        if not course_dir.is_dir():
+            continue
+        for subject_dir in course_dir.iterdir():
+            if not subject_dir.is_dir():
+                continue
+            concept = subject_dir.name
+            for lecture_dir in subject_dir.iterdir():
+                if not lecture_dir.is_dir():
+                    continue
+                reel = _build_reel(concept, lecture_dir)
+                if reel:
+                    reels.append(reel)
+    reels.sort(key=lambda r: (r["concept"], r["lectureNumber"]))
     return reels
 
 

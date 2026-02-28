@@ -29,7 +29,15 @@ export interface RawReel {
   captions: Array<{ start: number; end: number; text: string }>;
   videoSrc: string | null;
   brainrotSrc: string | null;
+  pdfSrc: string | null;
   hasVideo: boolean;
+  isUserUpload?: boolean;
+  fileName?: string;
+  fileType?: 'video' | 'pdf';
+}
+
+export interface UploadedReel extends RawReel {
+  isUserUpload: true;
 }
 
 // ---------------------------------------------------------------------------
@@ -71,4 +79,13 @@ export async function fetchReel(concept: string, lectureNumber: number): Promise
 /** Resolve a video path returned by the backend into a full URL. */
 export function resolveVideoUrl(videoSrc: string): string {
   return `${API_BASE}${videoSrc}`;
+}
+
+/** Upload a video or PDF file; returns the reel metadata for playback. */
+export async function uploadFile(file: File): Promise<UploadedReel> {
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: form });
+  if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+  return res.json() as Promise<UploadedReel>;
 }
