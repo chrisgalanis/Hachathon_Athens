@@ -1,0 +1,6 @@
+﻿node_modules/
+.next/
+.env*.local
+public/videos/*.mp4
+scripts/yt-dlp.exe
+scripts/ffmpeg.exe
