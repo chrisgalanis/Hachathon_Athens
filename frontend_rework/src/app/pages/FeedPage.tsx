@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { ReelCardPremium } from '../components/ReelCardPremium';
 import { FloatingNav } from '../components/FloatingNav';
 import { fetchAllReels, resolveVideoUrl, type RawReel } from '../api';
@@ -130,6 +131,8 @@ export function FeedPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showNav, setShowNav] = useState(true);
+  const [searchParams] = useSearchParams();
+  const reelRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     fetchAllReels()
@@ -137,6 +140,15 @@ export function FeedPage() {
       .catch(() => setError('Could not load reels. Is the backend running?'))
       .finally(() => setLoading(false));
   }, []);
+
+  // Scroll to the requested index once reels are rendered
+  useEffect(() => {
+    const index = parseInt(searchParams.get('index') ?? '0', 10);
+    if (!loading && reels.length > 0 && index > 0) {
+      const el = reelRefs.current[index];
+      if (el) el.scrollIntoView({ behavior: 'instant' });
+    }
+  }, [loading, reels, searchParams]);
 
   if (loading) {
     return (
@@ -164,18 +176,24 @@ export function FeedPage() {
         {reels.map((reel, index) => {
           if (reel.brainrotSrc) {
             return (
-              <BrainrotSlide
-                key={reel.id}
-                reel={reel}
-                cardProps={rawToCardProps(reel, index, reels.length)}
-                onShowNavChange={setShowNav}
-              />
+              <div key={reel.id} ref={el => { reelRefs.current[index] = el; }} className="h-screen snap-start snap-always flex flex-col">
+                <div className="h-1/2 overflow-hidden bg-black relative">
+                  <BrainrotVideo src={brainrotUrl} captions={reel.captions} />
+                </div>
+                <div className="h-1/2 overflow-hidden">
+                  <ReelCardPremium
+                    {...rawToCardProps(reel, index, reels.length)}
+                    compact
+                    onShowUIChange={setShowNav}
+                  />
+                </div>
+              </div>
             );
           }
 
           // Full-screen: no brainrot video
           return (
-            <div key={reel.id} className="h-screen snap-start snap-always">
+            <div key={reel.id} ref={el => { reelRefs.current[index] = el; }} className="h-screen snap-start snap-always">
               <ReelCardPremium
                 {...rawToCardProps(reel, index, reels.length)}
                 captions={reel.captions}

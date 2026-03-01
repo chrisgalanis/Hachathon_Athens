@@ -1,50 +1,21 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight } from 'lucide-react';
+import { PlayCircle } from 'lucide-react';
 import { FloatingNav } from '../components/FloatingNav';
-import { fetchSubjects, type SubjectMeta } from '../api';
+import { fetchAllReels, type RawReel } from '../api';
 import { useNavigate } from 'react-router';
 
-const SUBJECT_COLORS = [
-  '#7c3aed', '#06b6d4', '#f59e0b', '#10b981',
-  '#ec4899', '#8b5cf6', '#f97316', '#14b8a6',
-];
-
-const SUBJECT_ICONS: Record<string, string> = {
-  physics: '⚛️',
-  'computer science': '💻',
-  mathematics: '📐',
-  'linear algebra': '📐',
-  economics: '📊',
-  chemistry: '🧪',
-  biology: '🧬',
-  history: '🏛️',
-  literature: '📚',
-};
-
-function colorFor(name: string): string {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) | 0;
-  return SUBJECT_COLORS[Math.abs(hash) % SUBJECT_COLORS.length];
-}
-
-function iconFor(name: string): string {
-  const lower = name.toLowerCase();
-  for (const [key, icon] of Object.entries(SUBJECT_ICONS)) {
-    if (lower.includes(key)) return icon;
-  }
-  return '📖';
-}
+const ACCENT = '#7c3aed';
 
 export function SubjectsPage() {
-  const [subjects, setSubjects] = useState<SubjectMeta[]>([]);
+  const [reels, setReels] = useState<RawReel[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchSubjects()
-      .then(setSubjects)
-      .catch(() => setSubjects([]))
+    fetchAllReels()
+      .then(setReels)
+      .catch(() => setReels([]))
       .finally(() => setLoading(false));
   }, []);
 
@@ -57,102 +28,82 @@ export function SubjectsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-white text-3xl mb-2">Subjects</h1>
-          <p className="text-white/50">Browse all available courses</p>
+          <p className="text-white/50 text-sm mb-1">Now studying</p>
+          <h1 className="text-white text-3xl font-semibold">Linear Algebra</h1>
         </motion.div>
 
-        {loading ? (
-          <div className="text-white/40 text-center py-16">Loading subjects…</div>
-        ) : subjects.length === 0 ? (
-          <div className="text-white/40 text-center py-16">No subjects found. Is the backend running?</div>
-        ) : (
-          <>
-            {/* Subject cards grid */}
-            <div className="grid grid-cols-2 gap-4">
-              {subjects.map((subject, i) => {
-                const color = colorFor(subject.concept);
-                const completed = 0; // no user tracking yet
-                const total = subject.lectureCount;
-
-                return (
-                  <motion.button
-                    key={subject.concept}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate(`/feed?concept=${encodeURIComponent(subject.concept)}`)}
-                    className="relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-5 text-left overflow-hidden hover:bg-white/10 transition-all"
-                  >
-                    {/* Colour stripe */}
-                    <div
-                      className="absolute top-0 left-0 right-0 h-1 opacity-80"
-                      style={{ backgroundColor: color }}
-                    />
-
-                    {/* Icon */}
-                    <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4"
-                      style={{ backgroundColor: `${color}20` }}
-                    >
-                      {iconFor(subject.displayName)}
-                    </div>
-
-                    <h3 className="text-white text-base mb-3 leading-tight">{subject.displayName}</h3>
-
-                    <div className="text-white/50 text-sm mb-3">
-                      {completed}/{total} lectures
-                    </div>
-
-                    {/* Progress bar */}
-                    <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden mb-3">
-                      <motion.div
-                        className="h-full rounded-full"
-                        style={{ backgroundColor: color }}
-                        initial={{ width: 0 }}
-                        animate={{ width: total > 0 ? `${(completed / total) * 100}%` : '0%' }}
-                        transition={{ delay: i * 0.05 + 0.3, duration: 0.8 }}
-                      />
-                    </div>
-
-                    <div className="flex items-center gap-1 text-sm" style={{ color }}>
-                      <span>Browse</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </motion.button>
-                );
-              })}
-            </div>
-
-            {/* Stats overview */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="mt-8 backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-6"
+        {/* Subject card */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-6 mb-8 overflow-hidden"
+        >
+          <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: ACCENT }} />
+          <div className="flex items-center gap-4">
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0"
+              style={{ backgroundColor: `${ACCENT}20` }}
             >
-              <h2 className="text-white text-xl mb-4">Overview</h2>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center">
-                  <div className="text-2xl text-[#7c3aed] mb-1">{subjects.length}</div>
-                  <div className="text-white/50 text-xs">Subjects</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl text-[#06b6d4] mb-1">
-                    {subjects.reduce((sum, s) => sum + s.lectureCount, 0)}
+              📐
+            </div>
+            <div>
+              <h2 className="text-white text-lg font-medium">Linear Algebra</h2>
+              <p className="text-white/50 text-sm mt-0.5">
+                {loading ? '…' : `${reels.length} lectures available`}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Lectures list */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          <h2 className="text-white/60 text-xs uppercase tracking-widest mb-4">Lectures</h2>
+
+          {loading ? (
+            <div className="text-white/40 text-center py-12">Loading lectures…</div>
+          ) : reels.length === 0 ? (
+            <div className="text-white/40 text-center py-12">No lectures found.</div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {reels.map((reel, index) => (
+                <motion.button
+                  key={reel.id}
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 + index * 0.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => navigate(`/feed?index=${index}`)}
+                  className="flex items-center gap-4 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-left hover:bg-white/10 transition-all"
+                >
+                  {/* Index badge */}
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-semibold flex-shrink-0"
+                    style={{ backgroundColor: `${ACCENT}25`, color: ACCENT }}
+                  >
+                    {index + 1}
                   </div>
-                  <div className="text-white/50 text-xs">Lectures</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl text-[#f59e0b] mb-1">
-                    {subjects.reduce((sum, s) => sum + s.videoCount, 0)}
+
+                  {/* Title */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white text-sm font-medium leading-snug truncate">
+                      {reel.subject}
+                    </p>
+                    <p className="text-white/40 text-xs mt-0.5">
+                      {reel.hasVideo ? 'Video available' : 'No video'}
+                    </p>
                   </div>
-                  <div className="text-white/50 text-xs">Videos</div>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
+
+                  <PlayCircle className="w-5 h-5 flex-shrink-0" style={{ color: ACCENT }} />
+                </motion.button>
+              ))}
+            </div>
+          )}
+        </motion.div>
       </div>
 
       <FloatingNav />
