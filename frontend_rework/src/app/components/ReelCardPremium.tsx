@@ -7,7 +7,6 @@ interface ReelCardPremiumProps {
   subjectColor: string;
   topic: string;
   bullets: string[];
-  difficulty: 'Easy' | 'Medium' | 'Hard';
   bgGradient: string;
   progress: number;
   totalCards: number;
@@ -27,7 +26,6 @@ export function ReelCardPremium({
   subjectColor,
   topic,
   bullets,
-  difficulty,
   bgGradient,
   progress,
   totalCards,
@@ -116,12 +114,6 @@ export function ReelCardPremium({
     if (videoRef.current) videoRef.current.currentTime = val;
     resetIdle();
   }, [resetIdle]);
-
-  const difficultyColors = {
-    Easy: '#10b981',
-    Medium: '#f59e0b',
-    Hard: '#ef4444',
-  };
 
   const scrubPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
@@ -230,19 +222,6 @@ export function ReelCardPremium({
             </div>
           )}
 
-          <div className="flex items-center gap-3 mt-6">
-            <div
-              className="px-4 py-2 rounded-full backdrop-blur-xl border"
-              style={{
-                backgroundColor: `${difficultyColors[difficulty]}20`,
-                borderColor: `${difficultyColors[difficulty]}30`,
-              }}
-            >
-              <span className="text-sm" style={{ color: difficultyColors[difficulty] }}>
-                {difficulty}
-              </span>
-            </div>
-          </div>
         </div>
 
         {/* Video scrubber bar */}

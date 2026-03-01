@@ -59,7 +59,6 @@ function rawToCardProps(reel: RawReel, index: number, total: number) {
     subjectColor: colorFor(reel.concept, SUBJECT_COLORS),
     topic: reel.topic,
     bullets: reel.concepts.slice(0, 4),
-    difficulty: 'Medium' as const,
     bgGradient: colorFor(reel.concept, BG_GRADIENTS),
     progress: 0,
     totalCards: total,
