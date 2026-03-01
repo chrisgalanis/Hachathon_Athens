@@ -1,0 +1,48 @@
+{
+  "total_duration": 52.114,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 3.892,
+      "duration": 3.892,
+      "text": "Here's matrix A — entries two, one, eight, seven."
+    },
+    {
+      "beat": 1,
+      "start": 3.892,
+      "end": 10.841,
+      "duration": 6.949,
+      "text": "The pivot sits at row one, column one — that's two. A highlight marks it. The multiplier: eight divided by two equals four."
+    },
+    {
+      "beat": 2,
+      "start": 10.841,
+      "end": 24.215,
+      "duration": 13.375,
+      "text": "Build the elementary matrix E-two-one — identity with negative four in the lower-left. Entries: one, zero, negative four, one. Multiply: row two becomes row two minus four times row one. Eight, seven becomes zero, three."
+    },
+    {
+      "beat": 3,
+      "start": 24.215,
+      "end": 32.392,
+      "duration": 8.176,
+      "text": "Upper triangular matrix U appears: two, one, zero, three. Both pivots highlighted — two and three on the diagonal."
+    },
+    {
+      "beat": 4,
+      "start": 32.392,
+      "end": 41.012,
+      "duration": 8.62,
+      "text": "Now flip the sign on that multiplier. L is E-two-one inverted — entries one, zero, four, one. The negative four becomes positive four. That's it."
+    },
+    {
+      "beat": 5,
+      "start": 41.012,
+      "end": 52.114,
+      "duration": 11.102,
+      "text": "Check: L times U — one, zero, four, one times two, one, zero, three — multiplies back to two, one, eight, seven. Matrix A, recovered exactly. That's the L-U factorization."
+    }
+  ]
+}

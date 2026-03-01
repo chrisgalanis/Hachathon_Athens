@@ -1,0 +1,41 @@
+{
+  "total_duration": 37.277,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 4.833,
+      "duration": 4.833,
+      "text": "Here's a vector with sixty-four coordinates — one intensity per pixel in an eight-by-eight image block."
+    },
+    {
+      "beat": 1,
+      "start": 4.833,
+      "end": 15.046,
+      "duration": 10.214,
+      "text": "Now swap the basis. The equation x equals W times c means the same image, totally different coordinates. The pixel grid fades and sixty-four frequency waves appear in its place."
+    },
+    {
+      "beat": 2,
+      "start": 15.046,
+      "end": 21.264,
+      "duration": 6.217,
+      "text": "Watch the coefficients c light up one by one. Most land near zero — only a handful carry real information."
+    },
+    {
+      "beat": 3,
+      "start": 21.264,
+      "end": 28.787,
+      "duration": 7.523,
+      "text": "Slash the small ones. Keep three out of sixty-four. The reconstructed block snaps back — almost identical to the original."
+    },
+    {
+      "beat": 4,
+      "start": 28.787,
+      "end": 37.277,
+      "duration": 8.49,
+      "text": "That's JPEG. Twenty-one-to-one compression, barely any visible loss. Change of basis isn't just math — it's how every image on your phone survives."
+    }
+  ]
+}

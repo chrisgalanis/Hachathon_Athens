@@ -50,7 +50,7 @@ app.add_middleware(
 BASE_DIR = Path(__file__).parent
 PROCESSED_DIR = BASE_DIR / "scraper" / "processed"
 VIDEOS_DIR = BASE_DIR / "videos"
-FINAL_DIR = (BASE_DIR / ".." / "output" / "final").resolve()
+FINAL_DIR = (BASE_DIR / "final").resolve()
 
 # Ensure the videos directory exists so StaticFiles doesn't error on startup
 VIDEOS_DIR.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,48 @@
+{
+  "total_duration": 53.577,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 3.788,
+      "duration": 3.788,
+      "text": "Here's a square matrix A — watch what it does to vectors in the plane."
+    },
+    {
+      "beat": 1,
+      "start": 3.788,
+      "end": 13.479,
+      "duration": 9.691,
+      "text": "Most vectors rotate and stretch — they tip off their original direction. But some special vectors stay locked on their line. The matrix just scales them. Those are the eigenvectors."
+    },
+    {
+      "beat": 2,
+      "start": 13.479,
+      "end": 23.588,
+      "duration": 10.109,
+      "text": "Take a projection matrix. An arrow along the projection line holds perfectly still — eigenvalue one. An arrow pointing perpendicular gets crushed flat to the origin — eigenvalue zero."
+    },
+    {
+      "beat": 3,
+      "start": 23.588,
+      "end": 35.788,
+      "duration": 12.199,
+      "text": "Now a permutation matrix that swaps two coordinates. The diagonal arrow at one, one bounces straight back — eigenvalue one. The arrow at one, negative-one flips to negative-one, one — eigenvalue negative one."
+    },
+    {
+      "beat": 4,
+      "start": 35.788,
+      "end": 46.472,
+      "duration": 10.684,
+      "text": "To find eigenvalues, solve det of A minus lambda-I equals zero. A highlight surrounds the diagonal entries as lambda gets subtracted from each. The determinant equation drops down below."
+    },
+    {
+      "beat": 5,
+      "start": 46.472,
+      "end": 53.577,
+      "duration": 7.105,
+      "text": "Sanity check: the eigenvalues must sum to the trace and multiply to the determinant of A. Two instant checks — no extra work."
+    }
+  ]
+}

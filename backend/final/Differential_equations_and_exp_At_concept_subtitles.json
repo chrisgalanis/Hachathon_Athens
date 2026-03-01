@@ -1,0 +1,48 @@
+{
+  "total_duration": 47.125,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 9.691,
+      "duration": 9.691,
+      "text": "A system label appears: d-u over d-t equals A times u. Two arrows emerge from the origin — each an eigenvector, pointing in its own pure direction."
+    },
+    {
+      "beat": 1,
+      "start": 9.691,
+      "end": 17.058,
+      "duration": 7.367,
+      "text": "Eigenvalue zero: the arrow along that eigenvector stays perfectly frozen. No growth, no decay — a steady state locked in place."
+    },
+    {
+      "beat": 2,
+      "start": 17.058,
+      "end": 24.999,
+      "duration": 7.941,
+      "text": "Eigenvalue negative three: the arrow along the second eigenvector shrinks toward the origin, collapsing exponentially. The solution melts away."
+    },
+    {
+      "beat": 3,
+      "start": 24.999,
+      "end": 30.981,
+      "duration": 5.982,
+      "text": "Flip that sign to positive three. The same arrow now rockets outward, stretching away from the origin without bound."
+    },
+    {
+      "beat": 4,
+      "start": 30.981,
+      "end": 38.687,
+      "duration": 7.706,
+      "text": "Now a complex eigenvalue: the solution arrow spirals — rotating and shrinking simultaneously, tracing a tightening curve toward the origin."
+    },
+    {
+      "beat": 5,
+      "start": 38.687,
+      "end": 47.125,
+      "duration": 8.438,
+      "text": "Every solution is a mix of these pure behaviors. Eigenvalues are the rates. Eigenvectors are the directions. Together they solve the whole system."
+    }
+  ]
+}

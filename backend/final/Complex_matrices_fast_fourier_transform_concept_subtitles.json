@@ -1,0 +1,48 @@
+{
+  "total_duration": 48.483,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 3.997,
+      "duration": 3.997,
+      "text": "Meet the complex vector one, i — sitting in complex space."
+    },
+    {
+      "beat": 1,
+      "start": 3.997,
+      "end": 12.434,
+      "duration": 8.438,
+      "text": "Try the usual length formula: one squared plus i squared. That's one minus one — zero. A nonzero vector with zero length. Something's broken."
+    },
+    {
+      "beat": 2,
+      "start": 12.434,
+      "end": 25.417,
+      "duration": 12.983,
+      "text": "The fix: conjugate before multiplying. One times one, plus i times negative i. That gives one plus one — length root two. The conjugate transpose, written with a superscript H, replaces the regular transpose here."
+    },
+    {
+      "beat": 3,
+      "start": 25.417,
+      "end": 33.593,
+      "duration": 8.176,
+      "text": "A matrix that equals its own conjugate transpose is Hermitian. A highlight surrounds the entries that mirror across the diagonal — each one conjugated."
+    },
+    {
+      "beat": 4,
+      "start": 33.593,
+      "end": 42.971,
+      "duration": 9.378,
+      "text": "Hermitian matrices guarantee real eigenvalues. Two eigenvector arrows appear, orthogonal under the conjugate inner product — no complex weirdness, just clean perpendicular geometry."
+    },
+    {
+      "beat": 5,
+      "start": 42.971,
+      "end": 48.483,
+      "duration": 5.512,
+      "text": "Conjugate the transpose, and all of linear algebra extends into complex space. Seamlessly."
+    }
+  ]
+}

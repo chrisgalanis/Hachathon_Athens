@@ -1,0 +1,48 @@
+{
+  "total_duration": 43.52,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 5.747,
+      "duration": 5.747,
+      "text": "Here's matrix A — a two-by-two with entries a, b in row one and c, d in row two."
+    },
+    {
+      "beat": 1,
+      "start": 5.747,
+      "end": 15.256,
+      "duration": 9.509,
+      "text": "The inverse formula: one over the determinant of A, times the matrix d, negative b, negative c, a. But why those entries? Each one is a cofactor."
+    },
+    {
+      "beat": 2,
+      "start": 15.256,
+      "end": 22.727,
+      "duration": 7.471,
+      "text": "Strike row one and column one — the entry left standing is d. That's the one-one cofactor. It lands in position one-one of the inverse."
+    },
+    {
+      "beat": 3,
+      "start": 22.727,
+      "end": 32.183,
+      "duration": 9.456,
+      "text": "Now the entry negative b. Strike row two and column one. The survivor is b — but position two plus one is odd, so the sign flips. Cofactor: negative b."
+    },
+    {
+      "beat": 4,
+      "start": 32.183,
+      "end": 39.314,
+      "duration": 7.131,
+      "text": "Same logic fills every slot. The full matrix of cofactors, transposed, gives exactly d, negative b, negative c, a."
+    },
+    {
+      "beat": 5,
+      "start": 39.314,
+      "end": 43.52,
+      "duration": 4.206,
+      "text": "Divide by the determinant — that's Cramer's rule built right into the inverse formula."
+    }
+  ]
+}

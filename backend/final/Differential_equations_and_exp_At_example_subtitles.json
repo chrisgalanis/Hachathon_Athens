@@ -1,0 +1,41 @@
+{
+  "total_duration": 53.734,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 8.307,
+      "duration": 8.307,
+      "text": "Here's our system — d-u-d-t equals matrix negative-one, two, one, negative-two, times u. Initial condition: u of zero equals one, zero."
+    },
+    {
+      "beat": 1,
+      "start": 8.307,
+      "end": 20.428,
+      "duration": 12.121,
+      "text": "Eigenvalues first. The characteristic polynomial gives lambda-one equals zero and lambda-two equals negative three. Two eigenvectors appear: x-one at two, one and x-two at one, negative-one."
+    },
+    {
+      "beat": 2,
+      "start": 20.428,
+      "end": 30.067,
+      "duration": 9.639,
+      "text": "General solution: u of t equals c-one times e-to-the-zero-t times two, one — plus c-two times e-to-the-negative-three-t times one, negative-one."
+    },
+    {
+      "beat": 3,
+      "start": 30.067,
+      "end": 44.095,
+      "duration": 14.028,
+      "text": "Plug in t equals zero. The exponentials both collapse to one. Two equations: two-c-one plus c-two equals one, and c-one minus c-two equals zero. Solving gives c-one equals c-two equals one-third."
+    },
+    {
+      "beat": 4,
+      "start": 44.095,
+      "end": 53.734,
+      "duration": 9.639,
+      "text": "As t grows, the term carrying e-to-the-negative-three-t shrinks toward zero. An arrow for u of t drifts and settles at the steady-state vector two-thirds, one-third."
+    }
+  ]
+}
