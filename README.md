@@ -1,8 +1,8 @@
-# LearnReel
+# 6Blue7Brown
 
 > University content, TikTok format. Built for the generation that never stops scrolling.
 
-LearnReel transforms raw university lecture transcripts into bite-sized vertical video reels — auto-generated, narrated, and served in a mobile-first interface that feels like social media, not a classroom.
+6Blue7Brown transforms raw university lecture transcripts into bite-sized vertical video reels — auto-generated, narrated, and served in a mobile-first interface that feels like social media, not a classroom.
 
 ---
 
@@ -223,4 +223,4 @@ npm run build   # outputs to dist/
 
 ## Contributors
 
-Built at Hackathon Athens 2025
+Team **6Blue7Brown** — Hackathon Athens 2025
