@@ -1,0 +1,41 @@
+{
+  "total_duration": 60.395,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 5.564,
+      "duration": 5.564,
+      "text": "Here's matrix A — entries two, one, three, four — sitting next to the target vector five, eleven."
+    },
+    {
+      "beat": 1,
+      "start": 5.564,
+      "end": 22.831,
+      "duration": 17.267,
+      "text": "Cramer's Rule: want the first unknown? Swap column one with the target. The new matrix shows five, one, eleven, four. Its determinant: five times four minus one times eleven — that's nine. Divide by det(A) — two times four minus one times three — equals five. First unknown: nine over five."
+    },
+    {
+      "beat": 2,
+      "start": 22.831,
+      "end": 36.389,
+      "duration": 13.557,
+      "text": "Same idea powers the inverse. A-inverse equals one over det(A), times the adjugate — the transpose of the cofactor matrix. For this two-by-two: flip the diagonal to four, two, swap signs on the off-diagonal to negative three, two, scale everything by one-fifth."
+    },
+    {
+      "beat": 3,
+      "start": 36.389,
+      "end": 47.856,
+      "duration": 11.468,
+      "text": "Each cofactor is the determinant left behind after crossing out one row and one column. A highlight marks the eliminated row and column, leaving a smaller matrix whose determinant feeds back into the whole formula."
+    },
+    {
+      "beat": 4,
+      "start": 47.856,
+      "end": 60.395,
+      "duration": 12.539,
+      "text": "Cramer's Rule is elegant — but computing determinants scales at factorial speed. For large systems, elimination wins. These formulas reveal the geometry: det(A) measures area, volume, and exactly when the inverse breaks down."
+    }
+  ]
+}

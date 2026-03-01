@@ -1,0 +1,48 @@
+{
+  "total_duration": 51.644,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 4.545,
+      "duration": 4.545,
+      "text": "Here's a three-by-three matrix — nine entries arranged in three rows and three columns."
+    },
+    {
+      "beat": 1,
+      "start": 4.545,
+      "end": 15.255,
+      "duration": 10.71,
+      "text": "Every term in the determinant picks exactly one entry per row, one per column — no repeats. Arrows trace three paths through the matrix simultaneously, each grabbing one entry from each row and column."
+    },
+    {
+      "beat": 2,
+      "start": 15.255,
+      "end": 24.947,
+      "duration": 9.691,
+      "text": "Six paths total — that's three-factorial. Each path multiplies its three entries together. Even permutations get a plus sign, odd ones get a minus. The determinant is their sum."
+    },
+    {
+      "beat": 3,
+      "start": 24.947,
+      "end": 33.567,
+      "duration": 8.62,
+      "text": "For a two-by-two: just two paths. One grabs a then d — plus sign. The other grabs b then c — minus sign. Result: a-d minus b-c."
+    },
+    {
+      "beat": 4,
+      "start": 33.567,
+      "end": 47.438,
+      "duration": 13.871,
+      "text": "For anything bigger, cofactor expansion breaks the problem down. A highlight crosses out row one and column one, leaving a two-by-two. Its determinant is the cofactor. Repeat across the row — nesting smaller and smaller until every piece is a two-by-two base case."
+    },
+    {
+      "beat": 5,
+      "start": 47.438,
+      "end": 51.644,
+      "duration": 4.206,
+      "text": "Signed products, recursive structure — that's the whole engine behind every determinant."
+    }
+  ]
+}

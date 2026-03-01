@@ -1,0 +1,41 @@
+{
+  "total_duration": 30.798,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 3.37,
+      "duration": 3.37,
+      "text": "Here's a plane slicing through the origin in three-dimensional space."
+    },
+    {
+      "beat": 1,
+      "start": 3.37,
+      "end": 9.665,
+      "duration": 6.295,
+      "text": "Pick any two vectors in that plane — call them u, pointing to one, one, zero, and v, pointing to zero, one, one."
+    },
+    {
+      "beat": 2,
+      "start": 9.665,
+      "end": 18.024,
+      "duration": 8.359,
+      "text": "Add them. u plus v lands at one, two, one. Watch the tip — it sits exactly in the plane. Closure under addition holds."
+    },
+    {
+      "beat": 3,
+      "start": 18.024,
+      "end": 25.783,
+      "duration": 7.758,
+      "text": "Now scale u by three. The arrow stretches to three, three, zero. Still in the plane. Closure under scalar multiplication holds."
+    },
+    {
+      "beat": 4,
+      "start": 25.783,
+      "end": 30.798,
+      "duration": 5.016,
+      "text": "Both rules check out — so this plane through the origin is a subspace of R-three."
+    }
+  ]
+}

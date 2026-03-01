@@ -1,0 +1,48 @@
+{
+  "total_duration": 53.969,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 5.094,
+      "duration": 5.094,
+      "text": "Here's matrix A — two eigenvectors load into the columns of matrix S, side by side."
+    },
+    {
+      "beat": 1,
+      "start": 5.094,
+      "end": 17.11,
+      "duration": 12.016,
+      "text": "The factorization appears: A equals S times Lambda times S-inverse. Lambda sits in the middle — a diagonal matrix with eigenvalues lambda-one and lambda-two on the diagonal, zeros everywhere else."
+    },
+    {
+      "beat": 2,
+      "start": 17.11,
+      "end": 27.324,
+      "duration": 10.214,
+      "text": "Think of S as a lens. It rotates the grid to align with the eigenvectors. In those new coordinates, A acts exactly like Lambda — pure stretching along each axis, no mixing."
+    },
+    {
+      "beat": 3,
+      "start": 27.324,
+      "end": 39.445,
+      "duration": 12.121,
+      "text": "Now raise A to the power k. The formula collapses to S times Lambda-to-the-k times S-inverse. Lambda-to-the-k just raises each diagonal entry: lambda-one-to-the-k, lambda-two-to-the-k. Two numbers. That's it."
+    },
+    {
+      "beat": 4,
+      "start": 39.445,
+      "end": 49.293,
+      "duration": 9.848,
+      "text": "But watch — a matrix appears with a repeated eigenvalue and only one independent eigenvector. S can't be built. The factorization breaks. Not every matrix diagonalizes."
+    },
+    {
+      "beat": 5,
+      "start": 49.293,
+      "end": 53.969,
+      "duration": 4.676,
+      "text": "When it works, diagonalization turns thousand-step powers into a single clean formula."
+    }
+  ]
+}

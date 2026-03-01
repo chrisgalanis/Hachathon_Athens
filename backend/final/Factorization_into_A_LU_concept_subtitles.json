@@ -1,0 +1,48 @@
+{
+  "total_duration": 54.361,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 3.344,
+      "duration": 3.344,
+      "text": "Here's matrix A — entries two, one, eight, seven."
+    },
+    {
+      "beat": 1,
+      "start": 3.344,
+      "end": 17.789,
+      "duration": 14.446,
+      "text": "Run elimination. The pivot sits at row one, column one — that's two. To kill the entry below it, compute the multiplier: eight divided by two equals four. Row two becomes row two minus four times row one. Eight, seven becomes zero, three."
+    },
+    {
+      "beat": 2,
+      "start": 17.789,
+      "end": 23.484,
+      "duration": 5.695,
+      "text": "That's U — upper triangular: two, one, zero, three. But elimination also built something else."
+    },
+    {
+      "beat": 3,
+      "start": 23.484,
+      "end": 35.135,
+      "duration": 11.651,
+      "text": "Every multiplier used gets stored in L — lower triangular. The diagonal holds ones. The single multiplier, four, drops into the entry at row two, column one. L reads: one, zero, four, one."
+    },
+    {
+      "beat": 4,
+      "start": 35.135,
+      "end": 46.837,
+      "duration": 11.703,
+      "text": "Check: L times U reconstructs A exactly. One, zero, four, one times two, one, zero, three — multiply it out — lands back on two, one, eight, seven."
+    },
+    {
+      "beat": 5,
+      "start": 46.837,
+      "end": 54.361,
+      "duration": 7.523,
+      "text": "New right-hand side? Reuse L and U — no elimination needed again. One factorization, unlimited solves. That's the payoff."
+    }
+  ]
+}

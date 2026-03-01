@@ -1,0 +1,48 @@
+{
+  "total_duration": 58.984,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 7.523,
+      "duration": 7.523,
+      "text": "Here's our three-by-three system — matrix A with entries one, two, one, three, eight, one, zero, four, one — and target vector two, twelve, two."
+    },
+    {
+      "beat": 1,
+      "start": 7.523,
+      "end": 12.199,
+      "duration": 4.676,
+      "text": "First pivot: the entry at row one, column one — that's one. A highlight marks it."
+    },
+    {
+      "beat": 2,
+      "start": 12.199,
+      "end": 29.231,
+      "duration": 17.032,
+      "text": "Eliminate below it. Row two becomes row two minus three times row one. Three, eight, one becomes zero, two, negative two — wait — zero, two, negative two? Check: three minus three is zero, eight minus six is two, one minus three is negative two. And twelve minus six gives six on the right."
+    },
+    {
+      "beat": 3,
+      "start": 29.231,
+      "end": 36.65,
+      "duration": 7.419,
+      "text": "Row three already has zero in column one — nothing to do. Move to the second pivot: the entry two at row two, column two. Highlight it."
+    },
+    {
+      "beat": 4,
+      "start": 36.65,
+      "end": 47.046,
+      "duration": 10.397,
+      "text": "Eliminate below. Row three becomes row three minus two times row two. Zero, four, one becomes zero, zero, five. And two minus twelve gives negative ten on the right."
+    },
+    {
+      "beat": 5,
+      "start": 47.046,
+      "end": 58.984,
+      "duration": 11.938,
+      "text": "Done. Upper triangular matrix U: one, two, one, zero, two, negative two, zero, zero, five. Modified target c: two, six, negative ten. Ready for back substitution."
+    }
+  ]
+}

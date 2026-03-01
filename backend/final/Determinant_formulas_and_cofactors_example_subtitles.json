@@ -1,0 +1,41 @@
+{
+  "total_duration": 46.054,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 4.728,
+      "duration": 4.728,
+      "text": "Here's our two-by-two matrix — entries a, b on top, c, d below."
+    },
+    {
+      "beat": 1,
+      "start": 4.728,
+      "end": 18.521,
+      "duration": 13.793,
+      "text": "The determinant comes from permutations. First permutation: one, two — take entry a from row one, column one, and entry d from row two, column two. An arrow traces each selection diagonally. Product: a times d."
+    },
+    {
+      "beat": 2,
+      "start": 18.521,
+      "end": 28.134,
+      "duration": 9.613,
+      "text": "Second permutation: two, one — take b from row one, column two, and c from row two, column one. Arrows cross in an X. Product: b times c."
+    },
+    {
+      "beat": 3,
+      "start": 28.134,
+      "end": 38.348,
+      "duration": 10.214,
+      "text": "Now assign signs. Permutation one, two is even — plus sign. Permutation two, one is odd — minus sign. The formula assembles: a-d minus b-c."
+    },
+    {
+      "beat": 4,
+      "start": 38.348,
+      "end": 46.054,
+      "duration": 7.706,
+      "text": "That's the determinant. Two permutations, two products, two signs — combined into one number that captures everything about this matrix."
+    }
+  ]
+}
