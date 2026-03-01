@@ -1,4 +1,4 @@
-# 6Blue7Brown
+# 6Blue7Brown - https://6blue-7brown.up.railway.app/
 
 > University content, TikTok format. Built for the generation that never stops scrolling.
 
