@@ -177,5 +177,17 @@
     "video": "./final/Levels_of_Biological_Organization_example.mp4",
     "captions_file": "./final/Levels_of_Biological_Organization_example_subtitles.json",
     "subject": "Introductory Biology"
+  },
+  {
+    "title": "Binary Search Trees Fundamentals (concept)",
+    "video": "./final/Binary_Search_Trees_Fundamentals_concept.mp4",
+    "captions_file": "./final/Binary_Search_Trees_Fundamentals_concept_subtitles.json",
+    "subject": "Introduction to Algorithms"
+  },
+  {
+    "title": "Binary Search Trees Fundamentals (example)",
+    "video": "./final/Binary_Search_Trees_Fundamentals_example.mp4",
+    "captions_file": "./final/Binary_Search_Trees_Fundamentals_example_subtitles.json",
+    "subject": "Introduction to Algorithms"
   }
 ]

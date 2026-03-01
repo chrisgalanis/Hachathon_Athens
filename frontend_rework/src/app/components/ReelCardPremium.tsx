@@ -145,7 +145,7 @@ export function ReelCardPremium({
         <video
           ref={videoRef}
           src={videoSrc}
-          className="absolute inset-0 w-full h-full object-contain"
+          className="absolute inset-0 w-full h-full object-cover"
           playsInline
           onTimeUpdate={() => {
             if (!isScrubbing && videoRef.current)
