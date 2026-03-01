@@ -1,6 +1,7 @@
 [phases.setup]
 nixPkgs = [
   "python311",
+  "gcc",
   "poppler_utils",
   "ffmpeg",
   "cairo",
