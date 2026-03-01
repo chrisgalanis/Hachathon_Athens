@@ -219,12 +219,27 @@ export function ReelCardPremium({
           </div>
         )}
 
-        {/* Main content */}
-        <div className={`absolute inset-x-0 ${compact ? 'px-4' : 'px-8'} ${videoSrc ? (compact ? 'bottom-16' : 'bottom-28') : (compact ? 'top-1/4' : 'top-1/3')}`}>
+        {/* Main content — title + caption, fades in on mount */}
+        <motion.div
+          className={`absolute inset-x-0 ${compact ? 'px-4' : 'px-8'} ${videoSrc ? (compact ? 'bottom-16' : 'bottom-28') : (compact ? 'top-1/4' : 'top-1/3')}`}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
           <h1 className={`text-white ${compact ? 'text-lg' : 'text-3xl'} mb-2 leading-tight tracking-tight`}>{topic}</h1>
 
+          {/* Caption — hidden while title fades in, then always visible */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.5 }}
+            className={`text-white/70 ${compact ? 'text-xs' : 'text-sm'} leading-snug min-h-[1.25rem]`}
+          >
+            {activeCaption?.text ?? ''}
+          </motion.p>
+
           {!videoSrc && (
-            <div className="space-y-4">
+            <div className="space-y-4 mt-2">
               {bullets.map((bullet, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#7c3aed] mt-2.5 flex-shrink-0" />
@@ -233,8 +248,7 @@ export function ReelCardPremium({
               ))}
             </div>
           )}
-
-        </div>
+        </motion.div>
 
         {/* Video scrubber bar */}
         {videoSrc && duration > 0 && (
@@ -291,14 +305,6 @@ export function ReelCardPremium({
         </div>
       </motion.div>
 
-      {/* Caption — always visible, outside the fade gate */}
-      {videoSrc && activeCaption && (
-        <div className={`absolute ${compact ? 'bottom-20' : 'bottom-28'} left-4 right-4 flex justify-center pointer-events-none z-30`}>
-          <span className="bg-black/75 text-white text-sm font-medium px-4 py-2 rounded-xl text-center leading-snug">
-            {activeCaption.text}
-          </span>
-        </div>
-      )}
     </div>
   );
 }
