@@ -1,3 +1,6 @@
 [phases.setup]
-nixPkgs = ["python311", "poppler_utils", "ffmpeg", "xorg.xvfb", "gcc", "pkg-config", "cairo", "pango"]
-aptPkgs = ["libgl1", "libglfw3-dev"]
+nixPkgs = ["python311", "poppler_utils", "ffmpeg", "xorg.xvfb"]
+aptPkgs = ["gcc", "pkg-config", "libcairo2-dev", "libpango1.0-dev", "libgl1", "libglfw3-dev"]
+
+[phases.install]
+cmds = ["python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install --no-binary pycairo -r requirements.txt"]
