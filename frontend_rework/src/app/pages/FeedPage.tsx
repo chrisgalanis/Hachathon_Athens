@@ -21,15 +21,21 @@ const BG_GRADIENTS = [
 // Simple muted autoplay video for the brainrot bottom slot
 type Caption = { start: number; end: number; text: string };
 
-function BrainrotVideo({ src, captions }: { src: string; captions: Caption[] }) {
+function BrainrotVideo({ src, captions, userPaused = false }: { src: string; captions: Caption[]; userPaused?: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
+  const inView = useRef(false);
+  const userPausedRef = useRef(userPaused);
+
+  // Keep ref in sync with prop so the observer callback always sees the latest value
+  useEffect(() => { userPausedRef.current = userPaused; });
 
   useEffect(() => {
     if (!ref.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) ref.current?.play().catch(() => {});
+        inView.current = entry.isIntersecting;
+        if (entry.isIntersecting && !userPausedRef.current) ref.current?.play().catch(() => {});
         else ref.current?.pause();
       },
       { threshold: 0.5 }
@@ -37,6 +43,13 @@ function BrainrotVideo({ src, captions }: { src: string; captions: Caption[] }) 
     observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
+
+  // React to userPaused prop changes while the card is in view
+  useEffect(() => {
+    if (!inView.current) return;
+    if (userPaused) ref.current?.pause();
+    else ref.current?.play().catch(() => {});
+  }, [userPaused]);
 
   const activeCaption = captions.find(c => currentTime >= c.start && currentTime < c.end);
 
@@ -58,6 +71,36 @@ function BrainrotVideo({ src, captions }: { src: string; captions: Caption[] }) 
           </span>
         </div>
       )}
+    </div>
+  );
+}
+
+// Wraps a split-screen brainrot + educational card pair, sharing pause state between them
+function BrainrotSlide({
+  reel,
+  cardProps,
+  onShowNavChange,
+}: {
+  reel: RawReel;
+  cardProps: ReturnType<typeof rawToCardProps>;
+  onShowNavChange: (v: boolean) => void;
+}) {
+  const [brainrotPaused, setBrainrotPaused] = useState(false);
+  const brainrotUrl = resolveVideoUrl(reel.brainrotSrc!);
+
+  return (
+    <div className="h-screen snap-start snap-always flex flex-col">
+      <div className="h-1/2 overflow-hidden bg-black relative">
+        <BrainrotVideo src={brainrotUrl} captions={reel.captions} userPaused={brainrotPaused} />
+      </div>
+      <div className="h-1/2 overflow-hidden">
+        <ReelCardPremium
+          {...cardProps}
+          compact
+          onShowUIChange={onShowNavChange}
+          onPlayStateChange={(playing) => setBrainrotPaused(!playing)}
+        />
+      </div>
     </div>
   );
 }
@@ -119,23 +162,14 @@ export function FeedPage() {
       {/* Main scroll container */}
       <div className="h-screen overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
         {reels.map((reel, index) => {
-          const brainrotUrl = reel.brainrotSrc ? resolveVideoUrl(reel.brainrotSrc) : null;
-
-          if (brainrotUrl) {
-            // Split-screen: top half = main video, bottom half = muted brainrot
+          if (reel.brainrotSrc) {
             return (
-              <div key={reel.id} className="h-screen snap-start snap-always flex flex-col">
-                <div className="h-1/2 overflow-hidden bg-black relative">
-                  <BrainrotVideo src={brainrotUrl} captions={reel.captions} />
-                </div>
-                <div className="h-1/2 overflow-hidden">
-                  <ReelCardPremium
-                    {...rawToCardProps(reel, index, reels.length)}
-                    compact
-                    onShowUIChange={setShowNav}
-                  />
-                </div>
-              </div>
+              <BrainrotSlide
+                key={reel.id}
+                reel={reel}
+                cardProps={rawToCardProps(reel, index, reels.length)}
+                onShowNavChange={setShowNav}
+              />
             );
           }
 

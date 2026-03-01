@@ -17,6 +17,7 @@ interface ReelCardPremiumProps {
   captions?: Caption[];
   compact?: boolean;
   onShowUIChange?: (visible: boolean) => void;
+  onPlayStateChange?: (playing: boolean) => void;
 }
 
 function formatTime(s: number) {
@@ -38,6 +39,7 @@ export function ReelCardPremium({
   captions = [],
   compact = false,
   onShowUIChange,
+  onPlayStateChange,
 }: ReelCardPremiumProps) {
   const [aura, setAura] = useState(0);
   // Non-video cards always show UI; video cards start hidden
@@ -148,8 +150,8 @@ export function ReelCardPremium({
           onLoadedMetadata={() => {
             if (videoRef.current) setDuration(videoRef.current.duration);
           }}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
+          onPlay={() => { setIsPlaying(true); onPlayStateChange?.(true); }}
+          onPause={() => { setIsPlaying(false); onPlayStateChange?.(false); }}
           onEnded={() => { setIsPlaying(false); showAndStartIdle(); }}
         />
       ) : (
