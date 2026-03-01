@@ -275,15 +275,20 @@ export function ReelCardPremium({
       </motion.div>
 
       {/* Title + caption — outside the showUI gate so they're always visible */}
-      <motion.div
+      <div
         className={`absolute inset-x-0 z-20 ${compact ? 'px-4' : 'px-8'} ${videoSrc ? (compact ? 'bottom-16' : 'bottom-28') : (compact ? 'top-1/4' : 'top-1/3')}`}
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
       >
-        <h1 className={`text-white ${compact ? 'text-lg' : 'text-3xl'} mb-2 leading-tight tracking-tight`}>{topic}</h1>
+        {/* Title: fades in then fades out */}
+        <motion.h1
+          className={`text-white ${compact ? 'text-lg' : 'text-3xl'} mb-2 leading-tight tracking-tight`}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: [0, 1, 1, 0], y: [16, 0, 0, 0] }}
+          transition={{ duration: 2.5, times: [0, 0.2, 0.7, 1], ease: 'easeOut' }}
+        >
+          {topic}
+        </motion.h1>
 
-        {/* Caption fades in after title completes, then stays at full opacity */}
+        {/* Caption: fades in after title, then stays visible */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -303,7 +308,7 @@ export function ReelCardPremium({
             ))}
           </div>
         )}
-      </motion.div>
+      </div>
 
     </div>
   );
