@@ -1,104 +1,104 @@
 [
   {
     "title": "Elimination with matrices (concept)",
-    "video": "../output/final/Elimination_with_matrices_concept.mp4",
-    "captions_file": "../output/final/Elimination_with_matrices_concept_subtitles.json"
+    "video": "./final/Elimination_with_matrices_concept.mp4",
+    "captions_file": "./final/Elimination_with_matrices_concept_subtitles.json"
   },
   {
     "title": "Elimination with matrices (example)",
-    "video": "../output/final/Elimination_with_matrices_example.mp4",
-    "captions_file": "../output/final/Elimination_with_matrices_example_subtitles.json"
+    "video": "./final/Elimination_with_matrices_example.mp4",
+    "captions_file": "./final/Elimination_with_matrices_example_subtitles.json"
   },
   {
     "title": "Factorization into A=LU (concept)",
     "brainrot": "./videos/videoplayback.mp4",
-    "video": "../output/final/Factorization_into_A_LU_concept.mp4",
-    "captions_file": "../output/final/Factorization_into_A_LU_concept_subtitles.json"
+    "video": "./final/Factorization_into_A_LU_concept.mp4",
+    "captions_file": "./final/Factorization_into_A_LU_concept_subtitles.json"
   },
   {
     "title": "Factorization into A=LU (example)",
-    "video": "../output/final/Factorization_into_A_LU_example.mp4",
-    "captions_file": "../output/final/Factorization_into_A_LU_example_subtitles.json"
+    "video": "./final/Factorization_into_A_LU_example.mp4",
+    "captions_file": "./final/Factorization_into_A_LU_example_subtitles.json"
   },
   {
     "title": "Column space and nullspace (concept)",
-    "video": "../output/final/Column_space_and_nullspace_concept.mp4",
-    "captions_file": "../output/final/Column_space_and_nullspace_concept_subtitles.json"
+    "video": "./final/Column_space_and_nullspace_concept.mp4",
+    "captions_file": "./final/Column_space_and_nullspace_concept_subtitles.json"
   },
   {
     "title": "Column space and nullspace (example)",
     "brainrot": "./videos/videoplayback2.mp4",
-    "video": "../output/final/Column_space_and_nullspace_example.mp4",
-    "captions_file": "../output/final/Column_space_and_nullspace_example_subtitles.json"
+    "video": "./final/Column_space_and_nullspace_example.mp4",
+    "captions_file": "./final/Column_space_and_nullspace_example_subtitles.json"
   },
   {
     "title": "Determinant formulas and cofactors (concept)",
-    "video": "../output/final/Determinant_formulas_and_cofactors_concept.mp4",
-    "captions_file": "../output/final/Determinant_formulas_and_cofactors_concept_subtitles.json"
+    "video": "./final/Determinant_formulas_and_cofactors_concept.mp4",
+    "captions_file": "./final/Determinant_formulas_and_cofactors_concept_subtitles.json"
   },
   {
     "title": "Determinant formulas and cofactors (example)",
-    "video": "../output/final/Determinant_formulas_and_cofactors_example.mp4",
-    "captions_file": "../output/final/Determinant_formulas_and_cofactors_example_subtitles.json"
+    "video": "./final/Determinant_formulas_and_cofactors_example.mp4",
+    "captions_file": "./final/Determinant_formulas_and_cofactors_example_subtitles.json"
   },
   {
     "title": "Cramer's rule inverse matrix and volume (concept)",
-    "video": "../output/final/Cramer_s_rule_inverse_matrix_and_volume_concept.mp4",
-    "captions_file": "../output/final/Cramer_s_rule_inverse_matrix_and_volume_concept_subtitles.json"
+    "video": "./final/Cramer_s_rule_inverse_matrix_and_volume_concept.mp4",
+    "captions_file": "./final/Cramer_s_rule_inverse_matrix_and_volume_concept_subtitles.json"
   },
   {
     "title": "Cramer's rule inverse matrix and volume (example)",
-    "video": "../output/final/Cramer_s_rule_inverse_matrix_and_volume_example.mp4",
-    "captions_file": "../output/final/Cramer_s_rule_inverse_matrix_and_volume_example_subtitles.json"
+    "video": "./final/Cramer_s_rule_inverse_matrix_and_volume_example.mp4",
+    "captions_file": "./final/Cramer_s_rule_inverse_matrix_and_volume_example_subtitles.json"
   },
   {
     "title": "Eigenvalues and eigenvectors (concept)",
-    "video": "../output/final/Eigenvalues_and_eigenvectors_concept.mp4",
-    "captions_file": "../output/final/Eigenvalues_and_eigenvectors_concept_subtitles.json"
+    "video": "./final/Eigenvalues_and_eigenvectors_concept.mp4",
+    "captions_file": "./final/Eigenvalues_and_eigenvectors_concept_subtitles.json"
   },
   {
     "title": "Eigenvalues and eigenvectors (example)",
-    "video": "../output/final/Eigenvalues_and_eigenvectors_example.mp4",
-    "captions_file": "../output/final/Eigenvalues_and_eigenvectors_example_subtitles.json"
+    "video": "./final/Eigenvalues_and_eigenvectors_example.mp4",
+    "captions_file": "./final/Eigenvalues_and_eigenvectors_example_subtitles.json"
   },
   {
     "title": "Diagonalization and powers of A (concept)",
-    "video": "../output/final/Diagonalization_and_powers_of_A_concept.mp4",
-    "captions_file": "../output/final/Diagonalization_and_powers_of_A_concept_subtitles.json"
+    "video": "./final/Diagonalization_and_powers_of_A_concept.mp4",
+    "captions_file": "./final/Diagonalization_and_powers_of_A_concept_subtitles.json"
   },
   {
     "title": "Diagonalization and powers of A (example)",
-    "video": "../output/final/Diagonalization_and_powers_of_A_example.mp4",
-    "captions_file": "../output/final/Diagonalization_and_powers_of_A_example_subtitles.json"
+    "video": "./final/Diagonalization_and_powers_of_A_example.mp4",
+    "captions_file": "./final/Diagonalization_and_powers_of_A_example_subtitles.json"
   },
   {
     "title": "Differential equations and exp(At) (concept)",
-    "video": "../output/final/Differential_equations_and_exp_At_concept.mp4",
-    "captions_file": "../output/final/Differential_equations_and_exp_At_concept_subtitles.json"
+    "video": "./final/Differential_equations_and_exp_At_concept.mp4",
+    "captions_file": "./final/Differential_equations_and_exp_At_concept_subtitles.json"
   },
   {
     "title": "Differential equations and exp(At) (example)",
-    "video": "../output/final/Differential_equations_and_exp_At_example.mp4",
-    "captions_file": "../output/final/Differential_equations_and_exp_At_example_subtitles.json"
+    "video": "./final/Differential_equations_and_exp_At_example.mp4",
+    "captions_file": "./final/Differential_equations_and_exp_At_example_subtitles.json"
   },
   {
     "title": "Complex matrices fast fourier transform (concept)",
-    "video": "../output/final/Complex_matrices_fast_fourier_transform_concept.mp4",
-    "captions_file": "../output/final/Complex_matrices_fast_fourier_transform_concept_subtitles.json"
+    "video": "./final/Complex_matrices_fast_fourier_transform_concept.mp4",
+    "captions_file": "./final/Complex_matrices_fast_fourier_transform_concept_subtitles.json"
   },
   {
     "title": "Complex matrices fast fourier transform (example)",
-    "video": "../output/final/Complex_matrices_fast_fourier_transform_example.mp4",
-    "captions_file": "../output/final/Complex_matrices_fast_fourier_transform_example_subtitles.json"
+    "video": "./final/Complex_matrices_fast_fourier_transform_example.mp4",
+    "captions_file": "./final/Complex_matrices_fast_fourier_transform_example_subtitles.json"
   },
   {
     "title": "Change of basis image compression (concept)",
-    "video": "../output/final/Change_of_basis_image_compression_concept.mp4",
-    "captions_file": "../output/final/Change_of_basis_image_compression_concept_subtitles.json"
+    "video": "./final/Change_of_basis_image_compression_concept.mp4",
+    "captions_file": "./final/Change_of_basis_image_compression_concept_subtitles.json"
   },
   {
     "title": "Change of basis image compression (example)",
-    "video": "../output/final/Change_of_basis_image_compression_example.mp4",
-    "captions_file": "../output/final/Change_of_basis_image_compression_example_subtitles.json"
+    "video": "./final/Change_of_basis_image_compression_example.mp4",
+    "captions_file": "./final/Change_of_basis_image_compression_example_subtitles.json"
   }
 ]
