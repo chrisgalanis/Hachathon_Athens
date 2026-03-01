@@ -2,6 +2,8 @@ import { Sparkles, Pause, Play } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'motion/react';
 
+type Caption = { start: number; end: number; text: string };
+
 interface ReelCardPremiumProps {
   subject: string;
   subjectColor: string;
@@ -12,7 +14,9 @@ interface ReelCardPremiumProps {
   totalCards: number;
   currentCard: number;
   videoSrc?: string;
+  captions?: Caption[];
   compact?: boolean;
+  onShowUIChange?: (visible: boolean) => void;
 }
 
 function formatTime(s: number) {
@@ -31,7 +35,9 @@ export function ReelCardPremium({
   totalCards,
   currentCard,
   videoSrc,
+  captions = [],
   compact = false,
+  onShowUIChange,
 }: ReelCardPremiumProps) {
   const [aura, setAura] = useState(0);
   // Non-video cards always show UI; video cards start hidden
@@ -55,6 +61,9 @@ export function ReelCardPremium({
     if (idleTimer.current) clearTimeout(idleTimer.current);
     idleTimer.current = setTimeout(() => setShowUI(false), 3000);
   }, []);
+
+  // Notify parent whenever showUI changes
+  useEffect(() => { onShowUIChange?.(showUI); }, [showUI, onShowUIChange]);
 
   // Play/pause on scroll visibility; reset UI each time card re-enters view
   useEffect(() => {
@@ -116,6 +125,7 @@ export function ReelCardPremium({
   }, [resetIdle]);
 
   const scrubPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const activeCaption = captions.find(c => currentTime >= c.start && currentTime < c.end);
 
   return (
     <div
@@ -227,7 +237,7 @@ export function ReelCardPremium({
         {/* Video scrubber bar */}
         {videoSrc && duration > 0 && (
           <div
-            className={`absolute ${compact ? 'bottom-2' : 'bottom-4'} left-4 right-20 z-20 flex items-center gap-3`}
+            className={`absolute ${compact ? 'bottom-14' : 'bottom-20'} left-4 right-20 z-20 flex items-center gap-3`}
             onClick={(e) => e.stopPropagation()}
           >
             <span className="text-white/70 text-xs tabular-nums w-8 shrink-0">
@@ -278,6 +288,15 @@ export function ReelCardPremium({
           </motion.button>
         </div>
       </motion.div>
+
+      {/* Caption — always visible, outside the fade gate */}
+      {videoSrc && activeCaption && (
+        <div className={`absolute ${compact ? 'bottom-20' : 'bottom-28'} left-4 right-4 flex justify-center pointer-events-none z-30`}>
+          <span className="bg-black/75 text-white text-sm font-medium px-4 py-2 rounded-xl text-center leading-snug">
+            {activeCaption.text}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

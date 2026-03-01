@@ -19,8 +19,11 @@ const BG_GRADIENTS = [
 ];
 
 // Simple muted autoplay video for the brainrot bottom slot
-function BrainrotVideo({ src }: { src: string }) {
+type Caption = { start: number; end: number; text: string };
+
+function BrainrotVideo({ src, captions }: { src: string; captions: Caption[] }) {
   const ref = useRef<HTMLVideoElement>(null);
+  const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -35,15 +38,27 @@ function BrainrotVideo({ src }: { src: string }) {
     return () => observer.disconnect();
   }, []);
 
+  const activeCaption = captions.find(c => currentTime >= c.start && currentTime < c.end);
+
   return (
-    <video
-      ref={ref}
-      src={src}
-      className="w-full h-full object-cover"
-      playsInline
-      muted
-      loop
-    />
+    <div className="relative w-full h-full">
+      <video
+        ref={ref}
+        src={src}
+        className="w-full h-full object-cover"
+        playsInline
+        muted
+        loop
+        onTimeUpdate={() => { if (ref.current) setCurrentTime(ref.current.currentTime); }}
+      />
+      {activeCaption && (
+        <div className="absolute bottom-4 left-4 right-4 flex justify-center pointer-events-none">
+          <span className="bg-black/75 text-white text-sm font-medium px-4 py-2 rounded-xl text-center leading-snug">
+            {activeCaption.text}
+          </span>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -71,6 +86,7 @@ export function FeedPage() {
   const [reels, setReels] = useState<RawReel[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showNav, setShowNav] = useState(true);
 
   useEffect(() => {
     fetchAllReels()
@@ -109,14 +125,15 @@ export function FeedPage() {
             // Split-screen: top half = main video, bottom half = muted brainrot
             return (
               <div key={reel.id} className="h-screen snap-start snap-always flex flex-col">
+                <div className="h-1/2 overflow-hidden bg-black relative">
+                  <BrainrotVideo src={brainrotUrl} captions={reel.captions} />
+                </div>
                 <div className="h-1/2 overflow-hidden">
                   <ReelCardPremium
                     {...rawToCardProps(reel, index, reels.length)}
                     compact
+                    onShowUIChange={setShowNav}
                   />
-                </div>
-                <div className="h-1/2 overflow-hidden bg-black relative">
-                  <BrainrotVideo src={brainrotUrl} />
                 </div>
               </div>
             );
@@ -127,6 +144,8 @@ export function FeedPage() {
             <div key={reel.id} className="h-screen snap-start snap-always">
               <ReelCardPremium
                 {...rawToCardProps(reel, index, reels.length)}
+                captions={reel.captions}
+                onShowUIChange={setShowNav}
               />
             </div>
           );
@@ -134,7 +153,7 @@ export function FeedPage() {
       </div>
 
       {/* Floating Navigation */}
-      <FloatingNav />
+      <FloatingNav visible={showNav} />
 
       {/* Hide scrollbar */}
       <style>{`

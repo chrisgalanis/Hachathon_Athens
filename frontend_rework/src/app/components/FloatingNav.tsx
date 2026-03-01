@@ -2,7 +2,7 @@ import { Home, Search, BookOpen, TrendingUp } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router';
 import { motion } from 'motion/react';
 
-export function FloatingNav() {
+export function FloatingNav({ visible = true }: { visible?: boolean }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -14,13 +14,15 @@ export function FloatingNav() {
   ];
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[430px] w-full px-4">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[430px] w-full px-4"
+      style={{ pointerEvents: visible ? 'auto' : 'none' }}
+    >
       {/* Floating pill navigation */}
-      <motion.div 
+      <motion.div
         className="mx-auto w-fit backdrop-blur-2xl bg-white/10 rounded-full border border-white/10 shadow-2xl px-2 py-2"
         initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", duration: 0.8 }}
+        animate={{ y: 0, opacity: visible ? 1 : 0 }}
+        transition={{ duration: 0.6, ease: 'easeInOut' }}
       >
         <div className="flex items-center gap-2">
           {navItems.map((item) => {

@@ -11,6 +11,7 @@
   },
   {
     "title": "Factorization into A=LU (concept)",
+    "brainrot": "./videos/videoplayback.mp4",
     "video": "../output/final/Factorization_into_A_LU_concept.mp4",
     "captions_file": "../output/final/Factorization_into_A_LU_concept_subtitles.json"
   },
@@ -26,6 +27,7 @@
   },
   {
     "title": "Column space and nullspace (example)",
+    "brainrot": "./videos/videoplayback2.mp4",
     "video": "../output/final/Column_space_and_nullspace_example.mp4",
     "captions_file": "../output/final/Column_space_and_nullspace_example_subtitles.json"
   },

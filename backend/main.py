@@ -195,6 +195,16 @@ def _build_direct_reel(entry: dict) -> dict | None:
     else:
         concept = slug
 
+    # Resolve optional brainrot video path
+    brainrot_rel: str | None = None
+    if "brainrot" in entry:
+        brainrot_abs = (BASE_DIR / entry["brainrot"]).resolve()
+        if brainrot_abs.exists():
+            try:
+                brainrot_rel = "/videos/" + brainrot_abs.relative_to(VIDEOS_DIR).as_posix()
+            except ValueError:
+                brainrot_rel = None
+
     return {
         "id": f"direct-{slug}",
         "concept": concept,
@@ -208,7 +218,7 @@ def _build_direct_reel(entry: dict) -> dict | None:
         "captions": captions,
         "videoSrc": video_rel if video_abs.exists() else None,
         "hasVideo": video_abs.exists(),
-        "brainrotSrc": None,
+        "brainrotSrc": brainrot_rel,
     }
 
 
