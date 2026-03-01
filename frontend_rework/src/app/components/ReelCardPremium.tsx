@@ -76,10 +76,12 @@ export function ReelCardPremium({
         if (entry.isIntersecting) {
           videoRef.current?.play().catch(() => {});
           setIsPlaying(true);
+          onPlayStateChange?.(true);
           if (videoSrc) setShowUI(false); // hide UI fresh every time
         } else {
           videoRef.current?.pause();
           setIsPlaying(false);
+          onPlayStateChange?.(false);
           if (videoSrc) {
             if (idleTimer.current) clearTimeout(idleTimer.current);
             setShowUI(false);
@@ -102,12 +104,14 @@ export function ReelCardPremium({
     if (vid.paused) {
       vid.play().catch(() => {});
       setIsPlaying(true);
+      onPlayStateChange?.(true);
     } else {
       vid.pause();
       setIsPlaying(false);
+      onPlayStateChange?.(false);
     }
     resetIdle();
-  }, [resetIdle]);
+  }, [resetIdle, onPlayStateChange]);
 
   // Click on the card: if UI is hidden → show it; if UI is visible → toggle play/pause
   const handleInteraction = useCallback(() => {
