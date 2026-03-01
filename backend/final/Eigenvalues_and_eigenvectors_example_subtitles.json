@@ -1,0 +1,41 @@
+{
+  "total_duration": 56.32,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 5.93,
+      "duration": 5.93,
+      "text": "Here's projection matrix P — entries one-half, one-half, one-half, one-half. It projects everything onto the line through one, one."
+    },
+    {
+      "beat": 1,
+      "start": 5.93,
+      "end": 21.525,
+      "duration": 15.595,
+      "text": "Find the eigenvalues. Subtract lambda down the diagonal, take the determinant: one-half-minus-lambda, squared, minus one-fourth equals zero. That factors to lambda times lambda-minus-one equals zero. Eigenvalues: lambda equals one and lambda equals zero."
+    },
+    {
+      "beat": 2,
+      "start": 21.525,
+      "end": 35.161,
+      "duration": 13.636,
+      "text": "First eigenvector: lambda equals one. P minus I times x equals zero. Every row becomes negative one-half, one-half — so x-one equals x-two. The eigenvector is one, one. An arrow appears along the projection line itself."
+    },
+    {
+      "beat": 3,
+      "start": 35.161,
+      "end": 46.942,
+      "duration": 11.781,
+      "text": "Second eigenvector: lambda equals zero. P times x equals zero. The eigenvector is one, negative-one — perpendicular to the line. An arrow appears pointing in that direction."
+    },
+    {
+      "beat": 4,
+      "start": 46.942,
+      "end": 56.32,
+      "duration": 9.378,
+      "text": "Boom — projection matrices always have eigenvalues one and zero. Vectors on the line are unchanged. Vectors perpendicular to it get crushed to zero."
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "total_duration": 46.106,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 4.127,
+      "duration": 4.127,
+      "text": "Here's a three-by-three matrix A — rows starting with one, three, and zero."
+    },
+    {
+      "beat": 1,
+      "start": 4.127,
+      "end": 8.751,
+      "duration": 4.624,
+      "text": "A highlight marks the first pivot: the entry in row one, column one. That's our anchor."
+    },
+    {
+      "beat": 2,
+      "start": 8.751,
+      "end": 17.528,
+      "duration": 8.777,
+      "text": "Row two becomes row two minus three times row one. Watch the three in row two, column one vanish — replaced by zero. The rest of row two updates with it."
+    },
+    {
+      "beat": 3,
+      "start": 17.528,
+      "end": 26.984,
+      "duration": 9.456,
+      "text": "Repeat down the matrix. Each step zeros out one entry below the pivot. The system tidies itself, level by level, until the matrix stands upper triangular — call it U."
+    },
+    {
+      "beat": 4,
+      "start": 26.984,
+      "end": 35.709,
+      "duration": 8.725,
+      "text": "Now back substitution. The last equation has one unknown — solve it. Climb up row by row, plugging each answer in, until all three unknowns are found."
+    },
+    {
+      "beat": 5,
+      "start": 35.709,
+      "end": 46.106,
+      "duration": 10.397,
+      "text": "Every elimination step is secretly a matrix multiplication. An elementary matrix E appears beside A, recording each move. String them together and you hold the full architecture of the solution."
+    }
+  ]
+}

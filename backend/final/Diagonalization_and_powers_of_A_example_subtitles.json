@@ -1,0 +1,48 @@
+{
+  "total_duration": 49.188,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 3.709,
+      "duration": 3.709,
+      "text": "Here's matrix A — entries two, one, zero, two."
+    },
+    {
+      "beat": 1,
+      "start": 3.709,
+      "end": 15.308,
+      "duration": 11.598,
+      "text": "Find the eigenvalues: subtract lambda down the diagonal. The characteristic polynomial is two-minus-lambda, squared, equals zero. Only one solution: lambda equals two, with algebraic multiplicity two."
+    },
+    {
+      "beat": 2,
+      "start": 15.308,
+      "end": 22.779,
+      "duration": 7.471,
+      "text": "Now find the eigenvectors. Compute A minus two-I — subtract two from each diagonal entry. Result: zero, one, zero, zero."
+    },
+    {
+      "beat": 3,
+      "start": 22.779,
+      "end": 35.5,
+      "duration": 12.722,
+      "text": "Solve A-minus-two-I times x equals zero. Row one demands x-two equals zero. Row two gives nothing new. So x-two is zero, x-one is free — the null space is spanned by the single vector one, zero."
+    },
+    {
+      "beat": 4,
+      "start": 35.5,
+      "end": 43.154,
+      "duration": 7.654,
+      "text": "Geometric multiplicity is one. Algebraic multiplicity is two. They don't match — a bracket appears flagging the gap between them."
+    },
+    {
+      "beat": 5,
+      "start": 43.154,
+      "end": 49.188,
+      "duration": 6.034,
+      "text": "One eigenvalue, one eigenvector — not enough to fill a basis. Matrix A cannot be diagonalized."
+    }
+  ]
+}

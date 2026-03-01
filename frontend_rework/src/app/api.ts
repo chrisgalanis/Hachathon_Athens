@@ -2,7 +2,7 @@
 // Talks to the FastAPI backend (default: localhost:8000).
 // Set VITE_API_URL in .env to override.
 
-const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const API_BASE = (import.meta.env.VITE_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
 // ---------------------------------------------------------------------------
 // Types

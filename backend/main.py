@@ -50,34 +50,40 @@ app.add_middleware(
 BASE_DIR = Path(__file__).parent
 PROCESSED_DIR = BASE_DIR / "scraper" / "processed"
 VIDEOS_DIR = BASE_DIR / "videos"
+FINAL_DIR = (BASE_DIR / "final").resolve()
 
 # Ensure the videos directory exists so StaticFiles doesn't error on startup
 VIDEOS_DIR.mkdir(parents=True, exist_ok=True)
 
 # Serve MP4 files as static assets
 app.mount("/videos", StaticFiles(directory=str(VIDEOS_DIR)), name="videos")
+if FINAL_DIR.exists():
+    app.mount("/final", StaticFiles(directory=str(FINAL_DIR)), name="final")
 
 # ---------------------------------------------------------------------------
 # reels.json — maps transcript dirs to video files
 # ---------------------------------------------------------------------------
 
-def _load_reels_map() -> tuple[dict[Path, Path], dict[Path, Path]]:
-    """Return ({transcript_dir: video_path}, {transcript_dir: brainrot_path}) from reels.json."""
+def _load_reels_map() -> tuple[dict[Path, Path], dict[Path, Path], list[dict]]:
+    """Return ({transcript_dir: video_path}, {transcript_dir: brainrot_path}, direct_entries) from reels.json."""
     reels_json = BASE_DIR / "reels.json"
     if not reels_json.exists():
-        return {}, {}
+        return {}, {}, []
     entries = json.loads(reels_json.read_text(encoding="utf-8"))
     reels_map: dict[Path, Path] = {}
     brainrot_map: dict[Path, Path] = {}
+    direct_entries: list[dict] = []
     for e in entries:
         if "transcript" in e and "video" in e:
             t = Path(e["transcript"]).resolve()
             reels_map[t] = Path(e["video"]).resolve()
             if "brainrot_video" in e:
                 brainrot_map[t] = Path(e["brainrot_video"]).resolve()
-    return reels_map, brainrot_map
+        elif "video" in e and "captions_file" in e:
+            direct_entries.append(e)
+    return reels_map, brainrot_map, direct_entries
 
-REELS_MAP, BRAINROT_MAP = _load_reels_map()
+REELS_MAP, BRAINROT_MAP, DIRECT_ENTRIES = _load_reels_map()
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -158,6 +164,64 @@ def _build_reel(concept: str, lecture_dir: Path) -> dict | None:
     }
 
 
+def _build_direct_reel(entry: dict) -> dict | None:
+    """Build a reel payload from a direct entry (video + captions_file, no transcript dir)."""
+    video_abs = (BASE_DIR / entry["video"]).resolve()
+    captions_abs = (BASE_DIR / entry["captions_file"]).resolve()
+
+    if not captions_abs.exists():
+        return None
+
+    captions_data = json.loads(captions_abs.read_text(encoding="utf-8"))
+    captions = [
+        {"start": b["start"], "end": b["end"], "text": b["text"]}
+        for b in captions_data.get("beats", [])
+    ]
+
+    title = entry.get("title", video_abs.stem.replace("_", " "))
+
+    # Build URL for /final/ static mount
+    try:
+        video_rel = "/final/" + video_abs.relative_to(FINAL_DIR).as_posix()
+    except ValueError:
+        video_rel = "/final/" + video_abs.name
+
+    slug = video_abs.stem
+    # Derive concept/topic from filename (strip trailing _concept or _example)
+    for suffix in ("_concept", "_example"):
+        if slug.endswith(suffix):
+            concept = slug[: -len(suffix)]
+            break
+    else:
+        concept = slug
+
+    # Resolve optional brainrot video path
+    brainrot_rel: str | None = None
+    if "brainrot" in entry:
+        brainrot_abs = (BASE_DIR / entry["brainrot"]).resolve()
+        if brainrot_abs.exists():
+            try:
+                brainrot_rel = "/videos/" + brainrot_abs.relative_to(VIDEOS_DIR).as_posix()
+            except ValueError:
+                brainrot_rel = None
+
+    return {
+        "id": f"direct-{slug}",
+        "concept": concept,
+        "lectureNumber": 0,
+        "subject": title,
+        "topic": title,
+        "concepts": [],
+        "examples": [],
+        "analogy": [],
+        "transcript": "",
+        "captions": captions,
+        "videoSrc": video_rel if video_abs.exists() else None,
+        "hasVideo": video_abs.exists(),
+        "brainrotSrc": brainrot_rel,
+    }
+
+
 def _find_concept_dir(concept: str) -> Path | None:
     """Return the first subject directory matching *concept* across all courses."""
     for course_dir in PROCESSED_DIR.iterdir():
@@ -189,6 +253,10 @@ def get_all_reels():
         lecture_dir = transcript_dir
         concept = lecture_dir.parent.name
         reel = _build_reel(concept, lecture_dir)
+        if reel:
+            reels.append(reel)
+    for entry in DIRECT_ENTRIES:
+        reel = _build_direct_reel(entry)
         if reel:
             reels.append(reel)
     return reels

@@ -1,0 +1,41 @@
+{
+  "total_duration": 44.408,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 4.31,
+      "duration": 4.31,
+      "text": "Here's our complex vector z — entries one and i, stacked vertically."
+    },
+    {
+      "beat": 1,
+      "start": 4.31,
+      "end": 19.383,
+      "duration": 15.073,
+      "text": "First attempt: z-transpose times z. The entries multiply straight across — one times one plus i times i. That's one plus i-squared. i-squared equals negative one, so we get zero. A vector with zero length? That's wrong."
+    },
+    {
+      "beat": 2,
+      "start": 19.383,
+      "end": 28.238,
+      "duration": 8.855,
+      "text": "The fix: replace transpose with conjugate-transpose — z-Hermitian. The entries of z flip to their conjugates: one stays one, i becomes negative i."
+    },
+    {
+      "beat": 3,
+      "start": 28.238,
+      "end": 38.113,
+      "duration": 9.874,
+      "text": "Now multiply: one times one plus i times negative i. That's one plus negative i-squared — one plus one — equals two. A bracket appears showing the length: root two. Correct."
+    },
+    {
+      "beat": 4,
+      "start": 38.113,
+      "end": 44.408,
+      "duration": 6.295,
+      "text": "For complex vectors, always use the conjugate-transpose. Regular transpose breaks length. Hermitian saves it."
+    }
+  ]
+}

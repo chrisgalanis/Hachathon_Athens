@@ -1,0 +1,41 @@
+{
+  "total_duration": 39.863,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 4.415,
+      "duration": 4.415,
+      "text": "Here's a five-twelve by five-twelve grid of tiny squares — that's our grayscale image."
+    },
+    {
+      "beat": 1,
+      "start": 4.415,
+      "end": 10.632,
+      "duration": 6.217,
+      "text": "Count them: five-twelve times five-twelve equals two-hundred-sixty-two-thousand-one-hundred-forty-four pixels total."
+    },
+    {
+      "beat": 2,
+      "start": 10.632,
+      "end": 22.361,
+      "duration": 11.729,
+      "text": "Each pixel holds one number — zero for black, two-fifty-five for white, everything in between is a shade of gray. Stack all of them into a single column vector in R two-sixty-two-thousand-one-hundred-forty-four."
+    },
+    {
+      "beat": 3,
+      "start": 22.361,
+      "end": 28.212,
+      "duration": 5.851,
+      "text": "Now a label appears: eight bits per pixel. One byte. That's the storage cost for every single entry."
+    },
+    {
+      "beat": 4,
+      "start": 28.212,
+      "end": 39.863,
+      "duration": 11.651,
+      "text": "Switch to a colour image — same grid, but now each pixel splits into three entries: red, green, blue channels. The vector triples in size, landing in R seven-hundred-eighty-six-thousand-four-hundred-thirty-two."
+    }
+  ]
+}

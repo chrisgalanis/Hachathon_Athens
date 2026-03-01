@@ -15,12 +15,6 @@ function colorFor(name: string): string {
   return SUBJECT_COLORS[Math.abs(hash) % SUBJECT_COLORS.length];
 }
 
-const difficultyColors: Record<string, string> = {
-  Easy: '#10b981',
-  Medium: '#f59e0b',
-  Hard: '#ef4444',
-};
-
 export function ChatbotPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [subjects, setSubjects] = useState<SubjectMeta[]>([]);
@@ -164,13 +158,7 @@ export function ChatbotPage() {
                               </div>
 
                               {/* Bottom row */}
-                              <div className="flex items-center justify-between">
-                                <div
-                                  className="px-2 py-1 rounded-full text-xs"
-                                  style={{ backgroundColor: `${difficultyColors.Medium}20`, color: difficultyColors.Medium }}
-                                >
-                                  Medium
-                                </div>
+                              <div className="flex items-center justify-end">
                                 <button className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7c3aed]/20 border border-[#7c3aed]/30 rounded-full text-[#7c3aed] text-sm hover:bg-[#7c3aed]/30 transition-all">
                                   <Play className="w-3 h-3" />
                                   <span>Browse</span>

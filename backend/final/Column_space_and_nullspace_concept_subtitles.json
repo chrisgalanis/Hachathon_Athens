@@ -1,0 +1,41 @@
+{
+  "total_duration": 40.777,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 3.657,
+      "duration": 3.657,
+      "text": "Here's a three-by-three grid floating in space — call it matrix A."
+    },
+    {
+      "beat": 1,
+      "start": 3.657,
+      "end": 17.528,
+      "duration": 13.871,
+      "text": "Its columns are arrows: one pointing to two, one, zero and another to one, zero, one. Every linear combination of those arrows traces out a plane through the origin. That plane is the column space — every target A can actually reach."
+    },
+    {
+      "beat": 2,
+      "start": 17.528,
+      "end": 26.07,
+      "duration": 8.542,
+      "text": "Now shrink one column until it's redundant. The plane collapses to a line through the origin. Still a subspace — you can't escape it by adding or scaling."
+    },
+    {
+      "beat": 3,
+      "start": 26.07,
+      "end": 33.254,
+      "duration": 7.184,
+      "text": "Flip the question: what inputs x send A times x straight to zero? Those vectors form the null space — an arrow landing exactly at the origin."
+    },
+    {
+      "beat": 4,
+      "start": 33.254,
+      "end": 40.777,
+      "duration": 7.523,
+      "text": "Column space shows what's reachable. Null space reveals what disappears. Together, they expose every power and every limit hiding inside A."
+    }
+  ]
+}
