@@ -1,40 +1,45 @@
-# 6Blue7Brown
+# LearnReel
 
-**TikTok-style vertical reels for university lectures — powered by an autonomous AI pipeline.**
+> University content, TikTok format. Built for the generation that never stops scrolling.
+
+LearnReel transforms raw university lecture transcripts into bite-sized vertical video reels — auto-generated, narrated, and served in a mobile-first interface that feels like social media, not a classroom.
+
+---
+
+## The Problem
+
+Students' attention spans have been rewired by short-form content. Traditional e-learning hasn't kept up. LearnReel closes the gap between how Gen Z consumes content and how universities deliver knowledge.
 
 ---
 
 ## Features
 
-- **Vertical Snap Feed** — Swipe through lecture content in a TikTok-style feed, one concept per reel
-- **AI-Generated Content** — Multi-agent pipeline automatically extracts key concepts, analogies, examples, and summaries from raw lecture transcripts
-- **Deep-Link Search** — Search any topic or concept and jump directly to the matching reel in the feed
-- **Explore Page** — Browse all available subjects with lecture counts and a My Uploads tab
-- **User Uploads** — Upload your own lecture video or PDF and get it processed into reels instantly
-- **Brainrot Mode** — Split-screen view with a muted supplementary video playing alongside the reel card
-- **Mobile-First UI** — Designed for 430px viewport with smooth animations, dark theme, and frosted glass components
-- **Zero Human Content Pipeline** — From raw transcript to published reel with no manual editing
+- 🎬 **Vertical Reel Feed** — Snap-scroll through micro-lessons, one concept at a time
+- 🧠 **Brainrot Mode** — Split-screen: educational video on bottom, engagement bait on top
+- 📝 **Synced Captions** — Timed subtitles auto-generated from lecture transcripts
+- 🤖 **AI Pipeline** — Multi-agent system that turns raw transcripts into narrated, animated videos
+- 🎙️ **Voice Narration** — ElevenLabs TTS synthesis per lecture beat
+- 🎨 **Manim Animations** — Auto-generated ManimGL visuals synced beat-by-beat to narration
+- 📊 **Progress Tracking** — Streaks, aura points, and achievement system
+- 🔍 **Subject Browser** — Filter and browse courses; jump to any lecture
 
 ---
 
 ## Tech Stack
 
 **Frontend**
-- React 19 + TypeScript (Vite)
+- React 19 + TypeScript (Vite 6)
 - React Router v7
-- Tailwind CSS
+- Tailwind CSS 4
 - Motion / Framer Motion v12
-- Lucide React
+- Radix UI
 
 **Backend**
-- Python 3.12
-- FastAPI
-- Uvicorn
-
-**AI Pipeline**
-- Multi-agent system (`backend/agents/`)
-- Agents: `data_processor`, `lecture_transcript`, `manim`, `voice`, `transcript_reviewer`, `video_transcript`
-- Input: raw lecture transcripts → Output: structured `processed.json` per lecture reel
+- Python 3.12 + FastAPI + Uvicorn
+- `pydantic-ai` — multi-provider LLM agent framework
+- ElevenLabs SDK — text-to-speech narration
+- ManimGL — programmatic math animation rendering
+- ffmpeg — audio/video merge
 
 **Data**
 - MIT OpenCourseWare — Linear Algebra (scraped & processed)
@@ -42,66 +47,141 @@
 
 ---
 
-## Prerequisites
+## Project Structure
 
-- **Node.js** ≥ 18 and **npm** ≥ 9
-- **Python** 3.12
-- **pip** dependencies listed in `requirements.txt`
+```
+Hachathon_Athens/
+├── backend/
+│   ├── main.py                  # FastAPI server — 5 REST endpoints
+│   ├── requirements.txt
+│   ├── railway.toml             # Deployment config
+│   ├── reels.json               # Transcript → video path mappings
+│   ├── videos/                  # Served static MP4 files
+│   ├── scraper/                 # OCW transcript extraction & processing
+│   │   └── processed/           # Structured JSON per lecture
+│   └── agents/                  # AI multi-agent pipeline
+│       ├── pipeline.py          # End-to-end orchestration
+│       ├── voice_agent.py       # TTS narration (ElevenLabs)
+│       ├── manim_agent.py       # Animation code generation
+│       ├── transcript_reviewer_agent.py
+│       ├── data_processor_agent.py
+│       └── agent_prompts/       # System prompts per agent
+│
+└── frontend_rework/
+    └── src/
+        ├── main.tsx
+        ├── App.tsx              # 430px mobile frame wrapper
+        ├── api.ts               # API client
+        └── app/
+            ├── pages/
+            │   ├── FeedPage.tsx       # Main reel feed (snap scroll)
+            │   ├── LandingPage.tsx    # Marketing hero page
+            │   ├── SubjectsPage.tsx   # Course grid browser
+            │   ├── ChatbotPage.tsx    # Search & discovery
+            │   └── ProgressPage.tsx   # Streaks & achievements
+            └── components/
+                ├── ReelCardPremium.tsx  # Core video reel card
+                └── FloatingNav.tsx      # Bottom navigation bar
+```
 
 ---
 
-## Setup Instructions
+## API Endpoints
 
-### 1. Clone the repository
+| Method | Route | Description |
+|--------|-------|-------------|
+| `GET` | `/health` | Health check |
+| `GET` | `/api/subjects` | All concepts with lecture/video counts |
+| `GET` | `/api/reels` | All reels in order |
+| `GET` | `/api/reels/{concept}` | Reels for a concept, sorted by lecture |
+| `GET` | `/api/reels/{concept}/{lecture_number}` | Single reel |
 
-```bash
-git clone <repo-url>
-cd Hachathon_Athens
+Videos are served as static files at `/videos/{concept}/Lecture_{N}/video.mp4`.
+
+---
+
+## AI Pipeline
+
+The multi-agent pipeline (`backend/agents/pipeline.py`) turns a reviewed transcript into a finished reel:
+
+```
+Raw Transcript
+    ↓
+Transcript Reviewer Agent  →  cleaned, structured transcript
+    ↓
+Data Processor Agent       →  structured JSON (concepts, examples, analogies)
+    ↓
+Voice Agent                →  [BEAT]-delimited narration + ElevenLabs MP3
+    ↓
+Manim Agent                →  ManimGL animation code (self.wait() per beat)
+    ↓
+Beat Sync                  →  adjust wait() durations to match real audio timings
+    ↓
+manimgl CLI                →  render silent MP4 (1080×1920 portrait)
+    ↓
+ffmpeg                     →  merge audio + video → final reel
 ```
 
-### 2. Backend
+Two reels are produced per lecture: a **concept reel** and an **example reel** with subtitles.
+
+---
+
+## Setup
+
+### Prerequisites
+
+- Node.js ≥ 18
+- Python 3.12
+- ffmpeg
+- ElevenLabs API key
+- An LLM provider API key (OpenAI, Anthropic, etc.)
+
+### Backend
 
 ```bash
 cd backend
 pip install -r requirements.txt
-python -m uvicorn main:app --reload --port 8000
+pip install -r agents/requirements.txt
 ```
 
-Verify it's working:
+Add a `.env` file:
+
+```env
+ELEVENLABS_API_KEY=your_key_here
+OPENAI_API_KEY=your_key_here
+```
+
+```bash
+uvicorn main:app --reload --port 8000
+```
+
+Verify:
 
 ```bash
 curl http://localhost:8000/health
 # → {"status":"ok"}
 ```
 
-### 3. Frontend
+### Frontend
 
 ```bash
 cd frontend_rework
-npm install --legacy-peer-deps
+npm install
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173` (or `5174` if that port is in use).
+Open [http://localhost:5173](http://localhost:5173).
 
-### 4. Environment variables (optional)
-
-Create a `.env` file inside `frontend_rework/` to override the default backend URL:
+Optionally override the backend URL:
 
 ```env
+# frontend_rework/.env
 VITE_API_URL=http://localhost:8000
 ```
 
-### 5. Running the AI Pipeline (optional)
+### Running the AI Pipeline
 
-To regenerate reel content from transcripts:
-
-```bash
-# From project root
-python run_pipeline.py
-```
-
-Or target a specific lecture directly:
+To regenerate reels from a processed transcript:
 
 ```python
 import asyncio
@@ -116,25 +196,31 @@ async def main():
 
 asyncio.run(main())
 ```
-      ▼
-  [3] Beat sync   →  self.wait() durations stretched to match audio
-      │
-      ▼
-  [4] manimgl     →  silent MP4 (1080×1920 portrait)
-      ffmpeg       →  merges audio + video
-      │
-      ▼
-  [5] output/final/
-      ├── {topic}_concept.mp4
-      ├── {topic}_example.mp4
-      ├── {topic}_concept_subtitles.json
-      └── {topic}_example_subtitles.json
 
-  ---
-  If you want to process raw transcripts first
+Or process raw transcripts first:
 
-  # Step 1: Process raw lecture data into structured JSON
-  cd backend
-  python -m agents.data_processor_agent --input-dir scraper/data --output-dir
-  scraper/processed
+```bash
+cd backend
+python -m agents.data_processor_agent \
+  --input-dir scraper/data \
+  --output-dir scraper/processed
+```
 
+---
+
+## Deployment
+
+The backend is configured for **Railway** via `railway.toml`. Set environment variables in the Railway dashboard and push.
+
+For the frontend, build and deploy to any static host:
+
+```bash
+cd frontend_rework
+npm run build   # outputs to dist/
+```
+
+---
+
+## Contributors
+
+Built at Hackathon Athens 2025
