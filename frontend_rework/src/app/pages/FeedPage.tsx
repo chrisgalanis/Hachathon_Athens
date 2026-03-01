@@ -176,17 +176,12 @@ export function FeedPage() {
         {reels.map((reel, index) => {
           if (reel.brainrotSrc) {
             return (
-              <div key={reel.id} ref={el => { reelRefs.current[index] = el; }} className="h-screen snap-start snap-always flex flex-col">
-                <div className="h-1/2 overflow-hidden bg-black relative">
-                  <BrainrotVideo src={brainrotUrl} captions={reel.captions} />
-                </div>
-                <div className="h-1/2 overflow-hidden">
-                  <ReelCardPremium
-                    {...rawToCardProps(reel, index, reels.length)}
-                    compact
-                    onShowUIChange={setShowNav}
-                  />
-                </div>
+              <div key={reel.id} ref={el => { reelRefs.current[index] = el; }}>
+                <BrainrotSlide
+                  reel={reel}
+                  cardProps={rawToCardProps(reel, index, reels.length)}
+                  onShowNavChange={setShowNav}
+                />
               </div>
             );
           }
