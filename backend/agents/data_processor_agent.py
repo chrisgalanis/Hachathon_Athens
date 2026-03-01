@@ -42,6 +42,8 @@ logger = logging.getLogger(__name__)
 
 
 class LectureStructure(BaseModel):
+    subject: str
+    course: str
     concepts: List[str]
     examples: List[str]
     analogy: Optional[List[str]] = None
@@ -55,6 +57,14 @@ _INSTRUCTIONS = """\
 You are an educational content processor specialising in mathematics and science lectures.
 
 Given a lecture transcript, extract and return:
+
+0. **subject** — The specific topic of this lecture (e.g. "AWGN Channel", "Eigenvalues and Eigenvectors").
+   Infer it from the content itself; do NOT just repeat the filename or any hint given in the prompt.
+   Use a concise, academically correct name (3–6 words).
+
+0. **course** — The academic course or discipline this topic belongs to
+   (e.g. "Digital Communications", "Linear Algebra", "Signal Processing", "Information Theory").
+   Infer this from the content; pick the most specific correct course name.
 
 1. **concepts** — A list of the core ideas, definitions, theorems, and key takeaways
    explained in the lecture.
@@ -106,7 +116,8 @@ class DataProcessorAgent(BaseAgent):
 
         output: dict = {
             "lecture_number": lecture_number,
-            "subject": subject,
+            "subject": structure.subject or subject,
+            "course": structure.course,
             "concepts": structure.concepts,
             "examples": structure.examples,
         }

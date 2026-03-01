@@ -463,7 +463,7 @@ class VideoGenerationPipeline:
         #           Retries up to MAX_RENDER_ATTEMPTS times, regenerating the
         #           Manim script from scratch on each failure.
         # ------------------------------------------------------------------ #
-        MAX_RENDER_ATTEMPTS = 3
+        MAX_RENDER_ATTEMPTS = 10
         print("\n[4/5] Rendering and merging …")
 
         # --- Concept reel render with retry ---

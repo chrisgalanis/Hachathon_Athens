@@ -235,11 +235,13 @@ def _build_direct_reel(entry: dict) -> dict | None:
             except ValueError:
                 brainrot_rel = None
 
+    subject = entry.get("subject", title)
+
     return {
         "id": f"direct-{slug}",
         "concept": concept,
         "lectureNumber": 0,
-        "subject": title,
+        "subject": subject,
         "topic": title,
         "concepts": [],
         "examples": [],
@@ -276,8 +278,10 @@ def health():
 @app.get("/api/reels")
 def get_all_reels():
     """Return reels for every entry in reels.json, in order."""
+    # Reload reels.json on every call so changes are picked up without restart.
+    reels_map, _brainrot_map, direct_entries = _load_reels_map()
     reels = []
-    for transcript_dir, video_abs in REELS_MAP.items():
+    for transcript_dir, video_abs in reels_map.items():
         # Infer concept from the transcript path (grandparent of lecture dir)
         # e.g. .../Linear_Algebra/Elimination_with_matrices/2  → concept = Elimination_with_matrices
         lecture_dir = transcript_dir
@@ -285,7 +289,7 @@ def get_all_reels():
         reel = _build_reel(concept, lecture_dir)
         if reel:
             reels.append(reel)
-    for entry in DIRECT_ENTRIES:
+    for entry in direct_entries:
         reel = _build_direct_reel(entry)
         if reel:
             reels.append(reel)
@@ -445,6 +449,8 @@ async def _run_upload_pipeline(job_id: str, pdf_bytes: bytes, filename: str) -> 
             raise ValueError("DataProcessorAgent returned empty output.")
 
         processed["lecture_number"] = 1
+        # Prefer the subject inferred by the model over the filename-derived one
+        subject = processed.get("subject") or subject
         processed["subject"] = subject
 
         # Step 3 — generate + review transcript paragraph
@@ -464,6 +470,7 @@ async def _run_upload_pipeline(job_id: str, pdf_bytes: bytes, filename: str) -> 
         # Step 5 — build reels.json-compatible paths (relative to BASE_DIR with ./ prefix)
         import re as _re
         slug = _re.sub(r"\W+", "_", subject).strip("_")
+        course = processed.get("course") or ""
 
         def _backend_rel(abs_path: str) -> str:
             """Return path relative to backend/ with ./ prefix, matching reels.json convention."""
@@ -476,16 +483,22 @@ async def _run_upload_pipeline(job_id: str, pdf_bytes: bytes, filename: str) -> 
         concept_subs_path = str(BASE_DIR / "final" / f"{slug}_concept_subtitles.json")
         example_subs_path = str(BASE_DIR / "final" / f"{slug}_example_subtitles.json")
 
-        _append_to_reels_json({
-            "title": f"{subject} — Concept",
+        concept_entry: dict = {
+            "title": f"{subject} (concept)",
             "video": _backend_rel(concept_mp4),
             "captions_file": _backend_rel(concept_subs_path),
-        })
-        _append_to_reels_json({
-            "title": f"{subject} — Example",
+        }
+        example_entry: dict = {
+            "title": f"{subject} (example)",
             "video": _backend_rel(example_mp4),
             "captions_file": _backend_rel(example_subs_path),
-        })
+        }
+        if course:
+            concept_entry["subject"] = course
+            example_entry["subject"] = course
+
+        _append_to_reels_json(concept_entry)
+        _append_to_reels_json(example_entry)
 
         job["status"] = "done"
         job["message"] = "Done!"
