@@ -52,19 +52,20 @@ from .voice_agent import VoiceAgent, _split_beats
 
 # Resolve manimgl: prefer PATH lookup, then look in the same venv as the
 # running interpreter, then fall back to the Hackathon-Athens backend venv.
-def _find_manimgl() -> str:
+def _find_manimgl() -> list:
     found = shutil.which("manimgl")
     if found:
-        return found
+        return [found]
     # Same directory as current Python executable
     candidate = Path(sys.executable).parent / "manimgl"
     if candidate.exists():
-        return str(candidate)
+        return [str(candidate)]
     # Hard-coded fallback for the project venv
     fallback = Path(__file__).parent.parent / ".venv" / "bin" / "manimgl"
     if fallback.exists():
-        return str(fallback)
-    return str(candidate)  # will fail with a clear message
+        return [str(fallback)]
+    # Fall back to running as a Python module
+    return [sys.executable, "-m", "manimlib"]
 
 _MANIMGL = _find_manimgl()
 print(f"[pipeline] manimgl resolved to: {_MANIMGL}")
@@ -139,7 +140,7 @@ def _merge_audio_video(video_path: str, audio_path: str, output_path: str) -> No
 def _render_manim(script_path: str, scene_class: str, video_dir: str) -> str:
     """Run the manimgl CLI and return the path of the rendered MP4."""
     cmd = [
-        _MANIMGL, script_path, scene_class,
+        *_MANIMGL, script_path, scene_class,
         "-w",
         "-r", "1080x1920",          # 9:16 portrait
         "--video_dir", video_dir,
