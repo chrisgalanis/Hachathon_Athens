@@ -16,7 +16,8 @@
   - Matrices, vectors, and equations: center them and leave generous vertical spacing (`buff=0.8` or more between stacked groups).
   - NumberPlane: use `x_range=[-4, 4]`, `y_range=[-7, 7]` as a starting default for portrait.
   - Avoid placing important content beyond `x = ±3.5` — it will be clipped.
-  - Prefer `font_size=40` or larger — small text is unreadable on a phone.
+  - Use `font_size=28` to `font_size=36` for body text; titles may use up to 40. **Never exceed 40** — oversized text causes overlaps on the narrow portrait canvas.
+  - **No text overlap allowed**: after placing each element, call `.next_to()` or `.shift()` to guarantee spacing. Never place two `Text` objects at the same position. Use `VGroup(...).arrange(DOWN, buff=0.5)` to stack multiple lines cleanly.
 - **CRITICAL — NO LATEX**: This environment has **no LaTeX compiler**. You must **NEVER** use:
   - `Tex(...)` — use `Text(...)` instead
   - `TexText(...)` — use `Text(...)` instead

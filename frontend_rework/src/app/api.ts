@@ -72,3 +72,40 @@ export async function fetchReel(concept: string, lectureNumber: number): Promise
 export function resolveVideoUrl(videoSrc: string): string {
   return `${API_BASE}${videoSrc}`;
 }
+
+// ---------------------------------------------------------------------------
+// PDF upload
+// ---------------------------------------------------------------------------
+
+export interface UploadJob {
+  jobId: string;
+  status: "processing" | "done" | "error";
+  message: string;
+  result: {
+    subject: string;
+    conceptVideo: string;
+    exampleVideo: string;
+  } | null;
+}
+
+/** Upload a PDF transcript and start the pipeline. Returns a job ID. */
+export async function uploadTranscript(file: File): Promise<{ jobId: string }> {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch(`${API_BASE}/api/upload-transcript`, {
+    method: "POST",
+    body: form,
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error((detail as { detail?: string }).detail ?? "Upload failed");
+  }
+  return res.json() as Promise<{ jobId: string }>;
+}
+
+/** Poll the status of an upload job. */
+export async function pollUploadStatus(jobId: string): Promise<UploadJob> {
+  const res = await fetch(`${API_BASE}/api/upload-status/${jobId}`);
+  if (!res.ok) throw new Error(`Status check failed: ${res.status}`);
+  return res.json() as Promise<UploadJob>;
+}

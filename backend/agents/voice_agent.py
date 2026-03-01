@@ -43,9 +43,7 @@ _PROMPT_PATH = os.path.join(
     os.path.dirname(__file__), "agent_prompts", "voice_agent_system_prompt.md"
 )
 
-DEFAULT_VOICE_ID = "9BWtsMINqrJLrRacOk9x"   # Aria — warm, expressive
-DEFAULT_MODEL_ID = "eleven_multilingual_v2"
-DEFAULT_OUTPUT_FORMAT = "mp3_44100_128"
+FISH_AUDIO_REFERENCE_ID = "2986d6f241e442439883beeb9a8cce96"
 
 
 def _load_prompt() -> str:
@@ -159,32 +157,25 @@ def _get_audio_duration(path: str) -> float:
 
 
 def _text_to_speech(text: str, output_path: str) -> None:
-    """Synthesise *text* with ElevenLabs and write MP3 to *output_path*."""
+    """Synthesise *text* with Fish Audio and write MP3 to *output_path*."""
     try:
-        from elevenlabs.client import ElevenLabs
+        from fish_audio_sdk import Session, TTSRequest
     except ImportError as e:
         raise ImportError(
-            "elevenlabs package is required: pip install elevenlabs"
+            "fish-audio-sdk package is required: pip install fish-audio-sdk"
         ) from e
 
-    api_key = os.environ.get("ELEVENLABS_API_KEY")
+    api_key = os.environ.get("FISH_AUDIO_API_KEY")
     if not api_key:
-        raise EnvironmentError("ELEVENLABS_API_KEY environment variable is not set.")
+        raise EnvironmentError("FISH_AUDIO_API_KEY environment variable is not set.")
 
-    voice_id = os.environ.get("ELEVENLABS_VOICE_ID", "").strip() or DEFAULT_VOICE_ID
-    model_id = os.environ.get("ELEVENLABS_MODEL_ID", "").strip() or DEFAULT_MODEL_ID
-
-    client = ElevenLabs(api_key=api_key)
-    audio_chunks = client.text_to_speech.convert(
-        text=text,
-        voice_id=voice_id,
-        model_id=model_id,
-        output_format=DEFAULT_OUTPUT_FORMAT,
-    )
-
+    session = Session(api_key)
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
     with open(output_path, "wb") as f:
-        for chunk in audio_chunks:
+        for chunk in session.tts(TTSRequest(
+            reference_id=FISH_AUDIO_REFERENCE_ID,
+            text=text,
+        )):
             f.write(chunk)
 
 

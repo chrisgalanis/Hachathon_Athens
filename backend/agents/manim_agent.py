@@ -61,8 +61,12 @@ def _build_narration_prompt(
         "CANVAS: 9:16 PORTRAIT (1080×1920). The FIRST line of construct() "
         "MUST be `self.frame.set_shape(8.0, 14.222222)` to switch the canvas "
         "from landscape to portrait. Design all layouts vertically — "
-        "stack elements top-to-bottom, not side-by-side. Use large font sizes "
-        "(≥40). Keep content within x = ±3.5 to avoid clipping.\n\n"
+        "stack elements top-to-bottom, not side-by-side. "
+        "Use font_size=28–36 for body text, up to 40 for titles only — "
+        "NEVER exceed 40 or text will collide on the narrow canvas. "
+        "Use .next_to(), .shift(), or VGroup(...).arrange(DOWN, buff=0.5) "
+        "to ensure NO two text elements overlap. "
+        "Keep content within x = ±3.5 to avoid clipping.\n\n"
         "CRITICAL RULES:\n"
         "1. Each [BEAT] boundary → one self.wait() in your code. "
         "This creates the pause where the animation waits for the narrator.\n"
@@ -118,6 +122,43 @@ class ManimAgent(BaseAgent):
             narration, subject, lecture_number, reel_type
         )
         return await self.run(prompt)
+
+    async def fix_error(
+        self,
+        narration: str,
+        failing_code: str,
+        error_message: str,
+        subject: str = "Unknown Topic",
+        lecture_number: str = "?",
+        reel_type: str = "concept",
+    ):
+        """Regenerate a ManimGL script, given the previous attempt's error.
+
+        Includes the original narration, failing code, and error message so
+        the model knows exactly what to fix instead of blindly regenerating.
+
+        Args:
+            narration: [BEAT]-delimited voice-over text (original source of truth).
+            failing_code: The Python script that failed to render.
+            error_message: The error/traceback from the failed render attempt.
+            subject: Lecture subject for context.
+            lecture_number: Lecture number for context.
+            reel_type: 'concept' or 'example'.
+
+        Returns:
+            RunResult — access ``.output`` for the fixed Python script.
+        """
+        base_prompt = _build_narration_prompt(narration, subject, lecture_number, reel_type)
+        prompt = (
+            f"{base_prompt}\n\n"
+            "─── PREVIOUS ATTEMPT FAILED ───\n"
+            "The code below was generated but failed to render. Fix it.\n\n"
+            f"Failing code:\n```python\n{failing_code}\n```\n\n"
+            f"Error:\n```\n{error_message}\n```\n\n"
+            "Return ONLY the complete fixed Python script, no explanation."
+        )
+        # Use fresh history so parallel concept/example runs don't cross-contaminate.
+        return await self.run(prompt, message_history=[])
 
     # ------------------------------------------------------------------
     # Legacy helpers kept for backward compatibility

@@ -22,11 +22,16 @@ Run with:
     uvicorn main:app --reload --port 8000
 """
 
+import asyncio
 import json
 import re
+import subprocess
+import tempfile
+import uuid
 from pathlib import Path
+from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -51,14 +56,39 @@ BASE_DIR = Path(__file__).parent
 PROCESSED_DIR = BASE_DIR / "scraper" / "processed"
 VIDEOS_DIR = BASE_DIR / "videos"
 FINAL_DIR = (BASE_DIR / "final").resolve()
+# Pipeline writes to backend/ so that backend/final/ is served by the /final mount
+OUTPUT_DIR = BASE_DIR
 
-# Ensure the videos directory exists so StaticFiles doesn't error on startup
+# Ensure required directories exist so StaticFiles doesn't error on startup
 VIDEOS_DIR.mkdir(parents=True, exist_ok=True)
+FINAL_DIR.mkdir(parents=True, exist_ok=True)
 
 # Serve MP4 files as static assets
 app.mount("/videos", StaticFiles(directory=str(VIDEOS_DIR)), name="videos")
-if FINAL_DIR.exists():
-    app.mount("/final", StaticFiles(directory=str(FINAL_DIR)), name="final")
+app.mount("/final", StaticFiles(directory=str(FINAL_DIR)), name="final")
+
+# ---------------------------------------------------------------------------
+# Upload job store (in-memory + disk persistence)
+# ---------------------------------------------------------------------------
+
+_JOBS_DIR = BASE_DIR / "final" / "jobs"
+_JOBS_DIR.mkdir(parents=True, exist_ok=True)
+
+_jobs: dict[str, dict[str, Any]] = {}
+
+
+def _persist_job(job_id: str, job: dict) -> None:
+    """Write job state to disk so it survives server restarts."""
+    (_JOBS_DIR / f"{job_id}.json").write_text(
+        json.dumps(job, ensure_ascii=False), encoding="utf-8"
+    )
+
+
+def _load_job_from_disk(job_id: str) -> dict | None:
+    job_file = _JOBS_DIR / f"{job_id}.json"
+    if not job_file.exists():
+        return None
+    return json.loads(job_file.read_text(encoding="utf-8"))
 
 # ---------------------------------------------------------------------------
 # reels.json — maps transcript dirs to video files
@@ -336,3 +366,169 @@ def get_reel(concept: str, lecture_number: int):
             status_code=404, detail=f"No processed data for '{concept}/{lecture_number}'"
         )
     return reel
+
+
+# ---------------------------------------------------------------------------
+# PDF upload → full pipeline
+# ---------------------------------------------------------------------------
+
+
+def _extract_pdf_text(pdf_bytes: bytes) -> str:
+    """Run pdftotext on raw PDF bytes and return the extracted text."""
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+        tmp.write(pdf_bytes)
+        tmp_path = tmp.name
+    try:
+        result = subprocess.run(
+            ["pdftotext", "-nopgbrk", tmp_path, "-"],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(f"pdftotext failed: {result.stderr}")
+        return result.stdout
+    finally:
+        Path(tmp_path).unlink(missing_ok=True)
+
+
+def _append_to_reels_json(entry: dict) -> None:
+    """Append a new direct entry to reels.json (thread-safe enough for hackathon)."""
+    reels_json = BASE_DIR / "reels.json"
+    if reels_json.exists():
+        entries = json.loads(reels_json.read_text(encoding="utf-8"))
+    else:
+        entries = []
+    entries.append(entry)
+    reels_json.write_text(json.dumps(entries, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    # Reload the global maps so new reels are immediately visible
+    global REELS_MAP, BRAINROT_MAP, DIRECT_ENTRIES
+    REELS_MAP, BRAINROT_MAP, DIRECT_ENTRIES = _load_reels_map()
+
+
+async def _run_upload_pipeline(job_id: str, pdf_bytes: bytes, filename: str) -> None:
+    """Full pipeline: PDF bytes → concept & example MP4s → reels.json."""
+    job = _jobs[job_id]
+    try:
+        # Step 1 — extract text
+        job["message"] = "Extracting text from PDF…"
+        text = _extract_pdf_text(pdf_bytes)
+        if not text.strip():
+            raise ValueError("Could not extract any text from the PDF.")
+
+        # Derive a subject name from the filename
+        subject = Path(filename).stem.replace("_", " ").replace("-", " ").title()
+
+        # Step 2 — DataProcessorAgent → structured concepts/examples/analogy
+        job["message"] = "Processing transcript with AI…"
+        from agents.data_processor_agent import DataProcessorAgent
+
+        processor = DataProcessorAgent()
+        raw_data = {
+            "lecture_number": 1,
+            "subject": subject,
+            "content": text,
+            "examples": [],
+        }
+        # Write a temporary data.json for the agent
+        with tempfile.NamedTemporaryFile(
+            suffix=".json", mode="w", delete=False, encoding="utf-8"
+        ) as tmp:
+            json.dump(raw_data, tmp)
+            tmp_data_path = tmp.name
+        try:
+            processed = await processor.process_file(tmp_data_path)
+        finally:
+            Path(tmp_data_path).unlink(missing_ok=True)
+
+        if not processed:
+            raise ValueError("DataProcessorAgent returned empty output.")
+
+        processed["lecture_number"] = 1
+        processed["subject"] = subject
+
+        # Step 3 — generate + review transcript paragraph
+        job["message"] = "Generating video transcript…"
+        from agents.lecture_transcript_agent import process_lecture
+
+        transcript_result = await process_lecture(processed)
+        processed["reviewed_transcript"] = transcript_result["reviewed_transcript"]
+
+        # Step 4 — video generation pipeline
+        job["message"] = "Generating video (this takes a few minutes)…"
+        from agents.pipeline import VideoGenerationPipeline
+
+        pipeline = VideoGenerationPipeline(output_dir=str(OUTPUT_DIR))
+        concept_mp4, example_mp4 = await pipeline.run_from_dict(processed)
+
+        # Step 5 — build reels.json-compatible paths (relative to BASE_DIR with ./ prefix)
+        import re as _re
+        slug = _re.sub(r"\W+", "_", subject).strip("_")
+
+        def _backend_rel(abs_path: str) -> str:
+            """Return path relative to backend/ with ./ prefix, matching reels.json convention."""
+            try:
+                rel = Path(abs_path).relative_to(BASE_DIR)
+                return "./" + rel.as_posix()
+            except ValueError:
+                return abs_path
+
+        concept_subs_path = str(BASE_DIR / "final" / f"{slug}_concept_subtitles.json")
+        example_subs_path = str(BASE_DIR / "final" / f"{slug}_example_subtitles.json")
+
+        _append_to_reels_json({
+            "title": f"{subject} — Concept",
+            "video": _backend_rel(concept_mp4),
+            "captions_file": _backend_rel(concept_subs_path),
+        })
+        _append_to_reels_json({
+            "title": f"{subject} — Example",
+            "video": _backend_rel(example_mp4),
+            "captions_file": _backend_rel(example_subs_path),
+        })
+
+        job["status"] = "done"
+        job["message"] = "Done!"
+        job["result"] = {
+            "subject": subject,
+            "conceptVideo": _backend_rel(concept_mp4),
+            "exampleVideo": _backend_rel(example_mp4),
+        }
+        _persist_job(job_id, job)
+
+    except Exception as exc:
+        job["status"] = "error"
+        job["message"] = str(exc)
+        _persist_job(job_id, job)
+
+
+@app.post("/api/upload-transcript")
+async def upload_transcript(
+    background_tasks: BackgroundTasks,
+    file: UploadFile = File(...),
+):
+    """Accept a university transcript PDF, run the full pipeline in the background."""
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are accepted.")
+
+    pdf_bytes = await file.read()
+    job_id = str(uuid.uuid4())
+    _jobs[job_id] = {"status": "processing", "message": "Starting…", "result": None}
+
+    background_tasks.add_task(_run_upload_pipeline, job_id, pdf_bytes, file.filename)
+
+    return {"jobId": job_id}
+
+
+@app.get("/api/upload-status/{job_id}")
+def upload_status(job_id: str):
+    """Poll the status of an upload pipeline job."""
+    job = _jobs.get(job_id) or _load_job_from_disk(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found.")
+    return {
+        "jobId": job_id,
+        "status": job["status"],
+        "message": job["message"],
+        "result": job.get("result"),
+    }

@@ -100,5 +100,25 @@
     "title": "Change of basis image compression (example)",
     "video": "./final/Change_of_basis_image_compression_example.mp4",
     "captions_file": "./final/Change_of_basis_image_compression_example_subtitles.json"
+  },
+  {
+    "title": "Set 08 Awgn 1 (2024 25) — Concept",
+    "video": "./final/Set_08_Awgn_1_2024_25_concept.mp4",
+    "captions_file": "./final/Set_08_Awgn_1_2024_25_concept_subtitles.json"
+  },
+  {
+    "title": "Set 08 Awgn 1 (2024 25) — Example",
+    "video": "./final/Set_08_Awgn_1_2024_25_example.mp4",
+    "captions_file": "./final/Set_08_Awgn_1_2024_25_example_subtitles.json"
+  },
+  {
+    "title": "Set 02 Com Channels (2024 25) — Concept",
+    "video": "./final/Set_02_Com_Channels_2024_25_concept.mp4",
+    "captions_file": "./final/Set_02_Com_Channels_2024_25_concept_subtitles.json"
+  },
+  {
+    "title": "Set 02 Com Channels (2024 25) — Example",
+    "video": "./final/Set_02_Com_Channels_2024_25_example.mp4",
+    "captions_file": "./final/Set_02_Com_Channels_2024_25_example_subtitles.json"
   }
 ]

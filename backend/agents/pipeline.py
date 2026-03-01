@@ -41,6 +41,7 @@ Usage::
 import asyncio
 import json
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -49,7 +50,24 @@ from typing import List
 from .manim_agent import ManimAgent
 from .voice_agent import VoiceAgent, _split_beats
 
-_MANIMGL = str(Path(sys.executable).parent / "manimgl")
+# Resolve manimgl: prefer PATH lookup, then look in the same venv as the
+# running interpreter, then fall back to the Hackathon-Athens backend venv.
+def _find_manimgl() -> str:
+    found = shutil.which("manimgl")
+    if found:
+        return found
+    # Same directory as current Python executable
+    candidate = Path(sys.executable).parent / "manimgl"
+    if candidate.exists():
+        return str(candidate)
+    # Hard-coded fallback for the project venv
+    fallback = Path(__file__).parent.parent / ".venv" / "bin" / "manimgl"
+    if fallback.exists():
+        return str(fallback)
+    return str(candidate)  # will fail with a clear message
+
+_MANIMGL = _find_manimgl()
+print(f"[pipeline] manimgl resolved to: {_MANIMGL}")
 
 
 # ---------------------------------------------------------------------------
@@ -442,20 +460,58 @@ class VideoGenerationPipeline:
 
         # ------------------------------------------------------------------ #
         # Step 4 — Render timing-adjusted scripts + merge with audio
+        #           Retries up to MAX_RENDER_ATTEMPTS times, regenerating the
+        #           Manim script from scratch on each failure.
         # ------------------------------------------------------------------ #
+        MAX_RENDER_ATTEMPTS = 3
         print("\n[4/5] Rendering and merging …")
 
-        _write_script(concept_code, concept_script)
-        _write_script(example_code, example_script)
+        # --- Concept reel render with retry ---
+        concept_silent: str | None = None
+        for attempt in range(1, MAX_RENDER_ATTEMPTS + 1):
+            try:
+                _write_script(concept_code, concept_script)
+                print(f"  Rendering concept reel (attempt {attempt}/{MAX_RENDER_ATTEMPTS}) …")
+                concept_silent = _render_manim(
+                    concept_script, _extract_scene_class(concept_code), concept_video_dir
+                )
+                break
+            except Exception as exc:
+                print(f"  Concept render attempt {attempt} failed: {exc}")
+                if attempt == MAX_RENDER_ATTEMPTS:
+                    raise
+                # Fix the Manim script using the actual error message
+                print("  Fixing concept Manim script …")
+                concept_manim_result = await self._manim_agent.fix_error(
+                    concept_narration, concept_code, str(exc),
+                    subject, lecture_number, reel_type="concept"
+                )
+                concept_code = _adjust_wait_times(
+                    concept_manim_result.output, concept_beats
+                )
 
-        print("  Rendering concept reel …")
-        concept_silent = _render_manim(
-            concept_script, _extract_scene_class(concept_code), concept_video_dir
-        )
-        print("  Rendering example reel …")
-        example_silent = _render_manim(
-            example_script, _extract_scene_class(example_code), example_video_dir
-        )
+        # --- Example reel render with retry ---
+        example_silent: str | None = None
+        for attempt in range(1, MAX_RENDER_ATTEMPTS + 1):
+            try:
+                _write_script(example_code, example_script)
+                print(f"  Rendering example reel (attempt {attempt}/{MAX_RENDER_ATTEMPTS}) …")
+                example_silent = _render_manim(
+                    example_script, _extract_scene_class(example_code), example_video_dir
+                )
+                break
+            except Exception as exc:
+                print(f"  Example render attempt {attempt} failed: {exc}")
+                if attempt == MAX_RENDER_ATTEMPTS:
+                    raise
+                print("  Fixing example Manim script …")
+                example_manim_result = await self._manim_agent.fix_error(
+                    example_narration, example_code, str(exc),
+                    subject, lecture_number, reel_type="example"
+                )
+                example_code = _adjust_wait_times(
+                    example_manim_result.output, example_beats
+                )
 
         print("  Merging concept reel …")
         _merge_audio_video(concept_silent, concept_audio, concept_mp4)
