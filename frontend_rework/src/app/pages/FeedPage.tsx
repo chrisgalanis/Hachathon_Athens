@@ -108,7 +108,7 @@ export function FeedPage() {
       <div className="h-screen w-full flex items-center justify-center bg-[#0a0a0f] px-8">
         <div className="text-center">
           <div className="text-white/60 text-lg mb-2">{error ?? 'No reels found.'}</div>
-          <div className="text-white/30 text-sm">Make sure the backend is running on port 8000.</div>
+          <div className="text-white/30 text-sm">Could not reach the API. Please try again later.</div>
         </div>
       </div>
     );
