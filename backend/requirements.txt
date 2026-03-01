@@ -2,3 +2,8 @@ fastapi
 uvicorn[standard]
 python-multipart
 python-dotenv
+pydantic-ai[anthropic,openai]
+pydantic
+numpy
+fish-audio-sdk
+manimlib
