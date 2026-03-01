@@ -168,6 +168,96 @@ def _write_script(code: str, path: str) -> None:
         f.write(code)
 
 
+def _check_syntax(script_path: str) -> None:
+    """Compile the script to catch Python syntax errors before running manimgl.
+
+    Raises RuntimeError (not SyntaxError) so it slots into the existing
+    ``except Exception`` retry handler and the error text gets fed to fix_error.
+    """
+    with open(script_path, encoding="utf-8") as f:
+        source = f.read()
+    try:
+        compile(source, script_path, "exec")
+    except SyntaxError as exc:
+        raise RuntimeError(
+            f"Syntax error in generated script (line {exc.lineno}): {exc.msg}\n"
+            f"  {exc.text or ''}"
+        ) from exc
+
+
+def _remove_statement(lines: List[str], start_idx: int) -> str:
+    """Remove the multi-line statement beginning at start_idx.
+
+    Continuation lines are those with strictly deeper indentation than the
+    opener, or blank lines sandwiched between them.
+    """
+    if start_idx >= len(lines):
+        return "\n".join(lines)
+    base_indent = len(lines[start_idx]) - len(lines[start_idx].lstrip())
+    end_idx = start_idx
+    for j in range(start_idx + 1, len(lines)):
+        line = lines[j]
+        stripped = line.strip()
+        if not stripped:
+            end_idx = j  # tentatively include blank lines
+            continue
+        line_indent = len(line) - len(line.lstrip())
+        if line_indent > base_indent:
+            end_idx = j
+        else:
+            break
+    return "\n".join(lines[:start_idx] + lines[end_idx + 1:])
+
+
+def _auto_fix_syntax(code: str) -> str:
+    """Deterministically fix common Python syntax errors in LLM-generated code.
+
+    Runs up to 10 single-error-fix passes using ``compile()`` as the oracle.
+    Each pass:
+      - locates the first SyntaxError reported by the compiler
+      - applies a targeted rule-based fix (no AI calls)
+
+    Rules applied:
+      * ``'(' / '[' / '{' was never closed`` → remove the whole statement
+        (including continuation lines) that opened the bracket.
+      * Trailing ``.`` / incomplete attribute access → remove that line.
+      * Generic ``invalid syntax`` / ``unexpected EOF`` → remove the line.
+
+    Returns the fixed code string (may be identical to the input if no fix
+    could be found).
+    """
+    for _ in range(10):
+        try:
+            compile(code, "<string>", "exec")
+            return code  # clean — nothing to do
+        except SyntaxError as exc:
+            lines = code.split("\n")
+            lineno = exc.lineno  # 1-based; None on some edge cases
+            msg = exc.msg or ""
+
+            if lineno is None or lineno - 1 >= len(lines):
+                break  # can't locate the line; give up
+
+            idx = lineno - 1  # convert to 0-based
+            stripped = lines[idx].strip()
+
+            if "was never closed" in msg:
+                # Remove the statement whose opening bracket was never closed
+                new_code = _remove_statement(lines, idx)
+            elif re.match(r".*\.\s*$", stripped):
+                # Trailing dot — incomplete attribute access
+                new_code = "\n".join(lines[:idx] + lines[idx + 1:])
+            else:
+                # Generic syntax error: drop the offending line
+                new_code = "\n".join(lines[:idx] + lines[idx + 1:])
+
+            if new_code == code:
+                break  # no progress; avoid infinite loop
+            code = new_code
+
+    return code
+
+
 def _save_subtitle_json(
     narration: str,
     beat_durations: List[float],
@@ -471,6 +561,7 @@ class VideoGenerationPipeline:
         for attempt in range(1, MAX_RENDER_ATTEMPTS + 1):
             try:
                 _write_script(concept_code, concept_script)
+                _check_syntax(concept_script)
                 print(f"  Rendering concept reel (attempt {attempt}/{MAX_RENDER_ATTEMPTS}) …")
                 concept_silent = _render_manim(
                     concept_script, _extract_scene_class(concept_code), concept_video_dir
@@ -480,7 +571,13 @@ class VideoGenerationPipeline:
                 print(f"  Concept render attempt {attempt} failed: {exc}")
                 if attempt == MAX_RENDER_ATTEMPTS:
                     raise
-                # Fix the Manim script using the actual error message
+                # 1. Try fast deterministic syntax fix (no AI call)
+                fixed = _auto_fix_syntax(concept_code)
+                if fixed != concept_code:
+                    print("  Applied deterministic syntax fix, retrying …")
+                    concept_code = _adjust_wait_times(fixed, concept_beats)
+                    continue
+                # 2. Fall back to AI-based fix only when the linter can't help
                 print("  Fixing concept Manim script …")
                 concept_manim_result = await self._manim_agent.fix_error(
                     concept_narration, concept_code, str(exc),
@@ -495,6 +592,7 @@ class VideoGenerationPipeline:
         for attempt in range(1, MAX_RENDER_ATTEMPTS + 1):
             try:
                 _write_script(example_code, example_script)
+                _check_syntax(example_script)
                 print(f"  Rendering example reel (attempt {attempt}/{MAX_RENDER_ATTEMPTS}) …")
                 example_silent = _render_manim(
                     example_script, _extract_scene_class(example_code), example_video_dir
@@ -504,6 +602,13 @@ class VideoGenerationPipeline:
                 print(f"  Example render attempt {attempt} failed: {exc}")
                 if attempt == MAX_RENDER_ATTEMPTS:
                     raise
+                # 1. Try fast deterministic syntax fix (no AI call)
+                fixed = _auto_fix_syntax(example_code)
+                if fixed != example_code:
+                    print("  Applied deterministic syntax fix, retrying …")
+                    example_code = _adjust_wait_times(fixed, example_beats)
+                    continue
+                # 2. Fall back to AI-based fix only when the linter can't help
                 print("  Fixing example Manim script …")
                 example_manim_result = await self._manim_agent.fix_error(
                     example_narration, example_code, str(exc),

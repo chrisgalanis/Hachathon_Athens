@@ -1,0 +1,48 @@
+{
+  "total_duration": 36.859,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 4.728,
+      "duration": 4.728,
+      "text": "A student walks through a forest. Her eye detects light — that's our starting point."
+    },
+    {
+      "beat": 1,
+      "start": 4.728,
+      "end": 11.076,
+      "duration": 6.348,
+      "text": "Zoom into the eye. It's an organ. Inside sits the retina — a sheet of tissue lining the back wall."
+    },
+    {
+      "beat": 2,
+      "start": 11.076,
+      "end": 16.509,
+      "duration": 5.433,
+      "text": "Deeper now. A single photoreceptor cell within that retina. One cell, catching one photon."
+    },
+    {
+      "beat": 3,
+      "start": 16.509,
+      "end": 21.786,
+      "duration": 5.277,
+      "text": "Inside the cell, a mitochondrion appears — a dense, folded organelle floating in the cytoplasm."
+    },
+    {
+      "beat": 4,
+      "start": 21.786,
+      "end": 29.753,
+      "duration": 7.967,
+      "text": "The mitochondrion outputs a single molecule: ATP. A label locks onto it — ATP, the cell's energy currency."
+    },
+    {
+      "beat": 5,
+      "start": 29.753,
+      "end": 36.859,
+      "duration": 7.105,
+      "text": "Pull back through every level: molecule, organelle, cell, tissue, organ. Five layers. One student. One forest."
+    }
+  ]
+}

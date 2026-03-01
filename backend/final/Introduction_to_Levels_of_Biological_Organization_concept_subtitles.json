@@ -1,0 +1,48 @@
+{
+  "total_duration": 45.322,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 5.616,
+      "duration": 5.616,
+      "text": "A forest fills the frame — trees, canopy, soil, the works. That's an ecosystem."
+    },
+    {
+      "beat": 1,
+      "start": 5.616,
+      "end": 14.158,
+      "duration": 8.542,
+      "text": "Zoom in. One organism: a student walking through. Zoom further — an eye, then a single photoreceptor cell inside it."
+    },
+    {
+      "beat": 2,
+      "start": 14.158,
+      "end": 20.193,
+      "duration": 6.034,
+      "text": "Deeper still: ribosomes, tiny molecular machines, assembling proteins inside that one cell."
+    },
+    {
+      "beat": 3,
+      "start": 20.193,
+      "end": 28.63,
+      "duration": 8.438,
+      "text": "Life is nested — ecosystem, organism, organ, cell, molecule. Each level stacks perfectly inside the next."
+    },
+    {
+      "beat": 4,
+      "start": 28.63,
+      "end": 37.851,
+      "duration": 9.221,
+      "text": "Here's the wild part — a timeline appears, stretching back three point seven billion years. Bacteria from that era run the same molecular rules as that cell."
+    },
+    {
+      "beat": 5,
+      "start": 37.851,
+      "end": 45.322,
+      "duration": 7.471,
+      "text": "Multicellularity erupts at six hundred million years, and diversity explodes. Master the molecular level — you hold the key to all of it."
+    }
+  ]
+}

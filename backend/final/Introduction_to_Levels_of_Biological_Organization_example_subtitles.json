@@ -1,0 +1,48 @@
+{
+  "total_duration": 39.549,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 4.362,
+      "duration": 4.362,
+      "text": "An MIT student steps into a forest. A label appears: ecosystem."
+    },
+    {
+      "beat": 1,
+      "start": 4.362,
+      "end": 9.378,
+      "duration": 5.016,
+      "text": "Zoom in on the student. A label appears: organism. One level down."
+    },
+    {
+      "beat": 2,
+      "start": 9.378,
+      "end": 13.871,
+      "duration": 4.493,
+      "text": "Zoom into the student's face — the eye comes into focus. Label: organ."
+    },
+    {
+      "beat": 3,
+      "start": 13.871,
+      "end": 18.233,
+      "duration": 4.362,
+      "text": "Peel back the eye. The retina layer is highlighted. Label: tissue."
+    },
+    {
+      "beat": 4,
+      "start": 18.233,
+      "end": 28.447,
+      "duration": 10.214,
+      "text": "Zoom into the retina — a single photoreceptor cell is isolated. Label: cell. Inside it, mitochondria appear. Label: organelle."
+    },
+    {
+      "beat": 5,
+      "start": 28.447,
+      "end": 39.549,
+      "duration": 11.102,
+      "text": "Zoom into one mitochondrion. A molecule of ATP appears, spinning slowly. Label: molecule. Seven levels — one continuous zoom from forest to molecule."
+    }
+  ]
+}

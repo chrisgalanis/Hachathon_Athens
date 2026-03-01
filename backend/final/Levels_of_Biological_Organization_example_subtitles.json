@@ -1,0 +1,55 @@
+{
+  "total_duration": 38.53,
+  "beat_count": 7,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 4.598,
+      "duration": 4.598,
+      "text": "A student walks through a forest. Seven labels float in a column, waiting to be filled."
+    },
+    {
+      "beat": 1,
+      "start": 4.598,
+      "end": 9.979,
+      "duration": 5.381,
+      "text": "Zoom out — the forest itself is the ecosystem. Everything alive and nonliving, connected."
+    },
+    {
+      "beat": 2,
+      "start": 9.979,
+      "end": 15.229,
+      "duration": 5.251,
+      "text": "Pull in — the student is one organism. A single human body inside that ecosystem."
+    },
+    {
+      "beat": 3,
+      "start": 15.229,
+      "end": 20.48,
+      "duration": 5.251,
+      "text": "Zoom into the student's face. The eye appears — an organ, one piece of the body's machinery."
+    },
+    {
+      "beat": 4,
+      "start": 20.48,
+      "end": 25.208,
+      "duration": 4.728,
+      "text": "Inside the eye, the retina unfolds — a tissue, a sheet of coordinated cells."
+    },
+    {
+      "beat": 5,
+      "start": 25.208,
+      "end": 31.242,
+      "duration": 6.034,
+      "text": "One cell highlights: a photoreceptor. Inside it, a mitochondrion appears — an organelle."
+    },
+    {
+      "beat": 6,
+      "start": 31.242,
+      "end": 38.53,
+      "duration": 7.288,
+      "text": "Zoom to the mitochondrion. A single ATP molecule snaps into focus. That's the molecule level — the bottom of the chain."
+    }
+  ]
+}

@@ -167,17 +167,15 @@
     "captions_file": "./final/Set_02_Com_Channels_2024_25_example_subtitles.json"
   },
   {
-    "title": "Inflation: Causes, Dynamics, and Policy (concept)",
-    "subject": "Macroeconomics",
-    "brainrot": "./videos/CSGO_PARKOUR.mp4",
-    "video": "./final/Inflation_Causes_Dynamics_and_Policy_concept.mp4",
-    "captions_file": "./final/Inflation_Causes_Dynamics_and_Policy_concept_subtitles.json"
+    "title": "Levels of Biological Organization (concept)",
+    "video": "./final/Levels_of_Biological_Organization_concept.mp4",
+    "captions_file": "./final/Levels_of_Biological_Organization_concept_subtitles.json",
+    "subject": "Introductory Biology"
   },
   {
-    "title": "Inflation: Causes, Dynamics, and Policy (example)",
-    "subject": "Macroeconomics",
-    "brainrot": "./videos/SUBWAY_SURFERS.mp4",
-    "video": "./final/Inflation_Causes_Dynamics_and_Policy_example.mp4",
-    "captions_file": "./final/Inflation_Causes_Dynamics_and_Policy_example_subtitles.json"
+    "title": "Levels of Biological Organization (example)",
+    "video": "./final/Levels_of_Biological_Organization_example.mp4",
+    "captions_file": "./final/Levels_of_Biological_Organization_example_subtitles.json",
+    "subject": "Introductory Biology"
   }
 ]

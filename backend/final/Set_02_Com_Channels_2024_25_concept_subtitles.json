@@ -1,0 +1,48 @@
+{
+  "total_duration": 69.12,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 8.673,
+      "duration": 8.673,
+      "text": "A stream of symbols fires from a transmitter across a channel toward a receiver. That channel is the hazard zone."
+    },
+    {
+      "beat": 1,
+      "start": 8.673,
+      "end": 21.943,
+      "duration": 13.27,
+      "text": "A bandwidth meter appears — twisted-pair copper tops out at a few hundred kilohertz. Optical fibre stretches the scale massively wider."
+    },
+    {
+      "beat": 2,
+      "start": 21.943,
+      "end": 35.344,
+      "duration": 13.401,
+      "text": "A label above the fibre reads: once one thousand decibels per kilometre of loss. It drops — slamming down to just zero point two. That's the engineering miracle."
+    },
+    {
+      "beat": 3,
+      "start": 35.344,
+      "end": 48.013,
+      "duration": 12.669,
+      "text": "A noise wave spreads flat across every frequency on a spectrum plot. That's AWGN — thermal noise, always present, mathematically guaranteed."
+    },
+    {
+      "beat": 4,
+      "start": 48.013,
+      "end": 60.317,
+      "duration": 12.304,
+      "text": "Multiple signal arrows bounce off building outlines and arrive at the receiver out of sync. Multipath fading — the signal arrives garbled."
+    },
+    {
+      "beat": 5,
+      "start": 60.317,
+      "end": 69.12,
+      "duration": 8.803,
+      "text": "All these impairments stack on screen together. Master them, and you design systems that punch through anything."
+    }
+  ]
+}

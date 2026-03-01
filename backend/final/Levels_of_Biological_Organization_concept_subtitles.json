@@ -1,0 +1,48 @@
+{
+  "total_duration": 42.71,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 4.728,
+      "duration": 4.728,
+      "text": "A student stands in a forest. Zoom out — it's an ecosystem."
+    },
+    {
+      "beat": 1,
+      "start": 4.728,
+      "end": 14.655,
+      "duration": 9.927,
+      "text": "Zoom into the student's eye. An organ. Zoom deeper — a single photoreceptor cell. Zoom deeper still — a mitochondrion, churning out ATP."
+    },
+    {
+      "beat": 2,
+      "start": 14.655,
+      "end": 22.256,
+      "duration": 7.602,
+      "text": "Five levels: ecosystem, organism, organ, cell, molecule. Each one nested inside the last."
+    },
+    {
+      "beat": 3,
+      "start": 22.256,
+      "end": 27.455,
+      "duration": 5.198,
+      "text": "Now watch — we skip past the top levels and slam all the way down to molecules and cells."
+    },
+    {
+      "beat": 4,
+      "start": 27.455,
+      "end": 36.258,
+      "duration": 8.803,
+      "text": "A DNA strand appears. A label reads: 3.5 billion years old. The same genetic code, shared across nearly all life on Earth."
+    },
+    {
+      "beat": 5,
+      "start": 36.258,
+      "end": 42.71,
+      "duration": 6.452,
+      "text": "Master this foundation. Everything else — fruit flies, redwoods, you — is just details built on top."
+    }
+  ]
+}

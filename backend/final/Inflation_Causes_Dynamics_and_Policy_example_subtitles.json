@@ -1,0 +1,41 @@
+{
+  "total_duration": 40.725,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 5.277,
+      "duration": 5.277,
+      "text": "Here's a graph with a 45-degree line and a PAE line — our Keynesian Cross setup."
+    },
+    {
+      "beat": 1,
+      "start": 5.277,
+      "end": 15.491,
+      "duration": 10.214,
+      "text": "When the interest rate equals r-star, the PAE line sits exactly so it crosses the 45-degree line at potential output, Y-star. That intersection is long-run equilibrium."
+    },
+    {
+      "beat": 2,
+      "start": 15.491,
+      "end": 26.593,
+      "duration": 11.102,
+      "text": "Now watch — the interest rate rises above r-star. The PAE line shifts downward. It now crosses the 45-degree line left of Y-star. Output falls below potential."
+    },
+    {
+      "beat": 3,
+      "start": 26.593,
+      "end": 35.265,
+      "duration": 8.673,
+      "text": "Flip it — the interest rate drops below r-star. The PAE line shifts upward, crossing right of Y-star. Output climbs above potential."
+    },
+    {
+      "beat": 4,
+      "start": 35.265,
+      "end": 40.725,
+      "duration": 5.46,
+      "text": "One interest rate, one equilibrium. Only r-star lands output exactly at Y-star."
+    }
+  ]
+}

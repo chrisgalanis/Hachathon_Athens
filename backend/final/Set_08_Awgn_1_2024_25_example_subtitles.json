@@ -1,0 +1,41 @@
+{
+  "total_duration": 51.853,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 8.307,
+      "duration": 8.307,
+      "text": "Four signal waveforms — s-one, s-two, s-three, s-four — appear on a time axis."
+    },
+    {
+      "beat": 1,
+      "start": 8.307,
+      "end": 14.341,
+      "duration": 6.034,
+      "text": "Gram-Schmidt starts with s-one. An arrow singles it out from the group."
+    },
+    {
+      "beat": 2,
+      "start": 14.341,
+      "end": 24.921,
+      "duration": 10.58,
+      "text": "To build the first basis function, we need s-one's energy. The integral of s-one squared over time lights up — that's E-one."
+    },
+    {
+      "beat": 3,
+      "start": 24.921,
+      "end": 38.661,
+      "duration": 13.74,
+      "text": "Now divide. Psi-one of t equals s-one of t divided by the square root of E-one. Watch the waveform rescale until its energy hits exactly one."
+    },
+    {
+      "beat": 4,
+      "start": 38.661,
+      "end": 51.853,
+      "duration": 13.192,
+      "text": "That's psi-one — the first orthonormal basis function. Unit energy, locked in. Every other basis function will be built perpendicular to this one."
+    }
+  ]
+}

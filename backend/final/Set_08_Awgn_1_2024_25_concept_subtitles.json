@@ -1,0 +1,48 @@
+{
+  "total_duration": 56.32,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 5.747,
+      "duration": 5.747,
+      "text": "Here's a two-by-two grid — but make it infinite. This is signal space."
+    },
+    {
+      "beat": 1,
+      "start": 5.747,
+      "end": 17.711,
+      "duration": 11.964,
+      "text": "Two waveforms appear: s-one and s-two, squiggly and messy. Watch them transform into arrows — vectors pointing through that space."
+    },
+    {
+      "beat": 2,
+      "start": 17.711,
+      "end": 28.056,
+      "duration": 10.344,
+      "text": "Gram-Schmidt kicks in. S-one gets normalised — it snaps into a clean unit arrow along the first axis, phi-one."
+    },
+    {
+      "beat": 3,
+      "start": 28.056,
+      "end": 40.542,
+      "duration": 12.487,
+      "text": "S-two's turn. Strip out the component pointing along phi-one. What's left gets normalised — that's phi-two, a second axis, perfectly perpendicular."
+    },
+    {
+      "beat": 4,
+      "start": 40.542,
+      "end": 50.39,
+      "duration": 9.848,
+      "text": "Now every signal is just coordinates. S-one lands at one point, s-two at another. Clean vectors. Zero information lost."
+    },
+    {
+      "beat": 5,
+      "start": 50.39,
+      "end": 56.32,
+      "duration": 5.93,
+      "text": "That's signal space. The geometric foundation of every reliable communication system."
+    }
+  ]
+}

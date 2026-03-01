@@ -1,0 +1,41 @@
+{
+  "total_duration": 41.064,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 8.176,
+      "duration": 8.176,
+      "text": "Here's a nesting-doll stack: biosphere, ecosystem, organism, organ, cell, molecule — each layer slides inside the next."
+    },
+    {
+      "beat": 1,
+      "start": 8.176,
+      "end": 17.45,
+      "duration": 9.273,
+      "text": "Zoom into one cell. A mitochondrion pulses, churning out ATP. That ATP powers everything above it — all the way up to a human eye catching light."
+    },
+    {
+      "beat": 2,
+      "start": 17.45,
+      "end": 30.302,
+      "duration": 12.852,
+      "text": "Now a timeline stretches across the screen. Earth forms at zero. Four billion years ago, the first cells flicker on. Then a long gap — one-point-five to two billion years more — before nucleated cells appear."
+    },
+    {
+      "beat": 3,
+      "start": 30.302,
+      "end": 35.317,
+      "duration": 5.016,
+      "text": "Same molecular machinery. Every creature, every kingdom, running the same core rulebook."
+    },
+    {
+      "beat": 4,
+      "start": 35.317,
+      "end": 41.064,
+      "duration": 5.747,
+      "text": "Master the shared grammar first. Every unique species becomes a dialect you can already read."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "total_duration": 54.883,
+  "beat_count": 5,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 6.452,
+      "duration": 6.452,
+      "text": "Two wired channels side by side: twisted-pair on the left, coaxial on the right."
+    },
+    {
+      "beat": 1,
+      "start": 6.452,
+      "end": 17.972,
+      "duration": 11.52,
+      "text": "Twisted-pair's bandwidth label reads one hundred kilohertz. A crosstalk warning icon pulses between its wires — interference leaking between pairs."
+    },
+    {
+      "beat": 2,
+      "start": 17.972,
+      "end": 29.518,
+      "duration": 11.546,
+      "text": "Coaxial's bandwidth label reads one hundred megahertz. The crosstalk icon disappears — the shielded core blocks it completely."
+    },
+    {
+      "beat": 3,
+      "start": 29.518,
+      "end": 41.247,
+      "duration": 11.729,
+      "text": "But zoom out on the coaxial cable. Repeater boxes appear every fixed interval along the line — extra hardware just to keep the signal alive."
+    },
+    {
+      "beat": 4,
+      "start": 41.247,
+      "end": 54.883,
+      "duration": 13.636,
+      "text": "A scale appears: bandwidth on one side, complexity on the other. Higher bandwidth tips the scale — but complexity rises with it. That's the trade-off."
+    }
+  ]
+}

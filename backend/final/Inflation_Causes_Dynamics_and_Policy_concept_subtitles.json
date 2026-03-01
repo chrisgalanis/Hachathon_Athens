@@ -1,0 +1,48 @@
+{
+  "total_duration": 37.825,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 3.788,
+      "duration": 3.788,
+      "text": "Here's a thermostat on screen — that's your entire economy."
+    },
+    {
+      "beat": 1,
+      "start": 3.788,
+      "end": 11.546,
+      "duration": 7.758,
+      "text": "Three arrows point into a price level gauge: one labeled inertia, one labeled overheating, one labeled shocks. Each arrow pushes the needle up."
+    },
+    {
+      "beat": 2,
+      "start": 11.546,
+      "end": 17.946,
+      "duration": 6.4,
+      "text": "The overheating arrow pulses as an output gap widens — actual output climbs above a dashed potential output line."
+    },
+    {
+      "beat": 3,
+      "start": 17.946,
+      "end": 23.824,
+      "duration": 5.878,
+      "text": "The shock arrow spikes as an oil barrel icon slams the gauge. The needle jumps hard."
+    },
+    {
+      "beat": 4,
+      "start": 23.824,
+      "end": 32.313,
+      "duration": 8.49,
+      "text": "The Fed's dial appears. Turning it up raises an interest rate indicator — the output gap shrinks, the needle drops back toward a two-percent target line."
+    },
+    {
+      "beat": 5,
+      "start": 32.313,
+      "end": 37.825,
+      "duration": 5.512,
+      "text": "But the unemployment counter ticks upward as the economy cools. That's the cost. No free lunch."
+    }
+  ]
+}

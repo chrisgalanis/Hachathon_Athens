@@ -1,0 +1,48 @@
+{
+  "total_duration": 44.983,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 7.34,
+      "duration": 7.34,
+      "text": "A forest scene: trees, fungi, deer, mice, and one MIT student walking through it. This whole system is the ecosystem."
+    },
+    {
+      "beat": 1,
+      "start": 7.34,
+      "end": 12.774,
+      "duration": 5.433,
+      "text": "Zoom in on the student. She is the organism — one living thing inside that ecosystem."
+    },
+    {
+      "beat": 2,
+      "start": 12.774,
+      "end": 19.879,
+      "duration": 7.105,
+      "text": "Pull into her eye. The eye is an organ. Inside it, the retina — a tissue made of layers of cells packed together."
+    },
+    {
+      "beat": 3,
+      "start": 19.879,
+      "end": 24.79,
+      "duration": 4.911,
+      "text": "Zoom into one single cell in the retina: a photoreceptor. This is the cell level."
+    },
+    {
+      "beat": 4,
+      "start": 24.79,
+      "end": 31.295,
+      "duration": 6.504,
+      "text": "Inside that photoreceptor, small bean-shaped structures appear — mitochondria. These are organelles."
+    },
+    {
+      "beat": 5,
+      "start": 31.295,
+      "end": 44.983,
+      "duration": 13.688,
+      "text": "A single ATP molecule assembles inside a mitochondrion. That's the molecule level — the smallest rung on the ladder. Ecosystem, organism, organ, tissue, cell, organelle, molecule. Every level, nested inside the last."
+    }
+  ]
+}

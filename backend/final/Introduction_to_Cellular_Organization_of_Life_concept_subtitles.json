@@ -1,0 +1,48 @@
+{
+  "total_duration": 47.334,
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 0,
+      "start": 0.0,
+      "end": 10.815,
+      "duration": 10.815,
+      "text": "Life on Earth started nearly 4 billion years ago — but complex cells? Only 1.5 to 2 billion years back. A timeline appears, marking both moments."
+    },
+    {
+      "beat": 1,
+      "start": 10.815,
+      "end": 19.069,
+      "duration": 8.255,
+      "text": "Why the gap? Bacteria already owned the planet. A crowd of bacterial cells fills the frame, packed wall to wall. No room for newcomers."
+    },
+    {
+      "beat": 2,
+      "start": 19.069,
+      "end": 27.611,
+      "duration": 8.542,
+      "text": "Now zoom out — an MIT student stands in a forest. Labels cascade around her: ecosystem, organism, organ, tissue, cell."
+    },
+    {
+      "beat": 3,
+      "start": 27.611,
+      "end": 34.116,
+      "duration": 6.504,
+      "text": "Zoom into one photoreceptor. A mitochondrion pulses inside, stamping out ATP molecules one by one."
+    },
+    {
+      "beat": 4,
+      "start": 34.116,
+      "end": 38.713,
+      "duration": 4.598,
+      "text": "Life is nested containers, all the way down. Each layer locks into the next."
+    },
+    {
+      "beat": 5,
+      "start": 38.713,
+      "end": 47.334,
+      "duration": 8.62,
+      "text": "And the molecular rules inside that one cell? Nearly identical across every living thing. Master the cell — you unlock all of life."
+    }
+  ]
+}
